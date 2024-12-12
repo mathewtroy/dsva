@@ -1,0 +1,42 @@
+2024-12-12 01:19:50 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-12 01:19:50 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2773ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-12 01:19:50 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-12 01:19:50 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 587 days old. Consider checking for a newer version.).
+2024-12-12 01:19:50 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-12 01:19:50 [main] INFO  io.javalin.Javalin - Javalin started in 178ms \o/
+2024-12-12 01:20:08 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-12 01:20:08 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2694ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-12 01:20:08 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-12 01:20:08 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 587 days old. Consider checking for a newer version.).
+2024-12-12 01:20:08 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7020/
+2024-12-12 01:20:08 [main] INFO  io.javalin.Javalin - Javalin started in 186ms \o/
+2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-12 01:20:17 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2766ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 587 days old. Consider checking for a newer version.).
+2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7030/
+2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - Javalin started in 164ms \o/
