@@ -40,3 +40,1006 @@
 2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 587 days old. Consider checking for a newer version.).
 2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7030/
 2024-12-12 01:20:17 [main] INFO  io.javalin.Javalin - Javalin started in 164ms \o/
+2024-12-16 10:47:24 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-16 10:47:24 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2656ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-16 10:47:24 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-16 10:47:24 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 591 days old. Consider checking for a newer version.).
+2024-12-16 10:47:25 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-16 10:47:25 [main] INFO  io.javalin.Javalin - Javalin started in 179ms \o/
+2024-12-17 17:37:41 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-17 17:37:41 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2686ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-17 17:37:41 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-17 17:37:41 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-17 17:37:41 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-17 17:37:41 [main] INFO  io.javalin.Javalin - Javalin started in 173ms \o/
+2024-12-17 17:38:43 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-17 17:38:43 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2554ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-17 17:38:43 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-17 17:38:43 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-17 17:38:43 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-17 17:38:43 [main] INFO  io.javalin.Javalin - Javalin started in 129ms \o/
+2024-12-17 17:47:28 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-17 17:47:28 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2610ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-17 17:47:28 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-17 17:47:28 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-17 17:47:28 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-17 17:47:28 [main] INFO  io.javalin.Javalin - Javalin started in 134ms \o/
+2024-12-18 01:11:03 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 01:11:04 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3000ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 01:11:04 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 01:11:04 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-18 01:11:04 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 01:11:04 [main] INFO  io.javalin.Javalin - Javalin started in 211ms \o/
+2024-12-18 01:11:38 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 01:11:38 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2683ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 01:11:38 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 01:11:38 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-18 01:11:38 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 01:11:38 [main] INFO  io.javalin.Javalin - Javalin started in 160ms \o/
+2024-12-18 10:06:36 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 10:06:36 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2857ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 10:06:36 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 10:06:36 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-18 10:06:37 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 10:06:37 [main] INFO  io.javalin.Javalin - Javalin started in 211ms \o/
+2024-12-18 10:07:19 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 10:07:19 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2735ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 10:07:19 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 10:07:19 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 593 days old. Consider checking for a newer version.).
+2024-12-18 10:07:19 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 10:07:19 [main] INFO  io.javalin.Javalin - Javalin started in 169ms \o/
+2024-12-18 15:50:53 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 15:50:53 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 15:50:53 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 15:50:53 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3559ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 15:50:53 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 15:50:53 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 15:50:53 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 15:50:53 [main] INFO  io.javalin.Javalin - Javalin started in 338ms \o/
+2024-12-18 15:51:27 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 15:51:41 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 15:51:55 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3020.
+2024-12-18 15:51:55 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3020.
+2024-12-18 15:51:55 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 15:51:55 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3056ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 15:51:55 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 15:51:55 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 15:51:56 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 15:51:56 [main] INFO  io.javalin.Javalin - Javalin started in 312ms \o/
+2024-12-18 15:52:03 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 15:52:19 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 16:12:08 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 16:12:08 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 16:12:08 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 16:12:08 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3000ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 16:12:08 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 16:12:08 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 16:12:09 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 16:12:09 [main] INFO  io.javalin.Javalin - Javalin started in 276ms \o/
+2024-12-18 16:12:30 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3020.
+2024-12-18 16:12:30 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3020.
+2024-12-18 16:12:30 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 16:12:30 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2899ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 16:12:30 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 16:12:30 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 16:12:31 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 16:12:31 [main] INFO  io.javalin.Javalin - Javalin started in 257ms \o/
+2024-12-18 16:13:13 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 16:13:24 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 19:40:29 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 19:40:29 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 19:40:29 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 19:40:29 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2828ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 19:40:29 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 19:40:29 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 19:40:29 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 19:40:29 [main] INFO  io.javalin.Javalin - Javalin started in 199ms \o/
+2024-12-18 19:40:34 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3020.
+2024-12-18 19:40:34 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3020.
+2024-12-18 19:40:34 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3020127000000001 hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-18 19:40:34 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3020127000000001 hostname: 127.0.0.1 port: 3020 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 19:40:34 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 19:40:34 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2841ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 19:40:34 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 19:40:34 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 19:40:35 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 19:40:35 [main] INFO  io.javalin.Javalin - Javalin started in 184ms \o/
+2024-12-18 19:40:43 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3030.
+2024-12-18 19:40:43 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3030.
+2024-12-18 19:40:43 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3030127000000001 hostname: 127.0.0.1 port: 3030 has been added as a neighbour.
+2024-12-18 19:40:43 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3030127000000001 hostname: 127.0.0.1 port: 3030 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 19:40:43 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 19:40:43 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2813ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 19:40:43 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 19:40:43 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 19:40:44 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8030/
+2024-12-18 19:40:44 [main] INFO  io.javalin.Javalin - Javalin started in 206ms \o/
+2024-12-18 19:40:51 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3040.
+2024-12-18 19:40:51 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3040.
+2024-12-18 19:40:51 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3040127000000001 hostname: 127.0.0.1 port: 3040 has been added as a neighbour.
+2024-12-18 19:40:51 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3040127000000001 hostname: 127.0.0.1 port: 3040 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 19:40:51 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 19:40:51 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2833ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 19:40:51 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 19:40:51 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 19:40:52 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8040/
+2024-12-18 19:40:52 [main] INFO  io.javalin.Javalin - Javalin started in 228ms \o/
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3030127000000001
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:41:52 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3040127000000001
+2024-12-18 19:41:52 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 19:43:25 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3030127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:36 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3040127000000001
+2024-12-18 19:43:36 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3020127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3030127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.CommunicationHub - Sending OK message to Node 3010127000000001
+2024-12-18 19:43:46 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.Node - Election started by node 3040127000000001
+2024-12-18 19:43:46 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Election started by node 3010127000000001
+2024-12-18 20:31:37 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 20:31:37 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 20:31:37 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 20:31:37 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2858ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 20:31:37 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 20:31:37 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 20:31:37 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 20:31:37 [main] INFO  io.javalin.Javalin - Javalin started in 184ms \o/
+2024-12-18 20:31:49 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 инициирует выборы.
+2024-12-18 20:31:49 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 объявил себя лидером.
+2024-12-18 20:32:04 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3030.
+2024-12-18 20:32:04 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3030.
+2024-12-18 20:32:04 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3030127000000001 hostname: 127.0.0.1 port: 3030 has been added as a neighbour.
+2024-12-18 20:32:04 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3030127000000001 hostname: 127.0.0.1 port: 3030 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 20:32:04 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 20:32:04 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2939ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 20:32:04 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 20:32:04 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 20:32:04 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8030/
+2024-12-18 20:32:04 [main] INFO  io.javalin.Javalin - Javalin started in 174ms \o/
+2024-12-18 20:32:20 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3030127000000001 инициирует выборы.
+2024-12-18 20:32:20 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3030127000000001 объявил себя лидером.
+2024-12-18 20:33:01 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3020.
+2024-12-18 20:33:01 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3020.
+2024-12-18 20:33:01 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3020127000000001 hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-18 20:33:01 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3020127000000001 hostname: 127.0.0.1 port: 3020 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 20:33:01 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 20:33:01 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2918ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 20:33:01 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 20:33:01 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 20:33:02 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8020/
+2024-12-18 20:33:02 [main] INFO  io.javalin.Javalin - Javalin started in 179ms \o/
+2024-12-18 20:33:19 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3020127000000001 инициирует выборы.
+2024-12-18 20:35:10 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3040.
+2024-12-18 20:35:10 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3040.
+2024-12-18 20:35:10 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: 3040127000000001 hostname: 127.0.0.1 port: 3040 has been added as a neighbour.
+2024-12-18 20:35:10 [main] INFO  cz.cvut.fel.dsva.Node - Node Address: nodeId: 3040127000000001 hostname: 127.0.0.1 port: 3040 joined the network via Address: nodeId: null hostname: 127.0.0.1 port: 3010
+2024-12-18 20:35:10 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 20:35:10 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2880ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 20:35:10 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 20:35:10 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 20:35:10 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8040/
+2024-12-18 20:35:10 [main] INFO  io.javalin.Javalin - Javalin started in 209ms \o/
+2024-12-18 22:53:07 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 22:53:10 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 22:53:10 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 22:53:10 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 22:53:10 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2827ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 22:53:10 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 22:53:10 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 22:53:10 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 22:53:10 [main] INFO  io.javalin.Javalin - Javalin started in 173ms \o/
+2024-12-18 22:53:39 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-18 22:53:39 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-18 22:54:03 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 22:54:03 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:81)
+	at cz.cvut.fel.dsva.Node.run(Node.java:138)
+	at cz.cvut.fel.dsva.Node.main(Node.java:253)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 22:54:03 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 22:54:03 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 22:54:03 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @619ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 22:54:03 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 22:54:03 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 22:54:03 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 22:54:03 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 22:54:03 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 22:54:17 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 22:54:17 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:81)
+	at cz.cvut.fel.dsva.Node.run(Node.java:138)
+	at cz.cvut.fel.dsva.Node.main(Node.java:253)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 22:54:17 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 22:54:17 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 22:54:17 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @720ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 22:54:17 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 22:54:17 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 22:54:18 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 22:54:18 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 22:54:18 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:17:15 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 23:17:17 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 23:17:17 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:17:17 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:17:17 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2855ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:17:17 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:17:17 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:17:18 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 23:17:18 [main] INFO  io.javalin.Javalin - Javalin started in 210ms \o/
+2024-12-18 23:17:55 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-18 23:17:55 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-18 23:18:10 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 23:18:10 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:80)
+	at cz.cvut.fel.dsva.Node.run(Node.java:137)
+	at cz.cvut.fel.dsva.Node.main(Node.java:252)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:18:10 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:18:10 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:18:10 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @638ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:18:10 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:18:10 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:18:10 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:18:10 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:18:10 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:18:18 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 23:18:18 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 43010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:80)
+	at cz.cvut.fel.dsva.Node.run(Node.java:137)
+	at cz.cvut.fel.dsva.Node.main(Node.java:252)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:18:18 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:18:18 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:18:18 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @704ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:18:18 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:18:18 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:18:18 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:18:18 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:18:18 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:19:17 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, port=3010
+2024-12-18 23:19:20 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 23:19:20 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:19:20 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:19:20 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2688ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:19:20 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:19:20 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:19:20 [main] INFO  io.javalin.Javalin - Listening on http://localhost:8010/
+2024-12-18 23:19:20 [main] INFO  io.javalin.Javalin - Javalin started in 175ms \o/
+2024-12-18 23:49:48 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:49:48 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 23:49:48 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:49:48 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:49:48 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @699ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:49:48 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:49:48 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:49:49 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-18 23:49:49 [main] INFO  io.javalin.Javalin - Javalin started in 178ms \o/
+2024-12-18 23:50:04 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-18 23:50:04 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-18 23:50:43 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:50:43 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:50:43 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:50:44 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:50:44 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @833ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:50:44 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:50:44 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:50:44 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:50:44 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:50:44 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:50:53 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:50:53 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:50:53 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:50:53 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:50:53 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @628ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:50:53 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:50:53 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:50:53 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:50:53 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:50:53 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:51:27 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:51:27 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:51:27 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:51:27 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:51:27 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @634ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:51:27 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:51:27 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:51:27 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:51:27 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:51:27 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-18 23:59:21 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:59:21 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-18 23:59:21 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:59:22 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:59:22 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @741ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:59:22 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:59:22 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:59:22 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-18 23:59:22 [main] INFO  io.javalin.Javalin - Javalin started in 206ms \o/
+2024-12-18 23:59:33 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-18 23:59:33 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-18 23:59:33 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-18 23:59:34 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-18 23:59:34 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @672ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-18 23:59:34 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-18 23:59:34 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-18 23:59:34 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-18 23:59:34 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-18 23:59:34 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-19 00:09:11 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: null hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-19 00:09:26 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: null hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-19 00:09:48 [main] ERROR cz.cvut.fel.dsva.Node - Invalid arguments. Usage: java Node <nickname> <myIP> <rmiPort> <apiPort> [<neighbourIP> <neighbourRMIPort>]...
+2024-12-19 00:10:14 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: null hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-19 00:13:49 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node Address: nodeId: null hostname: 127.0.0.1 port: 3020 has been added as a neighbour.
+2024-12-19 00:13:49 [main] ERROR cz.cvut.fel.dsva.Node - Invalid port number: For input string: "127.0.0.1"
+2024-12-19 00:14:45 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:14:45 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:14:45 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:14:45 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:14:45 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @708ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:14:45 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:14:45 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:14:45 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:14:45 [main] INFO  io.javalin.Javalin - Javalin started in 207ms \o/
+2024-12-19 00:15:07 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:15:07 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-19 00:15:07 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:15:07 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:15:07 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @590ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:15:07 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:15:07 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:15:07 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-19 00:15:07 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-19 00:15:07 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-19 00:19:39 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:19:39 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:19:39 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:19:39 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:19:39 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @631ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:19:39 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:19:39 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:19:39 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:19:39 [main] INFO  io.javalin.Javalin - Javalin started in 183ms \o/
+2024-12-19 00:20:11 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:20:11 [main] ERROR cz.cvut.fel.dsva.Node - Starting message listener failed: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+java.rmi.server.ExportException: Port already in use: 3010; nested exception is: 
+	java.net.BindException: Address already in use: bind
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:356)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.exportObject(TCPTransport.java:251)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.exportObject(TCPEndpoint.java:415)
+	at java.rmi/sun.rmi.transport.LiveRef.exportObject(LiveRef.java:147)
+	at java.rmi/sun.rmi.server.UnicastServerRef.exportObject(UnicastServerRef.java:235)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:475)
+	at java.rmi/java.rmi.server.UnicastRemoteObject.exportObject(UnicastRemoteObject.java:360)
+	at cz.cvut.fel.dsva.Node.startMessageReceiver(Node.java:85)
+	at cz.cvut.fel.dsva.Node.run(Node.java:143)
+	at cz.cvut.fel.dsva.Node.main(Node.java:258)
+Caused by: java.net.BindException: Address already in use: bind
+	at java.base/sun.nio.ch.Net.bind0(Native Method)
+	at java.base/sun.nio.ch.Net.bind(Net.java:555)
+	at java.base/sun.nio.ch.Net.bind(Net.java:544)
+	at java.base/sun.nio.ch.NioSocketImpl.bind(NioSocketImpl.java:629)
+	at java.base/java.net.ServerSocket.bind(ServerSocket.java:393)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:275)
+	at java.base/java.net.ServerSocket.<init>(ServerSocket.java:168)
+	at java.rmi/sun.rmi.transport.tcp.TCPDirectSocketFactory.createServerSocket(TCPDirectSocketFactory.java:45)
+	at java.rmi/sun.rmi.transport.tcp.TCPEndpoint.newServerSocket(TCPEndpoint.java:673)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.listen(TCPTransport.java:344)
+	... 9 common frames omitted
+2024-12-19 00:20:11 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:20:11 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:20:11 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @582ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:20:11 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:20:11 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:20:11 [main] ERROR io.javalin.Javalin - Failed to start Javalin
+2024-12-19 00:20:11 [main] INFO  io.javalin.Javalin - Stopping Javalin ...
+2024-12-19 00:20:11 [main] INFO  io.javalin.Javalin - Javalin has stopped
+2024-12-19 00:20:37 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-19 00:20:37 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-19 00:22:09 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:22:09 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:22:09 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:22:09 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:22:09 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @667ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:22:09 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:22:09 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:22:09 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:22:09 [main] INFO  io.javalin.Javalin - Javalin started in 190ms \o/
+2024-12-19 00:22:16 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-19 00:22:16 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-19 00:28:58 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:28:58 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:28:58 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:28:58 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:28:58 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @687ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:28:58 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:28:58 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:28:58 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:28:58 [main] INFO  io.javalin.Javalin - Javalin started in 191ms \o/
+2024-12-19 00:29:20 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-19 00:29:20 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-19 00:31:26 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:31:26 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:31:26 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:31:26 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:31:26 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @675ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:31:26 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:31:26 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:31:26 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:31:26 [main] INFO  io.javalin.Javalin - Javalin started in 220ms \o/
+2024-12-19 00:31:38 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:31:38 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:31:38 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:31:38 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:31:38 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @674ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:31:38 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:31:38 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:31:38 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:31:38 [main] INFO  io.javalin.Javalin - Javalin started in 191ms \o/
+2024-12-19 00:31:56 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 initiates an election.
+2024-12-19 00:31:56 [Thread-9] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3010127000000001 declared itself as leader.
+2024-12-19 00:32:31 [main] WARN  cz.cvut.fel.dsva.Node - Wrong number of command line parameters - using default values: nickname=Unknown, ip=127.0.0.1, rmiPort=3010, apiPort=7010
+2024-12-19 00:32:32 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 3010.
+2024-12-19 00:32:32 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 127.0.0.1:3010.
+2024-12-19 00:32:32 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2024-12-19 00:32:32 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @640ms to org.eclipse.jetty.util.log.Slf4jLog
+2024-12-19 00:32:32 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2024-12-19 00:32:32 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 594 days old. Consider checking for a newer version.).
+2024-12-19 00:32:32 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7010/
+2024-12-19 00:32:32 [main] INFO  io.javalin.Javalin - Javalin started in 185ms \o/

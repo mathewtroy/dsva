@@ -3,176 +3,242 @@ package cz.cvut.fel.dsva;
 import cz.cvut.fel.dsva.base.Address;
 import cz.cvut.fel.dsva.base.DSNeighbours;
 import cz.cvut.fel.dsva.base.NodeCommands;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+@Slf4j
+@Getter
+@Setter
 public class Node implements Runnable {
-    // Using logger is strongly recommended (log4j, ...)
-
-    // Name of our RMI "service"
     public static final String COMM_INTERFACE_NAME = "DSVNode";
-
-    // This Node
     public static Node thisNode = null;
 
-    // Initial configuration from commandline
+    private boolean isCoordinator = false;
+    private boolean receivedOK = false;
+    private boolean voting = false;
+
     private String nickname = "Unknown";
     private String myIP = "127.0.0.1";
-    private int myPort = 2010;
+    private int rmiPort = 3010; // RMI-порт
+    private int apiPort = 7010; // API-порт
     private String otherNodeIP = "127.0.0.1";
-    private int otherNodePort = 2010;
+    private int otherNodeRMIPort = 3010;
 
-    // Node Id
     private long nodeId = 0;
-    private Address myAddress;
+    private Address address;
     private DSNeighbours myNeighbours;
-    private NodeCommands myMessageReceiver;
+    private MessageReceiver myMessageReceiver;
     private CommunicationHub myCommHub;
     private ConsoleHandler myConsoleHandler;
     private APIHandler myAPIHandler;
-
-    boolean repairInProgress = false;
-    boolean voting = false;
-
+    private BullyAlgorithm bully;
 
     public Node(String[] args) {
-        // handle commandline arguments
-        if (args.length == 3) {
-            nickname = args[0];
-            myIP = otherNodeIP = args[1];
-            myPort = otherNodePort = Integer.parseInt(args[2]);
-        } else if (args.length == 5) {
+        if (args.length == 4) {
             nickname = args[0];
             myIP = args[1];
-            myPort = Integer.parseInt(args[2]);
-            otherNodeIP = args[3];
-            otherNodePort = Integer.parseInt(args[4]);
+            rmiPort = Integer.parseInt(args[2]);
+            apiPort = Integer.parseInt(args[3]);
+            otherNodeIP = myIP;
+            otherNodeRMIPort = rmiPort;
+        } else if (args.length == 6) {
+            nickname = args[0];
+            myIP = args[1];
+            rmiPort = Integer.parseInt(args[2]);
+            apiPort = Integer.parseInt(args[3]);
+            otherNodeIP = args[4];
+            otherNodeRMIPort = Integer.parseInt(args[5]);
         } else {
-            // something is wrong - use default values
-            System.err.println("Wrong number of commandline parameters - using default values.");
+            log.warn("Wrong number of command line parameters - using default values: nickname={}, ip={}, rmiPort={}, apiPort={}",
+                    nickname, myIP, rmiPort, apiPort);
         }
     }
 
-
-    private long generateId(String address, int port) {
-        // generates  <port><IPv4_dec1><IPv4_dec2><IPv4_dec3><IPv4_dec4>
-        String[] array = myIP.split("\\.");
+    private long generateId(String ip, int port) {
+        String[] array = ip.split("\\.");
         long id = 0;
-        long shift = 0, temp = 0;
-        for(int i = 0 ; i < array.length; i++){
-            temp = Long.parseLong(array[i]);
-            id = (long) (id * 1000);
-            id += temp;
+        for (String s : array) {
+            long temp = Long.parseLong(s);
+            id = id * 1000 + temp;
         }
         if (id == 0) {
-            // TODO problem with parsing address - handle it
-            id = 666000666000l;
+            id = 666000666000L;
         }
-        id = id + port*1000000000000l;
+        id = id + port * 1000000000000L;
         return id;
     }
 
-
     private void startMessageReceiver() {
-        System.setProperty("java.rmi.server.hostname", myAddress.hostname);
+        System.setProperty("java.rmi.server.hostname", address.getHostname());
 
         try {
             if (this.myMessageReceiver == null) {
                 this.myMessageReceiver = new MessageReceiver(this);
             }
 
-            // Create instance of remote object and its skeleton
-            NodeCommands skeleton = (NodeCommands) UnicastRemoteObject.exportObject(this.myMessageReceiver, 40000+myAddress.port);
+            NodeCommands skeleton = (NodeCommands) UnicastRemoteObject.exportObject(
+                    this.myMessageReceiver, rmiPort);
 
-            // Create registry and (re)register object name and skeleton in it
-            Registry registry = null;
+            Registry registry;
             try {
-                registry = LocateRegistry.getRegistry(myAddress.port);
+                registry = LocateRegistry.getRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
             } catch (RemoteException re) {
-                // there is no RMI registry - create on
-                System.out.println("Creating new RMI registry.");
-                registry = LocateRegistry.createRegistry(myAddress.port);
+                log.info("Creating new RMI registry on port {}.", rmiPort);
+                registry = LocateRegistry.createRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
             }
         } catch (Exception e) {
-            // Something is wrong ...
-            System.err.println("Starting message listener - something is wrong: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Starting message listener failed: {}", e.getMessage(), e);
         }
-        System.out.println("Message listener is started ...");
+        log.info("Message listener started on {}:{}.", address.getHostname(), rmiPort);
     }
 
     private void stopMessageReceiver() {
         try {
             if (this.myMessageReceiver != null) {
-                Registry registry = LocateRegistry.getRegistry(myAddress.port);
+                Registry registry = LocateRegistry.getRegistry(rmiPort);
                 registry.unbind(COMM_INTERFACE_NAME);
-                UnicastRemoteObject.unexportObject(this.myMessageReceiver,false);
+                UnicastRemoteObject.unexportObject(this.myMessageReceiver, false);
                 this.myMessageReceiver = null;
             }
         } catch (Exception e) {
-            // Something is wrong ...
-            System.err.println("Stopping message listener - something is wrong: " + e.getMessage());
-            e.printStackTrace();
+            log.error("Stopping message listener failed: {}", e.getMessage(), e);
         }
-        System.out.println("Message listener is stopped ...");
+        log.info("Message listener stopped.");
     }
-
 
     @Override
     public String toString() {
-        return "Node[id:'"+nodeId+"', " +
-                "nick:'"+nickname+"', " +
-                "myIP:'"+myIP+"', " +
-                "myPort:'"+myPort+"', " +
-                "otherNodeIP:'"+otherNodeIP+"', " +
-                "otherNodePort:'"+otherNodePort+"']";
-    }
+        StringBuilder result = new StringBuilder();
+        result.append("Node[id:'").append(nodeId).append("', ");
+        result.append("nick:'").append(nickname).append("', ");
+        result.append("myIP:'").append(myIP).append("', ");
+        result.append("rmiPort:'").append(rmiPort).append("', ");
+        result.append("apiPort:'").append(apiPort).append("'");
 
+        if (!myIP.equals(otherNodeIP) || rmiPort != otherNodeRMIPort) {
+            result.append(", otherNodeIP:'").append(otherNodeIP).append("', ");
+            result.append("otherNodeRMIPort:'").append(otherNodeRMIPort).append("'");
+        }
+
+        result.append("]");
+        return result.toString();
+    }
 
     public String getStatus() {
-        return "Status: " + this + " with addres " + myAddress + "\n    with neighbours " + myNeighbours;
+        StringBuilder status = new StringBuilder();
+        status.append("Status: ").append(this).append(" with address ").append(address).append("\n");
+        if (myNeighbours != null && !myNeighbours.getNeighbours().isEmpty()) {
+            status.append("    with neighbours ").append(myNeighbours);
+        } else {
+            status.append("    no neighbours yet");
+        }
+        return status.toString();
     }
-
 
     public void printStatus() {
         System.out.println(getStatus());
     }
 
-
     @Override
     public void run() {
-        nodeId = generateId(myIP, myPort);
-        myAddress = new Address(myIP, myPort);
-        myNeighbours = new DSNeighbours(myAddress);
+        nodeId = generateId(myIP, rmiPort);
+        address = new Address(myIP, rmiPort, nodeId);
+        myNeighbours = new DSNeighbours();
+        bully = new BullyAlgorithm(this);
         printStatus();
-        startMessageReceiver();     // TODO null -> exit
-        myCommHub = new CommunicationHub(this);   // TODO null -> exit
+        startMessageReceiver();
+        myCommHub = new CommunicationHub(this);
         myConsoleHandler = new ConsoleHandler(this);
-        myAPIHandler = new APIHandler(this, 5000 + myAddress.port);
-        if (! ((myIP == otherNodeIP) && (myPort == otherNodePort)) ) {
-            // all 5 parameters were filled
-            this.join(otherNodeIP, otherNodePort);
+        myAPIHandler = new APIHandler(this, apiPort);
+
+        // If other nodes are specified for joining
+        if (!(myIP.equals(otherNodeIP) && (rmiPort == otherNodeRMIPort))) {
+            this.join(new Address(otherNodeIP, otherNodeRMIPort));
         }
+
         myAPIHandler.start();
-        new Thread(myConsoleHandler).run();
+        new Thread(myConsoleHandler).start();
     }
 
+    public DSNeighbours getNeighbours() {
+        return this.myNeighbours;
+    }
 
-    public void join(String otherNodeIP, int otherNodePort) {
+    public CommunicationHub getCommHub() {
+        return this.myCommHub;
+    }
+
+    public void join(Address otherNodeAddr) {
         try {
-            NodeCommands tmpNode = myCommHub.getRMIProxy(new Address(otherNodeIP, otherNodePort));
-            myNeighbours = tmpNode.join(myAddress);
-            myCommHub.setActNeighbours(myNeighbours);
+            NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
+            myNeighbours = remoteNode.join(address);
+            log.info("Node {} joined the network via {}", address, otherNodeAddr);
         } catch (RemoteException e) {
-            e.printStackTrace();
-            // TODO Exception -> exit
+            log.error("Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
         }
-        System.out.println("Neighbours after JOIN " + myNeighbours);
+        System.out.println("Neighbours after JOIN: " + myNeighbours);
+    }
+
+    public void startElection() {
+        bully.startElection();
+    }
+
+    public void checkLeader() {
+        Address leader = myNeighbours.getLeaderNode();
+        if (leader != null) {
+            try {
+                getCommHub().getRMIProxy(leader).checkStatusOfLeader(nodeId);
+            } catch (RemoteException e) {
+                System.out.println("Leader is unreachable, starting election...");
+                startElection();
+            }
+        } else {
+            System.out.println("No leader present, starting election...");
+            startElection();
+        }
+    }
+
+    public void sendMessageToNode(long receiverId, String content) {
+        Address receiverAddr = null;
+        for (Address addr : myNeighbours.getNeighbours()) {
+            if (addr.getNodeID() == receiverId) {
+                receiverAddr = addr;
+                break;
+            }
+        }
+
+        if (receiverAddr != null) {
+            try {
+                getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
+                log.info("Message sent from {} to {}: {}", nodeId, receiverId, content);
+                System.out.println("Message sent to Node " + receiverId);
+            } catch (RemoteException e) {
+                log.error("Error sending message to node {}: {}", receiverId, e.getMessage(), e);
+                System.out.println("Error while sending message. Please try again.");
+            }
+        } else {
+            System.out.println("Receiver not found in neighbours.");
+        }
+    }
+
+    public void leaveNetwork() {
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            try {
+                getCommHub().getRMIProxy(neighbour).notifyAboutLogOut(address);
+            } catch (RemoteException e) {
+                log.warn("Failed to notify node {} about logout.", neighbour, e);
+            }
+        }
+        stopRMI();
+        System.exit(0);
     }
 
     public void stopRMI() {
@@ -183,94 +249,23 @@ public class Node implements Runnable {
         startMessageReceiver();
     }
 
-    public void repairTolopogy(Address missingNode) {
-        if (repairInProgress == false) {
-            repairInProgress = true;
-            {
-                try {
-                    myMessageReceiver.NodeMissing(missingNode);
-                } catch (RemoteException e) {
-                    // this should not happen
-                    e.printStackTrace();
-                }
-                System.out.println("Topology was repaired " + myNeighbours );
-            }
-            repairInProgress = false;
-
-            // test leader and if missing start election
-            try {
-                myCommHub.getLeader().Hello();
-            } catch (RemoteException e) {
-                // Leader is dead -> start Election
-                try {
-                    myMessageReceiver.Election(-1);
-                } catch (RemoteException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
+    public void kill() {
+        stopRMI();
+        System.out.println("Node " + nodeId + " killed (no proper logout).");
+        log.info("Node {} killed (no proper logout).", nodeId);
     }
 
-
-    public void startElection() {
-        try {
-            myMessageReceiver.Election(-1);
-        } catch (RemoteException ex) {
-            ex.printStackTrace();
-        }
+    public void revive() {
+        startRMI();
+        System.out.println("Node " + nodeId + " revived.");
+        log.info("Node {} revived.", nodeId);
     }
 
-
-    public void sendHelloToNext() {
-        System.out.println("Sending Hello to my Next ...");
-        try {
-            myCommHub.getNext().Hello();
-        } catch (RemoteException e) {
-            repairTolopogy(myNeighbours.next);
-        }
+    public void setDelay(long delay) {
+        getCommHub().setMessageDelay(delay);
+        System.out.println("Delay set to " + delay + " ms for node " + nodeId);
+        log.info("Delay set to {} ms on node {}.", delay, nodeId);
     }
-
-
-    public void sendHelloToLeader() {
-        System.out.println("Sending Hello to my Leader ...");
-        try {
-            myCommHub.getLeader().Hello();
-        } catch (RemoteException e) {
-            repairTolopogy(myNeighbours.leader);
-        }
-    }
-
-
-    public void resetTopology() {
-        // reset info - start as I am only node
-        myNeighbours = new DSNeighbours(myAddress);
-    }
-
-
-    public Address getAddress() {
-        return myAddress;
-    }
-
-
-    public DSNeighbours getNeighbours() {
-        return myNeighbours;
-    }
-
-
-    public NodeCommands getMessageReceiver() {
-        return myMessageReceiver;
-    }
-
-
-    public CommunicationHub getCommHub() {
-        return myCommHub;
-    }
-
-
-    public long getNodeId() {
-        return nodeId;
-    }
-
 
     public static void main(String[] args) {
         thisNode = new Node(args);
