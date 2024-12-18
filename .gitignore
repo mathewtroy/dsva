@@ -27,11 +27,6 @@ desktop.ini
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-# MacOS
-.AppleDouble
-.LSOverride
-Icon\r
-._*
 
 # Windows
 $RECYCLE.BIN/
@@ -45,3 +40,4 @@ $RECYCLE.BIN/
 
 # Ignore the target folder and its contents
 target/
+logs/
