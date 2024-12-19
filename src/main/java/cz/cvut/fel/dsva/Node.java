@@ -40,25 +40,29 @@ public class Node implements Runnable {
     private BullyAlgorithm bully;
 
     public Node(String[] args) {
-        if (args.length == 4) {
+
+        myNeighbours = new DSNeighbours();
+
+        if (args.length >= 4) {
             nickname = args[0];
             myIP = args[1];
             rmiPort = Integer.parseInt(args[2]);
             apiPort = Integer.parseInt(args[3]);
-            otherNodeIP = myIP;
-            otherNodeRMIPort = rmiPort;
-        } else if (args.length == 6) {
-            nickname = args[0];
-            myIP = args[1];
-            rmiPort = Integer.parseInt(args[2]);
-            apiPort = Integer.parseInt(args[3]);
-            otherNodeIP = args[4];
-            otherNodeRMIPort = Integer.parseInt(args[5]);
+
+            for (int i = 4; i < args.length; i += 3) {
+                String neighbourIP = args[i];
+                int neighbourRMIPort = Integer.parseInt(args[i + 1]);
+                long neighbourId = Long.parseLong(args[i + 2]);
+                myNeighbours.addNewNode(new Address(neighbourIP, neighbourRMIPort, neighbourId));
+            }
         } else {
             log.warn("Wrong number of command line parameters - using default values: nickname={}, ip={}, rmiPort={}, apiPort={}",
                     nickname, myIP, rmiPort, apiPort);
         }
     }
+
+
+
 
     private long generateId(String ip, int port) {
         String[] array = ip.split("\\.");
