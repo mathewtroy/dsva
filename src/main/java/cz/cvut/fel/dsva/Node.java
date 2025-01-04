@@ -262,18 +262,43 @@ public class Node implements Runnable {
         }
 
         if (receiverAddr != null) {
-            try {
-                getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
-                log.info(GREEN + "Message sent from {} to {}: {}", nodeId, receiverId, content);
-                System.out.println("Message sent to Node " + receiverId);
-            } catch (RemoteException e) {
-                log.error(RED + "Error sending message to node {}: {}", receiverId, e.getMessage(), e);
-                System.out.println("Error while sending message. Please try again.");
+            int attempts = 3; // Количество попыток
+            boolean messageSent = false;
+
+            while (attempts > 0) {
+                try {
+                    // Попытка отправить сообщение
+                    getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
+                    log.info(GREEN + "Message sent from {} to {}: {}", nodeId, receiverId, content);
+                    System.out.println("Message sent to Node " + receiverId);
+                    messageSent = true;
+                    break; // Если отправлено успешно, выйти из цикла
+                } catch (RemoteException e) {
+                    log.warn(YELLOW + "Failed to send message to node {}. Attempts left: {}", receiverId, attempts - 1);
+                    attempts--;
+
+                    // Небольшая задержка перед повторной попыткой
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException interruptedException) {
+                        Thread.currentThread().interrupt();
+                        log.error(RED + "Message sending interrupted.");
+                        break;
+                    }
+                }
+            }
+
+            // Если не удалось отправить сообщение после всех попыток
+            if (!messageSent) {
+                System.out.println("Node " + receiverId + " is unreachable. Removing from neighbours...");
+                log.warn(RED + "Node {} is unreachable. Removing from neighbours.", receiverId);
+                myNeighbours.removeNode(receiverAddr); // Удаление мертвого узла из списка соседей
             }
         } else {
             System.out.println("Receiver not found in neighbours.");
         }
     }
+
 
     public void notifyAllNodesAboutNewLeader(Address leaderAddress) {
         if (myNeighbours != null && !myNeighbours.getNeighbours().isEmpty()) {

@@ -84,7 +84,7 @@ public class DSNeighbours implements Serializable {
 //    }
     public void removeNode(Address address) {
         neighbours.remove(address);
-        System.out.println("Node removed: " + address);
+        log.info(GREEN + "Node {} removed from neighbours.", address.getNodeID());
     }
 
     public void addNewNode(Address address) {
