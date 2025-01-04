@@ -24,10 +24,11 @@ public class ConsoleHandler implements Runnable {
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+
     private void parseCommandLine(String commandline) {
         switch (commandline) {
             case "e":
-            case "start_election":
+            case "startElection":
                 System.out.println("Starting Bully Election Algorithm...");
                 myNode.startElection();
                 break;
@@ -36,6 +37,18 @@ public class ConsoleHandler implements Runnable {
             case "cl":
                 System.out.println("Checking leader status...");
                 myNode.checkLeader();
+                break;
+
+            case "killNode":
+            case "k":
+                System.out.println("Killing this node...");
+                myNode.kill();
+                break;
+
+            case "reviveNode":
+            case "r":
+                System.out.println("Reviving this node...");
+                myNode.revive();
                 break;
 
             case "sendMsg":
@@ -67,8 +80,10 @@ public class ConsoleHandler implements Runnable {
 
     private void printHelp() {
         System.out.println("\nAvailable Commands:");
-        System.out.println("e or start_election - Start Bully Election");
+        System.out.println("e or startElection  - Start Bully Election");
         System.out.println("cl or checkLeader   - Check status of the current leader");
+        System.out.println("k or killNode       - Kill the node");
+        System.out.println("r or reviveNode     - Revive the node");
         System.out.println("sm or sendMsg       - Send a message to another node");
         System.out.println("s or status         - Print the current status of the node");
         System.out.println("q or quit           - Exit the console");

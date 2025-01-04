@@ -44,11 +44,27 @@ public class MessageReceiver implements NodeCommands {
         myNode.getNeighbours().setLeaderNode(leader);
         System.out.println("New leader notified: " + leader);
 
+        // Обновляем лидера для всех соседей
         for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
-            System.out.println("Notifying neighbour: " + neighbour);
-            myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
+            try {
+                myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
+            } catch (RemoteException e) {
+                log.error("Failed to notify node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+            }
         }
     }
+
+
+    @Override
+    public void notifyAboutRevival(Address revivedNode) throws RemoteException {
+        if (!myNode.getNeighbours().getNeighbours().contains(revivedNode)) {
+            myNode.getNeighbours().addNewNode(revivedNode); // Добавляем узел обратно
+            System.out.println("Node " + revivedNode.getNodeID() + " is back online.");
+            log.info("Node {} added back to neighbours.", revivedNode.getNodeID());
+        }
+    }
+
+
 
 
     @Override
@@ -94,9 +110,19 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void notifyAboutLogOut(Address address) throws RemoteException {
-        myNode.getNeighbours().removeNode(address);
-        System.out.println("Node " + address + " left the network.");
+        myNode.getNeighbours().removeNode(address); // Удаляем узел из соседей
+        System.out.println("Node " + address.getNodeID() + " left the network.");
+        log.info("Node {} removed from neighbours.", address.getNodeID());
+
+        // Если отключившийся узел был лидером, инициируем выборы
+        if (myNode.getNeighbours().getLeaderNode() != null &&
+                myNode.getNeighbours().getLeaderNode().equals(address)) {
+            System.out.println("Leader has left. Starting election...");
+            myNode.getNeighbours().setLeaderNode(null); // Сбрасываем лидера
+            myNode.startElection(); // Запускаем выборы
+        }
     }
+
 
     @Override
     public void Election(long id) throws RemoteException {

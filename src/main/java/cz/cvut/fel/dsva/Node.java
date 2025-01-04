@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -91,8 +92,12 @@ public class Node implements Runnable {
         try {
             if (this.myMessageReceiver != null) {
                 Registry registry = LocateRegistry.getRegistry(rmiPort);
-                registry.unbind(COMM_INTERFACE_NAME);
-                UnicastRemoteObject.unexportObject(this.myMessageReceiver, false);
+                try {
+                    registry.unbind(COMM_INTERFACE_NAME);
+                } catch (NotBoundException e) {
+                    log.warn(YELLOW + "RMI object was not bound: {}", e.getMessage());
+                }
+                UnicastRemoteObject.unexportObject(this.myMessageReceiver, true); // Убедитесь, что объект удаляется
                 this.myMessageReceiver = null;
             }
         } catch (Exception e) {
@@ -100,6 +105,7 @@ public class Node implements Runnable {
         }
         log.info(GREEN + "Message listener stopped.");
     }
+
 
     private void tryConnectToTopology() {
         log.info(GREEN + "Trying to connect to all possible nodes in topology..." + RESET);
@@ -232,15 +238,19 @@ public class Node implements Runnable {
         if (leader != null) {
             try {
                 getCommHub().getRMIProxy(leader).checkStatusOfLeader(nodeId);
+                System.out.println("Leader is alive: " + leader);
             } catch (RemoteException e) {
                 System.out.println("Leader is unreachable, starting election...");
-                startElection();
+                myNeighbours.setLeaderNode(null); // Сбрасываем лидера
+                startElection(); // Запускаем выборы
             }
         } else {
             System.out.println("No leader present, starting election...");
             startElection();
         }
     }
+
+
 
     public void sendMessageToNode(long receiverId, String content) {
         Address receiverAddr = null;
@@ -286,14 +296,16 @@ public class Node implements Runnable {
     public void leaveNetwork() {
         for (Address neighbour : myNeighbours.getNeighbours()) {
             try {
-                getCommHub().getRMIProxy(neighbour).notifyAboutLogOut(address);
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
+                remoteNode.notifyAboutLogOut(address); // Уведомляем об отключении
             } catch (RemoteException e) {
-                log.warn(YELLOW + "Failed to notify node {} about logout.", neighbour, e);
+                log.warn("Failed to notify node {} about logout.", neighbour.getNodeID(), e);
             }
         }
-        stopRMI();
-        System.exit(0);
+        myNeighbours.getNeighbours().clear(); // Очищаем список соседей
+        myNeighbours.setLeaderNode(null);    // Сбрасываем лидера
     }
+
 
     public void stopRMI() {
         stopMessageReceiver();
@@ -304,16 +316,84 @@ public class Node implements Runnable {
     }
 
     public void kill() {
+        leaveNetwork();
         stopRMI();
         System.out.println("Node " + nodeId + " killed (no proper logout).");
         log.info(GREEN + "Node {} killed (no proper logout).", nodeId);
     }
 
     public void revive() {
+        System.out.println("Reviving node " + nodeId + "...");
+        log.info("Reviving node {}...", nodeId);
+
+        // Восстанавливаем RMI
         startRMI();
-        System.out.println("Node " + nodeId + " revived.");
-        log.info(GREEN + "Node {} revived.", nodeId);
+
+        // Повторно подключаемся к топологии
+        tryConnectToTopology();
+
+        // Проверяем у соседей, есть ли текущий лидер
+        Address currentLeader = null;
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            try {
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
+                Address leader = remoteNode.getCurrentLeader();
+                if (leader != null) {
+                    currentLeader = leader;
+                    break; // Если найден лидер, выходим из цикла
+                }
+            } catch (RemoteException e) {
+                log.warn("Failed to get leader information from node {}: {}", neighbour.getNodeID(), e.getMessage());
+            }
+        }
+
+        // Если лидер найден, обновляем его
+        if (currentLeader != null) {
+            myNeighbours.setLeaderNode(currentLeader);
+            System.out.println("Leader found: Node ID " + currentLeader.getNodeID());
+            log.info("Node {} found leader: {}", nodeId, currentLeader);
+        } else {
+            // Если лидера нет, проверяем свой ID
+            boolean hasHigherId = false;
+            for (Address neighbour : myNeighbours.getNeighbours()) {
+                if (neighbour.getNodeID() > nodeId) {
+                    hasHigherId = true;
+                    break;
+                }
+            }
+
+            if (hasHigherId) {
+                System.out.println("Higher ID nodes detected. Connecting as a regular node...");
+                log.info("Node {} detected higher ID nodes. Connecting as a regular node.", nodeId);
+                checkLeader(); // Проверяем текущего лидера
+            } else {
+                System.out.println("No higher ID nodes detected. Starting election...");
+                log.info("Node {} is the highest ID node. Initiating election...", nodeId);
+                startElection(); // Запускаем выборы
+            }
+        }
+
+        log.info("Node {} restored with leader: {}", nodeId, myNeighbours.getLeaderNode());
+
+
+        // Уведомляем соседей о восстановлении
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            try {
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
+                remoteNode.notifyAboutRevival(address);
+                log.info("Notified node {} about revival of node {}.", neighbour.getNodeID(), nodeId);
+            } catch (RemoteException e) {
+                log.warn("Failed to notify node {} about revival.", neighbour.getNodeID(), e);
+            }
+        }
+
+        System.out.println("Node " + nodeId + " has been revived.");
+        log.info("Node {} successfully revived.", nodeId);
     }
+
+
+
+
 
     public void setDelay(long delay) {
         getCommHub().setMessageDelay(delay);

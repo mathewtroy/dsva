@@ -61,25 +61,36 @@ public class DSNeighbours implements Serializable {
     }
 
 
-    public void addNewNode(Address address) {
-        if (address.getPort() > 0 && !address.getHostname().isEmpty()) {
-            if (!neighbours.contains(address)) {
-                neighbours.add(address);
-                log.info(GREEN + "Node {} has been added as a neighbour.", address);
-            } else {
-                log.warn(YELLOW + "Node {} is already in neighbours list.", address);
-            }
-        } else {
-            log.error(RED + "Invalid neighbour address: {}", address);
-        }
+//    public void addNewNode(Address address) {
+//        if (address.getPort() > 0 && !address.getHostname().isEmpty()) {
+//            if (!neighbours.contains(address)) {
+//                neighbours.add(address);
+//                log.info(GREEN + "Node {} has been added as a neighbour.", address);
+//            } else {
+//                log.warn(YELLOW + "Node {} is already in neighbours list.", address);
+//            }
+//        } else {
+//            log.error(RED + "Invalid neighbour address: {}", address);
+//        }
+//    }
+//
+//
+
+//    public void removeNode(Address address) {
+//        if (neighbours.contains(address)) {
+//            neighbours.remove(address);
+//            log.info(GREEN + "Node {} has been removed from neighbours.", address);
+//        }
+//    }
+    public void removeNode(Address address) {
+        neighbours.remove(address);
+        System.out.println("Node removed: " + address);
     }
 
-
-
-    public void removeNode(Address address) {
-        if (neighbours.contains(address)) {
-            neighbours.remove(address);
-            log.info(GREEN + "Node {} has been removed from neighbours.", address);
+    public void addNewNode(Address address) {
+        if (!neighbours.contains(address)) {
+            neighbours.add(address);
+            System.out.println("Node added: " + address);
         }
     }
 
