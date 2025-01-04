@@ -316,10 +316,31 @@ public class Node implements Runnable {
     }
 
     public void kill() {
-        leaveNetwork();
         stopRMI();
         System.out.println("Node " + nodeId + " killed (no proper logout).");
         log.info(GREEN + "Node {} killed (no proper logout).", nodeId);
+    }
+
+    public void leave() {
+        System.out.println("Node " + nodeId + " is leaving the network...");
+        log.info("Node {} is leaving the network...", nodeId);
+
+        // Уведомляем соседей
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            try {
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
+                remoteNode.notifyAboutLogOut(address); // Уведомление о выходе
+                log.info("Node {} notified node {} about leaving.", nodeId, neighbour.getNodeID());
+            } catch (RemoteException e) {
+                log.warn("Failed to notify node {} about leaving.", neighbour.getNodeID(), e);
+            }
+        }
+
+        // Завершаем работу
+        resetTopology(); // Очищаем топологию
+        stopRMI();       // Завершаем RMI
+        System.out.println("Node " + nodeId + " has left the network.");
+        log.info("Node {} successfully left the network.", nodeId);
     }
 
     public void revive() {

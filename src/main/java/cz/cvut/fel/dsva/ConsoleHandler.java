@@ -45,6 +45,12 @@ public class ConsoleHandler implements Runnable {
                 myNode.kill();
                 break;
 
+            case "leaveNode":
+            case "l":
+                System.out.println("Leaving the network...");
+                myNode.leave();
+                break;
+
             case "reviveNode":
             case "r":
                 System.out.println("Reviving this node...");
@@ -83,6 +89,7 @@ public class ConsoleHandler implements Runnable {
         System.out.println("e or startElection  - Start Bully Election");
         System.out.println("cl or checkLeader   - Check status of the current leader");
         System.out.println("k or killNode       - Kill the node");
+        System.out.println("l or leaveNode      - Leave the network gracefully");
         System.out.println("r or reviveNode     - Revive the node");
         System.out.println("sm or sendMsg       - Send a message to another node");
         System.out.println("s or status         - Print the current status of the node");
