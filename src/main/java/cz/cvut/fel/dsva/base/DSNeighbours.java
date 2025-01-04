@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static cz.cvut.fel.dsva.Color.*;
+
 @Slf4j
 @Getter
 @Setter
@@ -47,7 +49,7 @@ public class DSNeighbours implements Serializable {
             Address address = iterator.next();
             if (getNodeIdFromAddress(address) == nodeId) {
                 iterator.remove();
-                log.info("Node with ID {} has been removed.", nodeId);
+                log.info(GREEN + "Node with ID {} has been removed.", nodeId);
                 break;
             }
         }
@@ -60,17 +62,24 @@ public class DSNeighbours implements Serializable {
 
 
     public void addNewNode(Address address) {
-        if (address.getPort() > 0 && !address.getHostname().isEmpty() && !neighbours.contains(address)) {
-            neighbours.add(address);
-            log.info("Node {} has been added as a neighbour.", address);
+        if (address.getPort() > 0 && !address.getHostname().isEmpty()) {
+            if (!neighbours.contains(address)) {
+                neighbours.add(address);
+                log.info(GREEN + "Node {} has been added as a neighbour.", address);
+            } else {
+                log.warn(YELLOW + "Node {} is already in neighbours list.", address);
+            }
+        } else {
+            log.error(RED + "Invalid neighbour address: {}", address);
         }
     }
+
 
 
     public void removeNode(Address address) {
         if (neighbours.contains(address)) {
             neighbours.remove(address);
-            log.info("Node {} has been removed from neighbours.", address);
+            log.info(GREEN + "Node {} has been removed from neighbours.", address);
         }
     }
 

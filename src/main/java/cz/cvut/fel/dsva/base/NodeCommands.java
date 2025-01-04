@@ -36,5 +36,9 @@ public interface NodeCommands extends Remote {
         void setDelay(long delay) throws RemoteException;
 
         void receiveOK(long fromId) throws RemoteException;
+        void updateLeader(Address leaderAddress) throws RemoteException;
+        void resetTopology() throws RemoteException;
+
+
 
 }

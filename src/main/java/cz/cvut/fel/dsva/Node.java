@@ -12,6 +12,8 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+import static cz.cvut.fel.dsva.Color.*;
+
 @Slf4j
 @Getter
 @Setter
@@ -40,43 +42,24 @@ public class Node implements Runnable {
     private BullyAlgorithm bully;
 
     public Node(String[] args) {
-
-        myNeighbours = new DSNeighbours();
-
-        if (args.length >= 4) {
-            nickname = args[0];
-            myIP = args[1];
-            rmiPort = Integer.parseInt(args[2]);
-            apiPort = Integer.parseInt(args[3]);
-
-            for (int i = 4; i < args.length; i += 3) {
-                String neighbourIP = args[i];
-                int neighbourRMIPort = Integer.parseInt(args[i + 1]);
-                long neighbourId = Long.parseLong(args[i + 2]);
-                myNeighbours.addNewNode(new Address(neighbourIP, neighbourRMIPort, neighbourId));
+        if (args.length >= 1) {
+            try {
+                nodeId = Long.parseLong(args[0]);
+                rmiPort = 50050 + (int) nodeId; // Порты начинаются с 50051
+                apiPort = 7000 + (int) nodeId; // API-порты начинаются с 7001
+                myNeighbours = new DSNeighbours();
+                log.info(GREEN + "Node initialized with ID {} on ports RMI: {}, API: {}", nodeId, rmiPort, apiPort);
+            } catch (NumberFormatException e) {
+                log.error(RED + "Invalid node ID provided: {}", args[0], e);
+                System.exit(1);
             }
         } else {
-            log.warn("Wrong number of command line parameters - using default values: nickname={}, ip={}, rmiPort={}, apiPort={}",
-                    nickname, myIP, rmiPort, apiPort);
+            log.error(RED + "Node ID is required as the first parameter.");
+            System.exit(1);
         }
     }
 
 
-
-
-    private long generateId(String ip, int port) {
-        String[] array = ip.split("\\.");
-        long id = 0;
-        for (String s : array) {
-            long temp = Long.parseLong(s);
-            id = id * 1000 + temp;
-        }
-        if (id == 0) {
-            id = 666000666000L;
-        }
-        id = id + port * 1000000000000L;
-        return id;
-    }
 
     private void startMessageReceiver() {
         System.setProperty("java.rmi.server.hostname", address.getHostname());
@@ -94,14 +77,14 @@ public class Node implements Runnable {
                 registry = LocateRegistry.getRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
             } catch (RemoteException re) {
-                log.info("Creating new RMI registry on port {}.", rmiPort);
+                log.info(GREEN + "Creating new RMI registry on port {}.", rmiPort);
                 registry = LocateRegistry.createRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
             }
         } catch (Exception e) {
-            log.error("Starting message listener failed: {}", e.getMessage(), e);
+            log.error(RED + "Starting message listener failed: {}", e.getMessage(), e);
         }
-        log.info("Message listener started on {}:{}.", address.getHostname(), rmiPort);
+        log.info(GREEN + "Message listener started on {}:{}.", address.getHostname(), rmiPort);
     }
 
     private void stopMessageReceiver() {
@@ -113,39 +96,80 @@ public class Node implements Runnable {
                 this.myMessageReceiver = null;
             }
         } catch (Exception e) {
-            log.error("Stopping message listener failed: {}", e.getMessage(), e);
+            log.error(RED + "Stopping message listener failed: {}", e.getMessage(), e);
         }
-        log.info("Message listener stopped.");
+        log.info(GREEN + "Message listener stopped.");
     }
 
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("Node[id:'").append(nodeId).append("', ");
-        result.append("nick:'").append(nickname).append("', ");
-        result.append("myIP:'").append(myIP).append("', ");
-        result.append("rmiPort:'").append(rmiPort).append("', ");
-        result.append("apiPort:'").append(apiPort).append("'");
+    private void tryConnectToTopology() {
+        log.info(GREEN + "Trying to connect to all possible nodes in topology..." + RESET);
 
-        if (!myIP.equals(otherNodeIP) || rmiPort != otherNodeRMIPort) {
-            result.append(", otherNodeIP:'").append(otherNodeIP).append("', ");
-            result.append("otherNodeRMIPort:'").append(otherNodeRMIPort).append("'");
+        boolean hasNeighbours = false;
+
+        for (int i = 1; i <= 5; i++) {
+            if (i == nodeId) continue; // Пропускаем собственный ID
+
+            Address neighbourAddress = new Address(myIP, 50050 + i, (long) i);
+            try {
+                NodeCommands remoteNode = getCommHub().getRMIProxy(neighbourAddress);
+                remoteNode.join(address);
+                myNeighbours.addNewNode(neighbourAddress);
+                hasNeighbours = true;
+                log.info(GREEN + "Connected to node {}." + RESET, i);
+            } catch (RemoteException e) {
+                log.debug(YELLOW + "Cannot connect to node {}: {}" + RESET, i, e.getMessage());
+            }
         }
 
-        result.append("]");
-        return result.toString();
+        logNeighboursInfo();
+
+        if (!hasNeighbours) {
+            log.info(GREEN + "No neighbours found. Declaring this node as leader.");
+            isCoordinator = true;
+            myNeighbours.setLeaderNode(address);
+        } else {
+            checkLeader(); // Проверяем лидера среди соседей
+        }
     }
+
+
+
+    private void logNeighboursInfo() {
+        log.info(CYAN + "Node {} neighbors info:" + RESET, nodeId);
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            log.info(CYAN + "    Neighbor -> ID: {}, Hostname: {}, Port: {}" + RESET,
+                    neighbour.getNodeID(), neighbour.getHostname(), neighbour.getPort());
+        }
+    }
+
+
+    public void resetTopology() {
+        if (myNeighbours != null) {
+            myNeighbours.getNeighbours().clear();
+            myNeighbours.setLeaderNode(null);
+            System.out.println("Topology has been reset.");
+            log.info(GREEN + "Topology reset on node {}.", nodeId);
+        }
+    }
+
 
     public String getStatus() {
         StringBuilder status = new StringBuilder();
-        status.append("Status: ").append(this).append(" with address ").append(address).append("\n");
-        if (myNeighbours != null && !myNeighbours.getNeighbours().isEmpty()) {
-            status.append("    with neighbours ").append(myNeighbours);
+        status.append("Node ID: ").append(nodeId).append("\n");
+        status.append("Address: ").append(address).append("\n");
+        status.append("Neighbours:\n");
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            status.append("    ").append(neighbour).append("\n");
+        }
+        if (myNeighbours.isLeaderPresent()) {
+            Address leader = myNeighbours.getLeaderNode();
+            status.append("Leader: Node ID ").append(leader.getNodeID()).append(", Address: ").append(leader).append("\n");
         } else {
-            status.append("    no neighbours yet");
+            status.append("Leader: Not present\n");
         }
         return status.toString();
     }
+
 
     public void printStatus() {
         System.out.println(getStatus());
@@ -153,7 +177,6 @@ public class Node implements Runnable {
 
     @Override
     public void run() {
-        nodeId = generateId(myIP, rmiPort);
         address = new Address(myIP, rmiPort, nodeId);
         myNeighbours = new DSNeighbours();
         bully = new BullyAlgorithm(this);
@@ -163,10 +186,7 @@ public class Node implements Runnable {
         myConsoleHandler = new ConsoleHandler(this);
         myAPIHandler = new APIHandler(this, apiPort);
 
-        // If other nodes are specified for joining
-        if (!(myIP.equals(otherNodeIP) && (rmiPort == otherNodeRMIPort))) {
-            this.join(new Address(otherNodeIP, otherNodeRMIPort));
-        }
+        tryConnectToTopology();
 
         myAPIHandler.start();
         new Thread(myConsoleHandler).start();
@@ -184,12 +204,24 @@ public class Node implements Runnable {
         try {
             NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
             myNeighbours = remoteNode.join(address);
-            log.info("Node {} joined the network via {}", address, otherNodeAddr);
+            myNeighbours.addNewNode(otherNodeAddr); // Добавляем нового соседа
+
+            log.info(GREEN + "Node {} joined the network via {}", address, otherNodeAddr);
+
+            Address currentLeader = myNeighbours.getLeaderNode();
+
+            // Проверяем, если новый узел имеет более высокий ID, чем текущий лидер
+            if (currentLeader == null || otherNodeAddr.getNodeID() > currentLeader.getNodeID()) {
+                log.info(YELLOW + "Node {} has a higher ID than the current leader. Starting election...", otherNodeAddr.getNodeID());
+                myNeighbours.setLeaderNode(otherNodeAddr); // Назначаем нового узла лидером
+                notifyAllNodesAboutNewLeader(otherNodeAddr); // Уведомляем всех соседей
+            }
         } catch (RemoteException e) {
-            log.error("Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
+            log.error(RED + "Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
         }
-        System.out.println("Neighbours after JOIN: " + myNeighbours);
     }
+
+
 
     public void startElection() {
         bully.startElection();
@@ -222,10 +254,10 @@ public class Node implements Runnable {
         if (receiverAddr != null) {
             try {
                 getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
-                log.info("Message sent from {} to {}: {}", nodeId, receiverId, content);
+                log.info(GREEN + "Message sent from {} to {}: {}", nodeId, receiverId, content);
                 System.out.println("Message sent to Node " + receiverId);
             } catch (RemoteException e) {
-                log.error("Error sending message to node {}: {}", receiverId, e.getMessage(), e);
+                log.error(RED + "Error sending message to node {}: {}", receiverId, e.getMessage(), e);
                 System.out.println("Error while sending message. Please try again.");
             }
         } else {
@@ -233,12 +265,30 @@ public class Node implements Runnable {
         }
     }
 
+    public void notifyAllNodesAboutNewLeader(Address leaderAddress) {
+        if (myNeighbours != null && !myNeighbours.getNeighbours().isEmpty()) {
+            for (Address neighbour : myNeighbours.getNeighbours()) {
+                try {
+                    NodeCommands proxy = getCommHub().getRMIProxy(neighbour);
+                    proxy.notifyAboutNewLeader(leaderAddress);
+                    log.info(GREEN + "Notified node {} about new leader: {}", neighbour.getNodeID(), leaderAddress);
+                } catch (RemoteException e) {
+                    log.error(RED + "Failed to notify node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+                }
+            }
+        } else {
+            log.warn(YELLOW + "No neighbours to notify about the new leader.");
+        }
+        System.out.println("All neighbours notified about new leader: " + leaderAddress);
+    }
+
+
     public void leaveNetwork() {
         for (Address neighbour : myNeighbours.getNeighbours()) {
             try {
                 getCommHub().getRMIProxy(neighbour).notifyAboutLogOut(address);
             } catch (RemoteException e) {
-                log.warn("Failed to notify node {} about logout.", neighbour, e);
+                log.warn(YELLOW + "Failed to notify node {} about logout.", neighbour, e);
             }
         }
         stopRMI();
@@ -256,19 +306,19 @@ public class Node implements Runnable {
     public void kill() {
         stopRMI();
         System.out.println("Node " + nodeId + " killed (no proper logout).");
-        log.info("Node {} killed (no proper logout).", nodeId);
+        log.info(GREEN + "Node {} killed (no proper logout).", nodeId);
     }
 
     public void revive() {
         startRMI();
         System.out.println("Node " + nodeId + " revived.");
-        log.info("Node {} revived.", nodeId);
+        log.info(GREEN + "Node {} revived.", nodeId);
     }
 
     public void setDelay(long delay) {
         getCommHub().setMessageDelay(delay);
         System.out.println("Delay set to " + delay + " ms for node " + nodeId);
-        log.info("Delay set to {} ms on node {}.", delay, nodeId);
+        log.info(GREEN + "Delay set to {} ms on node {}.", delay, nodeId);
     }
 
     public static void main(String[] args) {

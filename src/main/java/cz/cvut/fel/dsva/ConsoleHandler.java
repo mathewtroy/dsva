@@ -81,7 +81,7 @@ public class ConsoleHandler implements Runnable {
         try {
             System.out.print("Enter recipient Node ID: ");
             String receiverIdInput = reader.readLine();
-            int receiverId = Integer.parseInt(receiverIdInput);
+            long receiverId = Long.parseLong(receiverIdInput);
             System.out.print("Enter message content: ");
             String messageContent = reader.readLine();
             myNode.sendMessageToNode(receiverId, messageContent);
@@ -91,12 +91,24 @@ public class ConsoleHandler implements Runnable {
         }
     }
 
+    public void restartConsole() {
+        reading = true;
+        new Thread(this).start();
+    }
+
+
     @Override
     public void run() {
+
+        if (!reading) {
+            System.out.println("Restarting ConsoleHandler...");
+            restartConsole();
+        }
+
         String commandline;
         while (reading) {
-            System.out.print("\ncmd > ");
             try {
+                System.out.print("\ncmd > ");
                 commandline = reader.readLine();
                 if (commandline != null) {
                     parseCommandLine(commandline.trim());
@@ -104,9 +116,13 @@ public class ConsoleHandler implements Runnable {
             } catch (IOException e) {
                 err.println("ConsoleHandler - Error reading console input.");
                 e.printStackTrace();
-                reading = false;
+                reading = false; // Можно завершить цикл или попытаться перезапустить чтение.
+            } catch (Exception ex) {
+                err.println("Unexpected error: " + ex.getMessage());
+                ex.printStackTrace();
             }
         }
         System.out.println("Closing ConsoleHandler.");
     }
+
 }

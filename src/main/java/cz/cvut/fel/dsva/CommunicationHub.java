@@ -11,6 +11,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+import static cz.cvut.fel.dsva.Color.*;
+
 @Slf4j
 @Getter
 @Setter
@@ -41,10 +43,10 @@ public class CommunicationHub {
             }
             NodeCommands remoteNode = getRMIProxy(address);
             remoteNode.sendElectionMsg(senderId);
-            log.info("Sent Election message to Node {}", address.getNodeID());
+            log.info(GREEN + "Sent Election message to Node {}", address.getNodeID());
         } catch (RemoteException | InterruptedException e) {
             System.out.println("Node " + address + " is unreachable during election.");
-            log.warn("Node {} unreachable during election, exception: {}", address, e.getMessage());
+            log.warn(YELLOW + "Node {} unreachable during election, exception: {}", address, e.getMessage());
         }
     }
 
@@ -61,13 +63,13 @@ public class CommunicationHub {
             try {
                 NodeCommands remoteNode = getRMIProxy(receiverAddr);
                 remoteNode.receiveOK(myNode.getNodeId());
-                log.info("Sent OK message to Node {}", receiverId);
+                log.info(GREEN + "Sent OK message to Node {}", receiverId);
             } catch (RemoteException e) {
-                log.error("Failed to send OK message to Node {}: {}", receiverId, e.getMessage());
+                log.error(RED + "Failed to send OK message to Node {}: {}", receiverId, e.getMessage());
                 System.out.println("Failed to send OK message to Node " + receiverId);
             }
         } else {
-            log.warn("Receiver Node {} not found in neighbours.", receiverId);
+            log.warn(YELLOW + "Receiver Node {} not found in neighbours.", receiverId);
             System.out.println("Receiver Node " + receiverId + " not found in neighbours.");
         }
     }
@@ -82,10 +84,10 @@ public class CommunicationHub {
                 }
                 NodeCommands remoteNode = getRMIProxy(neighbour);
                 remoteNode.Elected(leader.getNodeID(), leader);
-                log.info("Notified Node {} about new leader.", neighbour.getNodeID());
+                log.info(GREEN + "Notified Node {} about new leader.", neighbour.getNodeID());
             } catch (RemoteException | InterruptedException e) {
                 System.out.println("Failed to notify Node " + neighbour + " about new leader.");
-                log.warn("Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
+                log.warn(YELLOW + "Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
             }
         }
     }

@@ -1,6 +1,7 @@
 package cz.cvut.fel.dsva;
 
 import cz.cvut.fel.dsva.base.Address;
+import cz.cvut.fel.dsva.base.NodeCommands;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.rmi.RemoteException;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static cz.cvut.fel.dsva.Color.GREEN;
+import static cz.cvut.fel.dsva.Color.RED;
 
 @Slf4j
 @Getter
@@ -27,13 +31,13 @@ public class BullyAlgorithm {
 
     public synchronized void startElection() {
         if (node.isVoting()) {
-            log.info("Node {} is already participating in an election.", node.getNodeId());
+            log.info(GREEN + "Node {} is already participating in an election.", node.getNodeId());
             return;
         }
 
         node.setVoting(true);
         node.setReceivedOK(false);
-        log.info("Node {} initiates an election.", node.getNodeId());
+        log.info(GREEN + "Node {} initiates an election.", node.getNodeId());
         System.out.println("Election process started by node: " + node.getNodeId());
 
         boolean higherNodeExists = false;
@@ -45,7 +49,7 @@ public class BullyAlgorithm {
         }
 
         if (!higherNodeExists) {
-            becomeLeader();
+            declareLeader(node.getAddress());
         } else {
             waitingForOK = true;
             startElectionTimer();
@@ -79,7 +83,7 @@ public class BullyAlgorithm {
         node.getNeighbours().setLeaderNode(leaderAddr);
         node.setVoting(false);
         node.setCoordinator(node.getNodeId() == leaderId);
-        log.info("Node {} acknowledges Node {} as leader.", node.getNodeId(), leaderId);
+        log.info(GREEN + "Node {} acknowledges Node {} as leader.", node.getNodeId(), leaderId);
         System.out.println("Node " + node.getNodeId() + " acknowledges Node " + leaderId + " as leader.");
         waitingForElected = false;
         cancelElectedTimer();
@@ -93,7 +97,7 @@ public class BullyAlgorithm {
             public void run() {
                 synchronized (BullyAlgorithm.this) {
                     if (waitingForOK && !node.isReceivedOK()) {
-                        becomeLeader();
+                        declareLeader(node.getAddress());
                     }
                 }
             }
@@ -108,7 +112,7 @@ public class BullyAlgorithm {
             public void run() {
                 synchronized (BullyAlgorithm.this) {
                     if (waitingForElected && !node.getNeighbours().isLeaderPresent()) {
-                        becomeLeader();
+                        declareLeader(node.getAddress());
                     }
                 }
             }
@@ -134,27 +138,25 @@ public class BullyAlgorithm {
         cancelElectedTimer();
     }
 
-    private void becomeLeader() {
-        System.out.println("Node " + node.getNodeId() + " declares itself as leader.");
-        node.setCoordinator(true);
-        node.getNeighbours().setLeaderNode(node.getAddress());
-        node.setVoting(false);
-        waitingForOK = false;
-        waitingForElected = false;
-        cancelAllTimers();
-        log.info("Node {} declared itself as leader.", node.getNodeId());
-        sendElectedMessage();
-    }
+    /**
+     * Declares a new leader.
+     *
+     * @param newLeader Address of the new leader
+     */
+    private void declareLeader(Address newLeader) {
+        node.setCoordinator(node.getAddress().equals(newLeader));
+        node.getNeighbours().setLeaderNode(newLeader);
 
-    private void sendElectedMessage() {
-        for (Address neighbour : node.getNeighbours().getNeighbours()) {
+        node.getNeighbours().getNeighbours().forEach(neighbour -> {
             try {
-                node.getCommHub().getRMIProxy(neighbour).Elected(node.getNodeId(), node.getAddress());
-                log.info("Node {} sent an Elected message to Node {}.", node.getNodeId(), neighbour.getNodeID());
+                NodeCommands proxy = node.getCommHub().getRMIProxy(neighbour);
+                proxy.notifyAboutNewLeader(newLeader);
             } catch (RemoteException e) {
-                log.error("Failed to send Elected message to Node {}: {}", neighbour.getNodeID(), e.getMessage());
-                System.out.println("Failed to send Elected message to Node " + neighbour.getNodeID());
+                log.error(RED + "Failed to notify {} about new leader: {}", neighbour, e.getMessage());
             }
-        }
+        });
+
+        log.info(GREEN + "Leader declared: Node {}.", newLeader.getNodeID());
+        System.out.println("Leader declared: Node " + newLeader.getNodeID());
     }
 }

@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.rmi.RemoteException;
 import java.util.List;
 
+import static cz.cvut.fel.dsva.Color.GREEN;
+
 @Slf4j
 @Getter
 @Setter
@@ -41,7 +43,13 @@ public class MessageReceiver implements NodeCommands {
     public void notifyAboutNewLeader(Address leader) throws RemoteException {
         myNode.getNeighbours().setLeaderNode(leader);
         System.out.println("New leader notified: " + leader);
+
+        for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
+            System.out.println("Notifying neighbour: " + neighbour);
+            myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
+        }
     }
+
 
     @Override
     public void checkStatusOfLeader(long senderId) throws RemoteException {
@@ -140,4 +148,21 @@ public class MessageReceiver implements NodeCommands {
     public void receiveOK(long fromId) throws RemoteException {
         myNode.getBully().onOKReceived(fromId);
     }
+
+    @Override
+    public void updateLeader(Address leaderAddress) throws RemoteException {
+        myNode.getNeighbours().setLeaderNode(leaderAddress);
+        log.info(GREEN + "Node {} received new leader information: {}", myNode.getNodeId(), leaderAddress);
+        System.out.println("Node " + myNode.getNodeId() + " acknowledges new leader: " + leaderAddress);
+    }
+
+    @Override
+    public void resetTopology() throws RemoteException {
+        myNode.resetTopology();
+        log.info(GREEN + "Topology has been reset by request to Node {}.", myNode.getNodeId());
+        System.out.println("Topology reset on Node " + myNode.getNodeId());
+    }
+
+
+
 }
