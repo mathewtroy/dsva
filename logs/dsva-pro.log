@@ -9578,3 +9578,408 @@ Caused by: java.rmi.NotBoundException: DSVNode
 2025-01-04 20:59:17 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mTopology reset on node 2.
 2025-01-04 20:59:17 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener stopped.
 2025-01-04 20:59:17 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 successfully left the network.
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 1 on ports RMI: 50051, API: 7001
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50051.
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50051.
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:06:21 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 2: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:21 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 3: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:21 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:21 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 1 neighbors info:[0m
+2025-01-04 21:06:21 [main] INFO  cz.cvut.fel.dsva.Node - [32mNo neighbours found. Declaring this node as leader.
+2025-01-04 21:06:21 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:06:21 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @557ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:06:21 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:06:21 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:06:21 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7001/
+2025-01-04 21:06:21 [main] INFO  io.javalin.Javalin - Javalin started in 150ms \o/
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 2 on ports RMI: 50052, API: 7002
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50052.
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50052.
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:06:32 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 3: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:32 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:32 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 2 neighbors info:[0m
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 2 initiates an election.
+2025-01-04 21:06:32 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 2 hostname: 127.0.0.1 port: 50052
+2025-01-04 21:06:32 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 2.
+2025-01-04 21:06:32 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:06:32 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @610ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:06:32 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:06:32 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:06:32 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7002/
+2025-01-04 21:06:32 [main] INFO  io.javalin.Javalin - Javalin started in 157ms \o/
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 3 on ports RMI: 50053, API: 7003
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50053.
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50053.
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:06:35 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:35 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 3 neighbors info:[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 3 initiates an election.
+2025-01-04 21:06:35 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:06:35 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:06:35 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:06:35 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:06:35 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 3.
+2025-01-04 21:06:36 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:06:36 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @578ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:06:36 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:06:36 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:06:36 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7003/
+2025-01-04 21:06:36 [main] INFO  io.javalin.Javalin - Javalin started in 149ms \o/
+2025-01-04 21:06:58 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage sent from 1 to 2: hello
+2025-01-04 21:07:05 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener stopped.
+2025-01-04 21:07:05 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mNode 2 killed (no proper logout).
+2025-01-04 21:07:15 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 2
+2025-01-04 21:07:16 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 1
+2025-01-04 21:07:16 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 0
+2025-01-04 21:07:17 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [31mNode 2 is unreachable. Removing from neighbours.
+2025-01-04 21:07:17 [Thread-9] INFO  cz.cvut.fel.dsva.base.DSNeighbours - [32mNode 2 removed from neighbours.
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Reviving node 2...
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50052.
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:07:40 [Thread-9] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:07:40 [Thread-9] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36mNode 2 neighbors info:[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 found leader: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 restored with leader: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 1 about revival of node 2.
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 3 about revival of node 2.
+2025-01-04 21:07:40 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 successfully revived.
+2025-01-04 21:07:56 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage sent from 1 to 2: hello22
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 4 on ports RMI: 50054, API: 7004
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50054.
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50054.
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:09:03 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 4 neighbors info:[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 4 initiates an election.
+2025-01-04 21:09:03 [RMI TCP Connection(6)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(10)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(9)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(7)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(10)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(11)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [RMI TCP Connection(4)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:09:03 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 4.
+2025-01-04 21:09:03 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:09:03 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @619ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:09:03 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:09:03 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:09:03 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7004/
+2025-01-04 21:09:03 [main] INFO  io.javalin.Javalin - Javalin started in 139ms \o/
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 5 on ports RMI: 50055, API: 7005
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50055.
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50055.
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 4.[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 5 neighbors info:[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 4, Hostname: 127.0.0.1, Port: 50054[0m
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 5 initiates an election.
+2025-01-04 21:13:19 [RMI TCP Connection(12)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(16)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(6)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(14)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(13)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(7)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(15)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(17)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(4)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(16)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(18)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(14)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:13:19 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 5.
+2025-01-04 21:13:20 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:13:20 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @630ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:13:20 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:13:20 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:13:20 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7005/
+2025-01-04 21:13:20 [main] INFO  io.javalin.Javalin - Javalin started in 158ms \o/
+2025-01-04 21:13:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 5 is leaving the network...
+2025-01-04 21:13:32 [RMI TCP Connection(18)-127.0.0.1] INFO  cz.cvut.fel.dsva.base.DSNeighbours - [32mNode 5 removed from neighbours.
+2025-01-04 21:13:32 [RMI TCP Connection(18)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - Node 5 removed from neighbours.
+2025-01-04 21:13:32 [RMI TCP Connection(18)-127.0.0.1] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 1 initiates an election.
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 1 on ports RMI: 50051, API: 7001
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50051.
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50051.
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:29:07 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 2: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:07 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 3: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:07 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:07 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 1 neighbors info:[0m
+2025-01-04 21:29:07 [main] INFO  cz.cvut.fel.dsva.Node - [32mNo neighbours found. Declaring this node as leader.
+2025-01-04 21:29:07 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:29:07 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @538ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:29:07 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:29:07 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:29:07 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7001/
+2025-01-04 21:29:07 [main] INFO  io.javalin.Javalin - Javalin started in 145ms \o/
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 2 on ports RMI: 50052, API: 7002
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50052.
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50052.
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:29:24 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 3: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:24 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:24 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 2 neighbors info:[0m
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 2 initiates an election.
+2025-01-04 21:29:24 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 2 hostname: 127.0.0.1 port: 50052
+2025-01-04 21:29:24 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 2.
+2025-01-04 21:29:24 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:29:24 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @587ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:29:24 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:29:24 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:29:24 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7002/
+2025-01-04 21:29:24 [main] INFO  io.javalin.Javalin - Javalin started in 150ms \o/
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 3 on ports RMI: 50053, API: 7003
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50053.
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50053.
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:29:47 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 4: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:47 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 3 neighbors info:[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 3 initiates an election.
+2025-01-04 21:29:47 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:29:47 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:29:47 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:29:47 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 3 hostname: 127.0.0.1 port: 50053
+2025-01-04 21:29:47 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 3.
+2025-01-04 21:29:47 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:29:47 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @588ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:29:47 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:29:47 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:29:47 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7003/
+2025-01-04 21:29:47 [main] INFO  io.javalin.Javalin - Javalin started in 150ms \o/
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 4 on ports RMI: 50054, API: 7004
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50054.
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50054.
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:29:55 [main] DEBUG cz.cvut.fel.dsva.Node - [33mCannot connect to node 5: Connection refused to host: 127.0.0.1; nested exception is: 
+	java.net.ConnectException: Connection refused: connect[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 4 neighbors info:[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 4 initiates an election.
+2025-01-04 21:29:55 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(6)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [RMI TCP Connection(4)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 4 hostname: 127.0.0.1 port: 50054
+2025-01-04 21:29:55 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 4.
+2025-01-04 21:29:55 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:29:55 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @618ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:29:55 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:29:55 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:29:55 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7004/
+2025-01-04 21:29:55 [main] INFO  io.javalin.Javalin - Javalin started in 142ms \o/
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mNode initialized with ID 5 on ports RMI: 50055, API: 7005
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mCreating new RMI registry on port 50055.
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50055.
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 2.[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 4.[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [36mNode 5 neighbors info:[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 2, Hostname: 127.0.0.1, Port: 50052[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 4, Hostname: 127.0.0.1, Port: 50054[0m
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mNode 5 initiates an election.
+2025-01-04 21:29:57 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(2)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(3)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(8)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(6)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(4)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 4 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(4)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(11)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 1 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(9)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 2 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(7)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 3 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [RMI TCP Connection(5)-127.0.0.1] INFO  cz.cvut.fel.dsva.MessageReceiver - [32mNode 5 received new leader information: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:29:57 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - [32mLeader declared: Node 5.
+2025-01-04 21:29:57 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-04 21:29:57 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @669ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-04 21:29:57 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-04 21:29:57 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 611 days old. Consider checking for a newer version.).
+2025-01-04 21:29:57 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7005/
+2025-01-04 21:29:57 [main] INFO  io.javalin.Javalin - Javalin started in 164ms \o/
+2025-01-04 21:30:09 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage sent from 5 to 1: hey
+2025-01-04 21:30:31 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener stopped.
+2025-01-04 21:30:31 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mNode 2 killed (no proper logout).
+2025-01-04 21:30:39 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 2
+2025-01-04 21:30:39 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 1
+2025-01-04 21:30:40 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [33mFailed to send message to node 2. Attempts left: 0
+2025-01-04 21:30:40 [Thread-9] WARN  cz.cvut.fel.dsva.Node - [31mNode 2 is unreachable. Removing from neighbours.
+2025-01-04 21:30:40 [Thread-9] INFO  cz.cvut.fel.dsva.base.DSNeighbours - [32mNode 2 removed from neighbours.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Reviving node 2...
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener started on 127.0.0.1:50052.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mTrying to connect to all possible nodes in topology...[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 1.[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 3.[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 4.[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mConnected to node 5.[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36mNode 2 neighbors info:[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 1, Hostname: 127.0.0.1, Port: 50051[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 3, Hostname: 127.0.0.1, Port: 50053[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 4, Hostname: 127.0.0.1, Port: 50054[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [36m    Neighbor -> ID: 5, Hostname: 127.0.0.1, Port: 50055[0m
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 found leader: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 restored with leader: Address: nodeId: 5 hostname: 127.0.0.1 port: 50055
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 1 about revival of node 2.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 3 about revival of node 2.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 4 about revival of node 2.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Notified node 5 about revival of node 2.
+2025-01-04 21:32:32 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 2 successfully revived.
