@@ -130,12 +130,12 @@ public class Node implements Runnable {
         logNeighboursInfo();
 
         if (!hasNeighbours) {
-            log.info(GREEN + "No neighbours found. Declaring this node as leader.");
-            isCoordinator = true;
-            myNeighbours.setLeaderNode(address);
+            log.info("No neighbours found. Starting election for node {}...", nodeId);
+            bully.startElection();
         } else {
-            checkLeader(); // Проверяем лидера среди соседей
+            checkLeader();
         }
+
     }
 
 
@@ -209,23 +209,30 @@ public class Node implements Runnable {
     public void join(Address otherNodeAddr) {
         try {
             NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
+            // Получаем обновлённый список соседей
             myNeighbours = remoteNode.join(address);
-            myNeighbours.addNewNode(otherNodeAddr); // Добавляем нового соседа
+            myNeighbours.addNewNode(otherNodeAddr);
 
             log.info(GREEN + "Node {} joined the network via {}", address, otherNodeAddr);
 
+            // Получаем у себя текущего лидера
             Address currentLeader = myNeighbours.getLeaderNode();
 
-            // Проверяем, если новый узел имеет более высокий ID, чем текущий лидер
+            // Если у нас нет лидера или у нового узла ID больше, чем у нынешнего,
+            // мы НЕ назначаем его лидером напрямую, а всего лишь запускаем Bully-выборы.
             if (currentLeader == null || otherNodeAddr.getNodeID() > currentLeader.getNodeID()) {
-                log.info(YELLOW + "Node {} has a higher ID than the current leader. Starting election...", otherNodeAddr.getNodeID());
-                myNeighbours.setLeaderNode(otherNodeAddr); // Назначаем нового узла лидером
-                notifyAllNodesAboutNewLeader(otherNodeAddr); // Уведомляем всех соседей
+                log.info("Node {} might supersede current leader ({}). Starting Bully election...",
+                        otherNodeAddr.getNodeID(),
+                        currentLeader == null ? "null" : currentLeader.getNodeID());
+                // Вызываем классический Bully
+                bully.startElection();
             }
+
         } catch (RemoteException e) {
             log.error(RED + "Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
         }
     }
+
 
 
 
@@ -298,39 +305,6 @@ public class Node implements Runnable {
             System.out.println("Receiver not found in neighbours.");
         }
     }
-
-
-    public void notifyAllNodesAboutNewLeader(Address leaderAddress) {
-        if (myNeighbours != null && !myNeighbours.getNeighbours().isEmpty()) {
-            for (Address neighbour : myNeighbours.getNeighbours()) {
-                try {
-                    NodeCommands proxy = getCommHub().getRMIProxy(neighbour);
-                    proxy.notifyAboutNewLeader(leaderAddress);
-                    log.info(GREEN + "Notified node {} about new leader: {}", neighbour.getNodeID(), leaderAddress);
-                } catch (RemoteException e) {
-                    log.error(RED + "Failed to notify node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
-                }
-            }
-        } else {
-            log.warn(YELLOW + "No neighbours to notify about the new leader.");
-        }
-        System.out.println("All neighbours notified about new leader: " + leaderAddress);
-    }
-
-
-    public void leaveNetwork() {
-        for (Address neighbour : myNeighbours.getNeighbours()) {
-            try {
-                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
-                remoteNode.notifyAboutLogOut(address); // Уведомляем об отключении
-            } catch (RemoteException e) {
-                log.warn("Failed to notify node {} about logout.", neighbour.getNodeID(), e);
-            }
-        }
-        myNeighbours.getNeighbours().clear(); // Очищаем список соседей
-        myNeighbours.setLeaderNode(null);    // Сбрасываем лидера
-    }
-
 
     public void stopRMI() {
         stopMessageReceiver();
