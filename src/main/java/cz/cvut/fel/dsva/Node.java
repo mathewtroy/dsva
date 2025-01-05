@@ -19,22 +19,24 @@ import static cz.cvut.fel.dsva.Color.*;
 @Getter
 @Setter
 public class Node implements Runnable {
+
     public static final String COMM_INTERFACE_NAME = "DSVNode";
     public static Node thisNode = null;
+
+    // Flag indicating that the node was killed (hard stop)
+    private boolean isKilled = false;
+
+    // Flag indicating that the node has gracefully left the network
+    private boolean isLeft = false;
 
     private boolean isCoordinator = false;
     private boolean receivedOK = false;
     private boolean voting = false;
 
     private String nickname = "Unknown";
-
-    // !!! Убираем захардкоженный localhost:
-    private String myIP;              // Будет определяться по nodeId (см. getIpForNodeId)
-    private int rmiPort = 3010;       // RMI-порт (будет переопределён)
-    private int apiPort = 7010;       // API-порт (будет переопределён)
-
-    private String otherNodeIP = "127.0.0.1";  // (необязательно использовать)
-    private int otherNodeRMIPort = 3010;       // (необязательно использовать)
+    private String myIP;
+    private int rmiPort = 3010;
+    private int apiPort = 7010;
 
     private long nodeId = 0;
     private Address address;
@@ -45,18 +47,15 @@ public class Node implements Runnable {
     private APIHandler myAPIHandler;
     private BullyAlgorithm bully;
 
-    // -------------------------------------------
-    // Метод, возвращающий IP для каждого узла ID=1..5
-    // -------------------------------------------
+    // Returns IP for nodes 1..5
     private String getIpForNodeId(long id) {
         switch ((int) id) {
             case 1: return "192.168.56.105";
             case 2: return "192.168.56.154";
             case 3: return "192.168.56.106";
-            case 4: return "192.168.56.107"; // TODO need to create virtual box
-            case 5: return "192.168.56.108"; // TODO need to create virtual box
+            case 4: return "192.168.56.107";
+            case 5: return "192.168.56.108";
             default:
-                // Если вдруг ID вне 1..5, пусть будет localhost
                 return "127.0.0.1";
         }
     }
@@ -65,14 +64,10 @@ public class Node implements Runnable {
         if (args.length >= 1) {
             try {
                 nodeId = Long.parseLong(args[0]);
-                // Формируем RMI-порт и API-порт на базе nodeId
                 rmiPort = 50050 + (int) nodeId;
                 apiPort = 7000 + (int) nodeId;
-
-                // Определяем наш IP на основе nodeId
                 this.myIP = getIpForNodeId(nodeId);
 
-                // Инициализируем список соседей
                 myNeighbours = new DSNeighbours();
 
                 log.info(GREEN + "Node initialized with ID {} on ports RMI: {}, API: {}. My IP = {}",
@@ -88,7 +83,6 @@ public class Node implements Runnable {
     }
 
     private void startMessageReceiver() {
-        // Ставим RMI hostname = наш IP
         address = new Address(myIP, rmiPort, nodeId);
         System.setProperty("java.rmi.server.hostname", address.getHostname());
 
@@ -133,24 +127,24 @@ public class Node implements Runnable {
     }
 
     private void tryConnectToTopology() {
+        if (isKilled || isLeft) {
+            log.info("Node {} is not active (killed or left), skip tryConnectToTopology.", nodeId);
+            return;
+        }
+
         log.info(GREEN + "Trying to connect to all possible nodes in topology..." + RESET);
 
         boolean hasNeighbours = false;
-
-        // Пытаемся подключиться к узлам 1..5 (кроме себя)
         for (int i = 1; i <= 5; i++) {
             if (i == nodeId) continue;
 
-            // Берём IP этого узла i
             String neighbourIp = getIpForNodeId(i);
             int neighbourPort = 50050 + i;
-            Address neighbourAddress = new Address(neighbourIp, neighbourPort, (long) i);
+            Address neighbourAddress = new Address(neighbourIp, neighbourPort, (long)i);
 
             try {
                 NodeCommands remoteNode = getCommHub().getRMIProxy(neighbourAddress);
-                // Вызываем join(...) на том узле
                 remoteNode.join(address);
-                // Добавляем соседа в локальный список
                 myNeighbours.addNewNode(neighbourAddress);
                 hasNeighbours = true;
                 log.info(GREEN + "Connected to node {} at IP {}" + RESET, i, neighbourIp);
@@ -163,7 +157,7 @@ public class Node implements Runnable {
 
         if (!hasNeighbours) {
             log.info("No neighbours found. Starting election for node {}...", nodeId);
-            bully.startElection();
+            startElection();
         } else {
             checkLeader();
         }
@@ -187,6 +181,16 @@ public class Node implements Runnable {
     }
 
     public String getStatus() {
+        // If the node was killed, show that info
+        if (isKilled) {
+            return "Node " + nodeId + " status: KILLED (no RMI)\n";
+        }
+        // If the node has left the network, show that info
+        if (isLeft) {
+            return "Node " + nodeId + " status: LEFT the network (no RMI)\n";
+        }
+
+        // Otherwise, show full status
         StringBuilder status = new StringBuilder();
         status.append("Node ID: ").append(nodeId).append("\n");
         status.append("Address: ").append(address).append("\n");
@@ -210,25 +214,24 @@ public class Node implements Runnable {
 
     @Override
     public void run() {
-        // Вызываем startMessageReceiver() — он уже создаст RMI-сервер
+        // Start RMI
         startMessageReceiver();
 
-        // Создаём CommunicationHub, консоль, API и т.д.
         myCommHub = new CommunicationHub(this);
         bully = new BullyAlgorithm(this);
 
         myConsoleHandler = new ConsoleHandler(this);
         myAPIHandler = new APIHandler(this, apiPort);
 
-        // Подключаемся к другим узлам (по IP)
+        // Connect to other nodes
         tryConnectToTopology();
 
-        // Стартуем HTTP-сервер (Javalin)
+        // Start HTTP server
         myAPIHandler.start();
-        // Стартуем консоль в отдельном потоке
+        // Start console
         new Thread(myConsoleHandler).start();
 
-        // Печатаем статус для наглядности
+        // Print initial status
         printStatus();
     }
 
@@ -241,6 +244,10 @@ public class Node implements Runnable {
     }
 
     public void join(Address otherNodeAddr) {
+        if (isKilled || isLeft) {
+            log.info("Node {} is inactive (killed or left), ignoring join(...) call.", nodeId);
+            return;
+        }
         try {
             NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
             myNeighbours = remoteNode.join(address);
@@ -252,8 +259,8 @@ public class Node implements Runnable {
             if (currentLeader == null || otherNodeAddr.getNodeID() > currentLeader.getNodeID()) {
                 log.info("Node {} might supersede current leader ({}). Starting Bully election...",
                         otherNodeAddr.getNodeID(),
-                        currentLeader == null ? "null" : currentLeader.getNodeID());
-                bully.startElection();
+                        currentLeader == null ? "null" : Long.toString(currentLeader.getNodeID()));
+                startElection();
             }
 
         } catch (RemoteException e) {
@@ -262,10 +269,19 @@ public class Node implements Runnable {
     }
 
     public void startElection() {
+        if (isKilled || isLeft) {
+            log.info("Node {} is inactive, skip startElection.", nodeId);
+            return;
+        }
         bully.startElection();
     }
 
     public void checkLeader() {
+        if (isKilled || isLeft) {
+            log.info("Node {} is inactive, skip checkLeader.", nodeId);
+            return;
+        }
+
         Address leader = myNeighbours.getLeaderNode();
         if (leader != null) {
             try {
@@ -283,6 +299,11 @@ public class Node implements Runnable {
     }
 
     public void sendMessageToNode(long receiverId, String content) {
+        if (isKilled || isLeft) {
+            log.info("Node {} is inactive, skip sendMessageToNode.", nodeId);
+            return;
+        }
+
         Address receiverAddr = null;
         for (Address addr : myNeighbours.getNeighbours()) {
             if (addr.getNodeID() == receiverId) {
@@ -290,7 +311,6 @@ public class Node implements Runnable {
                 break;
             }
         }
-
         if (receiverAddr != null) {
             int attempts = 3;
             boolean messageSent = false;
@@ -314,7 +334,6 @@ public class Node implements Runnable {
                     }
                 }
             }
-
             if (!messageSent) {
                 System.out.println("Node " + receiverId + " is unreachable. Removing from neighbours...");
                 log.warn(RED + "Node {} is unreachable. Removing from neighbours.", receiverId);
@@ -330,16 +349,32 @@ public class Node implements Runnable {
     }
 
     public void startRMI() {
-        startMessageReceiver();
+        // Only start RMI if the node is not killed/left
+        if (!isKilled && !isLeft) {
+            startMessageReceiver();
+        } else {
+            log.info("Node {} is inactive, ignoring startRMI.", nodeId);
+        }
     }
 
     public void kill() {
+        if (isKilled) {
+            log.info("Node {} is already KILLED.", nodeId);
+            return;
+        }
+        // Hard kill
+        isKilled = true;
+        isLeft = false;
         stopRMI();
         System.out.println("Node " + nodeId + " killed (no proper logout).");
         log.info(GREEN + "Node {} killed (no proper logout).", nodeId);
     }
 
     public void leave() {
+        if (isKilled || isLeft) {
+            log.info("Node {} is already inactive (killed or left).", nodeId);
+            return;
+        }
         System.out.println("Node " + nodeId + " is leaving the network...");
         log.info("Node {} is leaving the network...", nodeId);
 
@@ -355,13 +390,27 @@ public class Node implements Runnable {
 
         resetTopology();
         stopRMI();
+
+        // Graceful exit
+        isLeft = true;
+        isKilled = false;
+
         System.out.println("Node " + nodeId + " has left the network.");
         log.info("Node {} successfully left the network.", nodeId);
     }
 
     public void revive() {
+        // If node is neither killed nor left, do nothing
+        if (!isKilled && !isLeft) {
+            log.info("Node {} is not killed/left, no need to revive.", nodeId);
+            return;
+        }
         System.out.println("Reviving node " + nodeId + "...");
         log.info("Reviving node {}...", nodeId);
+
+        // Reset both flags
+        isKilled = false;
+        isLeft = false;
 
         startRMI();
         tryConnectToTopology();
