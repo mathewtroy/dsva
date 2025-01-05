@@ -22,6 +22,16 @@ Suppose we have multiple nodes (Node 1, Node 2, Node 3, etc.), each running on a
     - Command to start:
       `java -jar node.jar 3`
 
+4. **Node 4**:
+   - API Port: 7004
+   - Command to start:
+     `java -jar node.jar 4`
+
+5. **Node 5**:
+   - API Port: 7005
+   - Command to start:
+     `java -jar node.jar 5`
+
    Continue the same pattern for other nodes.
 
 ## 2. API Commands for Testing
@@ -41,6 +51,12 @@ For Node 2:
 For Node 3:
 `curl http://localhost:7003/start_election`
 
+For Node 4:
+`curl http://localhost:7004/start_election`
+
+For Node 5:
+`curl http://localhost:7005/start_election`
+
 **2.2. Check Leader Status**
 
 To check the leader's status via the API:
@@ -53,6 +69,12 @@ For Node 2:
 
 For Node 3:
 `curl http://localhost:7003/check_leader`
+
+For Node 4:
+`curl http://localhost:7004/check_leader`
+
+For Node 5:
+`curl http://localhost:7005/check_leader`
 
 **2.3. Send Message to Another Node**
 
@@ -77,6 +99,12 @@ For Node 2:
 For Node 3:
 `curl http://localhost:7003/status`
 
+For Node 4:
+`curl http://localhost:7004/status`
+
+For Node 5:
+`curl http://localhost:7005/status`
+
 ## 3. Additional Commands
 
 **Start RMI (for all nodes):**
@@ -87,6 +115,9 @@ For Node 3:
 
 `curl http://localhost:7003/start_rmi`
 
+`curl http://localhost:7004/start_rmi`
+
+`curl http://localhost:7005/start_rmi`
 
 **Stop RMI (for all nodes):**
 
@@ -95,6 +126,10 @@ For Node 3:
 `curl http://localhost:7002/stop_rmi`
 
 `curl http://localhost:7003/stop_rmi`
+
+`curl http://localhost:7004/stop_rmi`
+
+`curl http://localhost:7005/stop_rmi`
 
 
 **Kill Node (for all nodes):**
@@ -105,6 +140,10 @@ For Node 3:
 
 `curl http://localhost:7003/kill`
 
+`curl http://localhost:7004/kill`
+
+`curl http://localhost:7005/kill`
+
 
 **Leave Network Gracefully (for all nodes):**
 
@@ -114,6 +153,10 @@ For Node 3:
 
 `curl http://localhost:7003/leave`
 
+`curl http://localhost:7004/leave`
+
+`curl http://localhost:7005/leave`
+
 
 **Revive Node (for all nodes):**
 
@@ -122,6 +165,10 @@ For Node 3:
 `curl http://localhost:7002/revive`
 
 `curl http://localhost:7003/revive`
+
+`curl http://localhost:7004/revive`
+
+`curl http://localhost:7005/revive`
 
 ## 4. Testing API via Browser
 
