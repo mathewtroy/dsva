@@ -163,9 +163,6 @@ public class BullyAlgorithm {
         node.setCoordinator(node.getAddress().equals(newLeader));
         node.getNeighbours().setLeaderNode(newLeader);
 
-        // IMPORTANT: stop voting
-        node.setVoting(false);
-
         // Notify all neighbors that this node (or newLeader) is coordinator
         node.getNeighbours().getNeighbours().forEach(neighbour -> {
             try {
