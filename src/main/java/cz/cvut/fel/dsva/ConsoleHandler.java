@@ -24,7 +24,6 @@ public class ConsoleHandler implements Runnable {
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-
     private void parseCommandLine(String commandline) {
         switch (commandline) {
             case "e":
@@ -138,7 +137,7 @@ public class ConsoleHandler implements Runnable {
             } catch (IOException e) {
                 err.println("ConsoleHandler - Error reading console input.");
                 e.printStackTrace();
-                reading = false; // Можно завершить цикл или попытаться перезапустить чтение.
+                reading = false;
             } catch (Exception ex) {
                 err.println("Unexpected error: " + ex.getMessage());
                 ex.printStackTrace();

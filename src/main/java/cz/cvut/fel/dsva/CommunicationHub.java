@@ -73,22 +73,4 @@ public class CommunicationHub {
             System.out.println("Receiver Node " + receiverId + " not found in neighbours.");
         }
     }
-
-
-    public void notifyLeaderToAll() {
-        Address leader = myNode.getNeighbours().getLeaderNode();
-        for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
-            try {
-                if (messageDelay > 0) {
-                    Thread.sleep(messageDelay);
-                }
-                NodeCommands remoteNode = getRMIProxy(neighbour);
-                remoteNode.Elected(leader.getNodeID(), leader);
-                log.info(GREEN + "Notified Node {} about new leader.", neighbour.getNodeID());
-            } catch (RemoteException | InterruptedException e) {
-                System.out.println("Failed to notify Node " + neighbour + " about new leader.");
-                log.warn(YELLOW + "Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
-            }
-        }
-    }
 }

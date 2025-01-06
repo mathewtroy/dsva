@@ -54,7 +54,6 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
-
     @Override
     public void notifyAboutRevival(Address revivedNode) throws RemoteException {
         if (!myNode.getNeighbours().getNeighbours().contains(revivedNode)) {
@@ -63,9 +62,6 @@ public class MessageReceiver implements NodeCommands {
             log.info("Node {} added back to neighbours.", revivedNode.getNodeID());
         }
     }
-
-
-
 
     @Override
     public void checkStatusOfLeader(long senderId) throws RemoteException {
@@ -122,7 +118,6 @@ public class MessageReceiver implements NodeCommands {
             myNode.startElection(); // Запускаем выборы
         }
     }
-
 
     @Override
     public void Election(long id) throws RemoteException {
@@ -188,7 +183,5 @@ public class MessageReceiver implements NodeCommands {
         log.info(GREEN + "Topology has been reset by request to Node {}.", myNode.getNodeId());
         System.out.println("Topology reset on Node " + myNode.getNodeId());
     }
-
-
 
 }

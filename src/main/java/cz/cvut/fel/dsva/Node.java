@@ -255,13 +255,13 @@ public class Node implements Runnable {
 
             log.info(GREEN + "Node {} joined the network via {}", address, otherNodeAddr);
 
+            // Only start election if there is no leader at all
             Address currentLeader = myNeighbours.getLeaderNode();
-            if (currentLeader == null || otherNodeAddr.getNodeID() > currentLeader.getNodeID()) {
-                log.info("Node {} might supersede current leader ({}). Starting Bully election...",
-                        otherNodeAddr.getNodeID(),
-                        currentLeader == null ? "null" : Long.toString(currentLeader.getNodeID()));
+            if (currentLeader == null) {
+                log.info("No leader in the network. Node {} will start election...", nodeId);
                 startElection();
             }
+            // else do nothing - we keep the existing leader
 
         } catch (RemoteException e) {
             log.error(RED + "Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
