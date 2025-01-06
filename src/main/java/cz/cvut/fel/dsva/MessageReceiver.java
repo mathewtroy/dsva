@@ -74,13 +74,16 @@ public class MessageReceiver implements NodeCommands {
             System.out.println("New leader notified: " + leader);
             log.info("Set new leader to Node {}.", leader.getNodeID());
 
+            // Уведомляем BullyAlgorithm о том, что лидер выбран
+            myNode.getBully().onElectedReceived(leader.getNodeID(), leader);
+
             // Notify all neighbors about the new leader
             for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
                 try {
                     myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
                     log.info(GREEN + "Notified Node {} about new leader Node {}.", neighbour.getNodeID(), leader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+                    log.error(RED + "Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
                 }
             }
         } else {
@@ -170,7 +173,6 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
-
     @Override
     public void Election(long id) throws RemoteException {
         myNode.getBully().startElection();
@@ -229,10 +231,13 @@ public class MessageReceiver implements NodeCommands {
     @Override
     public void updateLeader(Address leaderAddress) throws RemoteException {
         Address currentLeader = myNode.getNeighbours().getLeaderNode();
-        if (currentLeader == null || currentLeader.equals(leaderAddress)) {
+        if (currentLeader == null || leaderAddress.getNodeID() > currentLeader.getNodeID()) {
             myNode.getNeighbours().setLeaderNode(leaderAddress);
             log.info(GREEN + "Node {} acknowledges new leader: Node {}.", myNode.getNodeId(), leaderAddress.getNodeID());
             System.out.println("Node " + myNode.getNodeId() + " acknowledges new leader: " + leaderAddress);
+
+            // Уведомляем BullyAlgorithm о том, что лидер выбран
+            myNode.getBully().onElectedReceived(leaderAddress.getNodeID(), leaderAddress);
         } else {
             log.warn("Node {} received conflicting leader information. Current leader: Node {}, Received leader: Node {}.",
                     myNode.getNodeId(),

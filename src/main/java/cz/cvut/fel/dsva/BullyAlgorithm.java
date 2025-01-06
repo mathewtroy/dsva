@@ -89,6 +89,8 @@ public class BullyAlgorithm {
     // Called when a node receives an Elected/Coordinator message
     public synchronized void onElectedReceived(long leaderId, Address leaderAddr) {
         System.out.println("Leader elected: Node " + leaderId);
+        log.info("Leader elected: Node {}.", leaderId);
+
         node.getNeighbours().setLeaderNode(leaderAddr);
 
         // Stop voting - we have a leader
@@ -159,7 +161,7 @@ public class BullyAlgorithm {
         cancelElectedTimer();
     }
 
-    private void declareLeader(Address newLeader) {
+    public synchronized void declareLeader(Address newLeader) {
         boolean shouldDeclare = false;
 
         if (node.getAddress().equals(newLeader)) {
@@ -199,6 +201,4 @@ public class BullyAlgorithm {
                     ", because leader is already set to Node " + node.getNeighbours().getLeaderNode().getNodeID());
         }
     }
-
-
 }

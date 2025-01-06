@@ -20,7 +20,7 @@ public class DSNeighbours implements Serializable {
     private Address leaderNode;
 
     public DSNeighbours() {
-        this.neighbours = new CopyOnWriteArrayList<>();
+        this.neighbours = new CopyOnWriteArrayList  <>();
     }
 
     public Address getAddressById(int id) {
