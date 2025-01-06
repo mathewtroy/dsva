@@ -22,78 +22,52 @@ public class DSNeighbours implements Serializable {
         this.neighbours = new ArrayList<>();
     }
 
-
     public Address getAddressById(int id) {
         for (Address address : neighbours) {
-            if (address.getNodeID() == id) {
+            if (address.getNodeID().equals((long) id)) { // Ensure type consistency
                 return address;
             }
         }
         return null;
     }
 
-
-    public Long getNodeIdFromAddress(Address address) {
-        for (Address neighbour : neighbours) {
-            if (neighbour.equals(address)) {
-                return neighbour.getNodeID();
-            }
-        }
-        return -1L;
-    }
-
-
     public void removeNodeById(int nodeId) {
-        Iterator<Address> iterator = neighbours.iterator();
-        while (iterator.hasNext()) {
-            Address address = iterator.next();
-            if (getNodeIdFromAddress(address) == nodeId) {
-                iterator.remove();
-                log.info(GREEN + "Node with ID {} has been removed.", nodeId);
-                break;
-            }
+        Address addressToRemove = getAddressById(nodeId);
+        if (addressToRemove != null) {
+            neighbours.remove(addressToRemove);
+            log.info(GREEN + "Node with ID {} has been removed.", nodeId);
+            System.out.println("Node with ID " + nodeId + " has been removed from neighbours.");
+        } else {
+            log.warn(YELLOW + "Attempted to remove Node ID {}, but it was not found.", nodeId);
+            System.out.println("Node with ID " + nodeId + " not found in neighbours.");
         }
     }
-
 
     public boolean isLeaderPresent() {
         return leaderNode != null;
     }
 
-
-//    public void addNewNode(Address address) {
-//        if (address.getPort() > 0 && !address.getHostname().isEmpty()) {
-//            if (!neighbours.contains(address)) {
-//                neighbours.add(address);
-//                log.info(GREEN + "Node {} has been added as a neighbour.", address);
-//            } else {
-//                log.warn(YELLOW + "Node {} is already in neighbours list.", address);
-//            }
-//        } else {
-//            log.error(RED + "Invalid neighbour address: {}", address);
-//        }
-//    }
-//
-//
-
-//    public void removeNode(Address address) {
-//        if (neighbours.contains(address)) {
-//            neighbours.remove(address);
-//            log.info(GREEN + "Node {} has been removed from neighbours.", address);
-//        }
-//    }
     public void removeNode(Address address) {
-        neighbours.remove(address);
-        log.info(GREEN + "Node {} removed from neighbours.", address.getNodeID());
+        boolean removed = neighbours.remove(address);
+        if (removed) {
+            log.info(GREEN + "Node {} removed from neighbours.", address.getNodeID());
+            System.out.println("Node " + address.getNodeID() + " removed from neighbours.");
+        } else {
+            log.warn(YELLOW + "Attempted to remove Node {}, but it was not found.", address.getNodeID());
+            System.out.println("Node " + address.getNodeID() + " not found in neighbours.");
+        }
     }
 
     public void addNewNode(Address address) {
         if (!neighbours.contains(address)) {
             neighbours.add(address);
+            log.info(GREEN + "Node {} added to neighbours.", address.getNodeID());
             System.out.println("Node added: " + address);
+        } else {
+            log.debug(YELLOW + "Node {} is already in neighbours.", address.getNodeID());
+            System.out.println("Node " + address.getNodeID() + " is already a neighbour.");
         }
     }
-
 
     @Override
     public String toString() {

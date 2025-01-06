@@ -11,16 +11,18 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Address implements Comparable<Address>, Serializable {
-    public String hostname;
-    public Integer port;
-    public Long nodeID;
+    private String hostname;
+    private Integer port;
+    private Long nodeID;
     private boolean isOnline = true;
 
+    // Constructor without nodeID
     public Address(String hostname, int port){
         this.hostname = hostname;
         this.port = port;
     }
 
+    // Constructor with nodeID
     public Address(String hostname, int port, Long nodeID){
         this.hostname = hostname;
         this.port = port;
@@ -29,32 +31,24 @@ public class Address implements Comparable<Address>, Serializable {
 
     @Override
     public String toString(){
-        return ("Address: " + "nodeId: " + nodeID + " " + "hostname: " + hostname + " " + "port: " + port);
+        return "Address: nodeId: " + nodeID + " hostname: " + hostname + " port: " + port;
     }
 
     @Override
     public boolean equals(Object object){
-        if (object instanceof Address){
-            Address address = (Address) object;
-            return Objects.equals(address.getHostname(), hostname) &&
-                    Objects.equals(address.getPort(), port) &&
-                    Objects.equals(address.getNodeID(), nodeID);
-        }
-        return false;
+        if (this == object) return true;
+        if (!(object instanceof Address)) return false;
+        Address address = (Address) object;
+        return Objects.equals(nodeID, address.nodeID);
+    }
+
+    @Override
+    public int hashCode(){
+        return Objects.hash(nodeID);
     }
 
     @Override
     public int compareTo(Address address) {
-        int retval;
-        if ((retval = hostname.compareTo(address.getHostname())) == 0 ) {
-            if ((retval = port.compareTo(address.getPort())) == 0 ) {
-                return 0;
-            }
-            else
-                return retval;
-        }
-        else
-            return retval;
+        return this.nodeID.compareTo(address.nodeID);
     }
-
 }

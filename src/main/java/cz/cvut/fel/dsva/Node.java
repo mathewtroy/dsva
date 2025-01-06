@@ -155,6 +155,14 @@ public class Node implements Runnable {
 
         logNeighboursInfo();
 
+        // Add a delay to ensure leader notifications are processed
+        try {
+            Thread.sleep(1000); // Delay 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            log.error(RED + "Sleep interrupted: {}", e.getMessage());
+        }
+
         if (!hasNeighbours) {
             log.info("No neighbours found. Starting election for node {}...", nodeId);
             startElection();
@@ -162,6 +170,7 @@ public class Node implements Runnable {
             checkLeader();
         }
     }
+
 
     private void logNeighboursInfo() {
         log.info(CYAN + "Node {} neighbors info:" + RESET, nodeId);
@@ -249,24 +258,36 @@ public class Node implements Runnable {
             return;
         }
         try {
+            // Obtain a proxy to the joining node
             NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
-            myNeighbours = remoteNode.join(address);
+            // Add the joining node to your neighbors
+            remoteNode.join(address);
             myNeighbours.addNewNode(otherNodeAddr);
 
             log.info(GREEN + "Node {} joined the network via {}", address, otherNodeAddr);
 
-            // Only start election if there is no leader at all
+            // Retrieve the current leader from your neighbors
             Address currentLeader = myNeighbours.getLeaderNode();
+            // Start election only if there is no leader
             if (currentLeader == null) {
                 log.info("No leader in the network. Node {} will start election...", nodeId);
                 startElection();
+            } else {
+                log.info("Leader {} already exists, no new election needed.", currentLeader.getNodeID());
+                // Optionally, you can notify the joining node about the current leader
+                // This ensures the new node is aware of the existing leader
+                try {
+                    remoteNode.notifyAboutNewLeader(currentLeader);
+                } catch (RemoteException e) {
+                    log.error(RED + "Failed to notify node {} about current leader: {}", otherNodeAddr.getNodeID(), e.getMessage());
+                }
             }
-            // else do nothing - we keep the existing leader
-
         } catch (RemoteException e) {
             log.error(RED + "Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
         }
     }
+
+
 
     public void startElection() {
         if (isKilled || isLeft) {
@@ -287,16 +308,20 @@ public class Node implements Runnable {
             try {
                 getCommHub().getRMIProxy(leader).checkStatusOfLeader(nodeId);
                 System.out.println("Leader is alive: " + leader);
+                log.info("Leader Node {} is alive.", leader.getNodeID());
             } catch (RemoteException e) {
                 System.out.println("Leader is unreachable, starting election...");
+                log.warn("Leader Node {} is unreachable. Starting election.", leader.getNodeID());
                 myNeighbours.setLeaderNode(null);
                 startElection();
             }
         } else {
             System.out.println("No leader present, starting election...");
+            log.info("No leader present. Starting election.");
             startElection();
         }
     }
+
 
     public void sendMessageToNode(long receiverId, String content) {
         if (isKilled || isLeft) {

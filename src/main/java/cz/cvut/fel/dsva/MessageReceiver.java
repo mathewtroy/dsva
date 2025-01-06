@@ -11,6 +11,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 import static cz.cvut.fel.dsva.Color.GREEN;
+import static cz.cvut.fel.dsva.Color.RED;
 
 @Slf4j
 @Getter
@@ -24,8 +25,31 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public DSNeighbours join(Address addr) throws RemoteException {
+        // Add the joining node to your neighbors
         myNode.getNeighbours().addNewNode(addr);
-        System.out.println("Node " + addr + " joined the network.");
+        System.out.println("Node " + addr.getNodeID() + " joined the network.");
+        log.info("Node {} added to neighbors.", addr.getNodeID());
+
+        // Retrieve the current leader
+        Address currentLeader = myNode.getNeighbours().getLeaderNode();
+        log.info("Current leader is Node {}.", currentLeader != null ? currentLeader.getNodeID() : "null");
+
+        if (currentLeader != null) {
+            // Notify the joining node about the current leader
+            try {
+                NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(addr);
+                remoteNode.notifyAboutNewLeader(currentLeader);
+                log.info(GREEN + "Notified Node {} about current leader: Node {}.", addr.getNodeID(), currentLeader.getNodeID());
+            } catch (RemoteException e) {
+                log.error(RED + "Failed to notify Node {} about current leader: {}", addr.getNodeID(), e.getMessage());
+            }
+        } else {
+            // If no leader exists, initiate an election
+            System.out.println("No leader present. Starting election.");
+            log.info("No leader present. Initiating election.");
+            myNode.startElection();
+        }
+
         return myNode.getNeighbours();
     }
 
@@ -41,15 +65,34 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void notifyAboutNewLeader(Address leader) throws RemoteException {
-        myNode.getNeighbours().setLeaderNode(leader);
-        System.out.println("New leader notified: " + leader);
+        Address currentLeader = myNode.getNeighbours().getLeaderNode();
+        log.info("Received notifyAboutNewLeader for Node {}", leader.getNodeID());
 
-        // Обновляем лидера для всех соседей
-        for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
-            try {
-                myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
-            } catch (RemoteException e) {
-                log.error("Failed to notify node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+        if (currentLeader == null) {
+            // Accept the new leader
+            myNode.getNeighbours().setLeaderNode(leader);
+            System.out.println("New leader notified: " + leader);
+            log.info("Set new leader to Node {}.", leader.getNodeID());
+
+            // Notify all neighbors about the new leader
+            for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
+                try {
+                    myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
+                    log.info(GREEN + "Notified Node {} about new leader Node {}.", neighbour.getNodeID(), leader.getNodeID());
+                } catch (RemoteException e) {
+                    log.error("Failed to notify Node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+                }
+            }
+        } else {
+            if (currentLeader.equals(leader)) {
+                // Leader reconfirmed
+                System.out.println("Leader " + leader + " reconfirmed.");
+                log.info("Leader Node {} reconfirmed.", leader.getNodeID());
+            } else {
+                // Ignore new leader notification
+                System.out.println("Ignoring new leader " + leader.getNodeID() +
+                        ", because we already have leader " + currentLeader.getNodeID());
+                log.warn("Ignoring new leader Node {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
             }
         }
     }
@@ -57,9 +100,9 @@ public class MessageReceiver implements NodeCommands {
     @Override
     public void notifyAboutRevival(Address revivedNode) throws RemoteException {
         if (!myNode.getNeighbours().getNeighbours().contains(revivedNode)) {
-            myNode.getNeighbours().addNewNode(revivedNode); // Добавляем узел обратно
+            myNode.getNeighbours().addNewNode(revivedNode);
             System.out.println("Node " + revivedNode.getNodeID() + " is back online.");
-            log.info("Node {} added back to neighbours.", revivedNode.getNodeID());
+            log.info("Node {} added back to neighbors.", revivedNode.getNodeID());
         }
     }
 
@@ -67,8 +110,10 @@ public class MessageReceiver implements NodeCommands {
     public void checkStatusOfLeader(long senderId) throws RemoteException {
         if (myNode.getNeighbours().isLeaderPresent()) {
             System.out.println("Leader is alive: " + myNode.getNeighbours().getLeaderNode());
+            log.info("Leader Node {} is alive.", myNode.getNeighbours().getLeaderNode().getNodeID());
         } else {
             System.out.println("Leader is missing, starting election...");
+            log.warn("Leader is missing. Initiating election.");
             myNode.startElection();
         }
     }
@@ -102,20 +147,22 @@ public class MessageReceiver implements NodeCommands {
     public void notifyAboutJoin(Address address) throws RemoteException {
         myNode.getNeighbours().addNewNode(address);
         System.out.println("Notified about a new node join: " + address);
+        log.info("Node {} added to neighbors.", address.getNodeID());
     }
 
     @Override
     public void notifyAboutLogOut(Address address) throws RemoteException {
-        myNode.getNeighbours().removeNode(address); // Удаляем узел из соседей
+        myNode.getNeighbours().removeNode(address);
         System.out.println("Node " + address.getNodeID() + " left the network.");
-        log.info("Node {} removed from neighbours.", address.getNodeID());
+        log.info("Node {} removed from neighbors.", address.getNodeID());
 
-        // Если отключившийся узел был лидером, инициируем выборы
+        // If the logged out node was the leader, initiate election
         if (myNode.getNeighbours().getLeaderNode() != null &&
                 myNode.getNeighbours().getLeaderNode().equals(address)) {
             System.out.println("Leader has left. Starting election...");
-            myNode.getNeighbours().setLeaderNode(null); // Сбрасываем лидера
-            myNode.startElection(); // Запускаем выборы
+            log.warn("Leader Node {} has left. Initiating election.", address.getNodeID());
+            myNode.getNeighbours().setLeaderNode(null);
+            myNode.startElection();
         }
     }
 
@@ -129,6 +176,7 @@ public class MessageReceiver implements NodeCommands {
         System.out.println("Repairing topology after join of " + address);
         if (!myNode.getNeighbours().getNeighbours().contains(address)) {
             myNode.getNeighbours().addNewNode(address);
+            log.info("Node {} added to neighbors during topology repair.", address.getNodeID());
         }
     }
 
@@ -136,16 +184,19 @@ public class MessageReceiver implements NodeCommands {
     public void repairTopologyAfterLogOut(int nodeID) throws RemoteException {
         myNode.getNeighbours().removeNodeById(nodeID);
         System.out.println("Topology repaired after Node " + nodeID + " left.");
+        log.info("Node {} removed from neighbors during topology repair.", nodeID);
     }
 
     @Override
     public void repairTopologyWithNewLeader(List<Address> addresses, Address address) throws RemoteException {
         System.out.println("Repairing topology with new leader: " + address);
         myNode.getNeighbours().setLeaderNode(address);
+        log.info("Set new leader to Node {} during topology repair.", address.getNodeID());
 
         for (Address addr : addresses) {
             if (!myNode.getNeighbours().getNeighbours().contains(addr)) {
                 myNode.getNeighbours().addNewNode(addr);
+                log.info("Node {} added to neighbors during topology repair.", addr.getNodeID());
             }
         }
     }
@@ -172,9 +223,19 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void updateLeader(Address leaderAddress) throws RemoteException {
-        myNode.getNeighbours().setLeaderNode(leaderAddress);
-        log.info(GREEN + "Node {} received new leader information: {}", myNode.getNodeId(), leaderAddress);
-        System.out.println("Node " + myNode.getNodeId() + " acknowledges new leader: " + leaderAddress);
+        Address currentLeader = myNode.getNeighbours().getLeaderNode();
+        if (currentLeader == null || currentLeader.equals(leaderAddress)) {
+            myNode.getNeighbours().setLeaderNode(leaderAddress);
+            log.info(GREEN + "Node {} acknowledges new leader: Node {}.", myNode.getNodeId(), leaderAddress.getNodeID());
+            System.out.println("Node " + myNode.getNodeId() + " acknowledges new leader: " + leaderAddress);
+        } else {
+            log.warn("Node {} received conflicting leader information. Current leader: Node {}, Received leader: Node {}.",
+                    myNode.getNodeId(),
+                    currentLeader.getNodeID(),
+                    leaderAddress.getNodeID());
+            System.out.println("Node " + myNode.getNodeId() + " received conflicting leader information. Current leader: Node " +
+                    currentLeader.getNodeID() + ", Received leader: Node " + leaderAddress.getNodeID());
+        }
     }
 
     @Override
@@ -183,5 +244,4 @@ public class MessageReceiver implements NodeCommands {
         log.info(GREEN + "Topology has been reset by request to Node {}.", myNode.getNodeId());
         System.out.println("Topology reset on Node " + myNode.getNodeId());
     }
-
 }

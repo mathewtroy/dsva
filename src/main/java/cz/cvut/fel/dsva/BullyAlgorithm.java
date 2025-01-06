@@ -157,26 +157,46 @@ public class BullyAlgorithm {
         cancelElectedTimer();
     }
 
-    // Declares the node with address newLeader as the leader
     private void declareLeader(Address newLeader) {
-        // Mark node as coordinator if it's itself
-        node.setCoordinator(node.getAddress().equals(newLeader));
-        node.getNeighbours().setLeaderNode(newLeader);
+        boolean shouldDeclare = false;
 
-        // Notify all neighbors that this node (or newLeader) is coordinator
-        node.getNeighbours().getNeighbours().forEach(neighbour -> {
-            try {
-                NodeCommands proxy = node.getCommHub().getRMIProxy(neighbour);
-                proxy.notifyAboutNewLeader(newLeader);
-            } catch (RemoteException e) {
-                log.error(RED + "Failed to notify {} about new leader: {}", neighbour, e.getMessage());
+        if (node.getAddress().equals(newLeader)) {
+            // Declaring itself as leader
+            shouldDeclare = true;
+        } else {
+            // Accepting a new leader only if no leader is set
+            if (!node.isCoordinator() && node.getNeighbours().getLeaderNode() == null) {
+                shouldDeclare = true;
             }
-        });
+        }
 
-        log.info(GREEN + "Leader declared: Node {}.", newLeader.getNodeID());
-        System.out.println("Leader declared: Node " + newLeader.getNodeID());
+        if (shouldDeclare) {
+            node.setCoordinator(node.getAddress().equals(newLeader));
+            node.getNeighbours().setLeaderNode(newLeader);
 
-        // If we had timers running, cancel them
-        cancelAllTimers();
+            node.getNeighbours().getNeighbours().forEach(neighbour -> {
+                try {
+                    NodeCommands proxy = node.getCommHub().getRMIProxy(neighbour);
+                    proxy.notifyAboutNewLeader(newLeader);
+                    log.info(GREEN + "Notified Node {} about new leader Node {}.", neighbour.getNodeID(), newLeader.getNodeID());
+                } catch (RemoteException e) {
+                    log.error(RED + "Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
+                }
+            });
+
+            log.info(GREEN + "Leader declared: Node {}.", newLeader.getNodeID());
+            System.out.println("Leader declared: Node " + newLeader.getNodeID());
+
+            cancelAllTimers();
+            node.setVoting(false);
+        } else {
+            log.info("Attempted to declare leader Node {}, but leader is already set to Node {}.",
+                    newLeader.getNodeID(),
+                    node.getNeighbours().getLeaderNode().getNodeID());
+            System.out.println("Ignoring declareLeader for Node " + newLeader.getNodeID() +
+                    ", because leader is already set to Node " + node.getNeighbours().getLeaderNode().getNodeID());
+        }
     }
+
+
 }
