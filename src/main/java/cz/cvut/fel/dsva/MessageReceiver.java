@@ -152,19 +152,24 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void notifyAboutLogOut(Address address) throws RemoteException {
+        log.info("Received notifyAboutLogOut for Node {}", address.getNodeID());
+        Address currentLeader = myNode.getNeighbours().getLeaderNode();
+
         myNode.getNeighbours().removeNode(address);
         System.out.println("Node " + address.getNodeID() + " left the network.");
         log.info("Node {} removed from neighbors.", address.getNodeID());
 
         // If the logged out node was the leader, initiate election
-        if (myNode.getNeighbours().getLeaderNode() != null &&
-                myNode.getNeighbours().getLeaderNode().equals(address)) {
+        if (currentLeader != null && currentLeader.equals(address)) {
             System.out.println("Leader has left. Starting election...");
             log.warn("Leader Node {} has left. Initiating election.", address.getNodeID());
             myNode.getNeighbours().setLeaderNode(null);
             myNode.startElection();
+        } else {
+            log.info("Node {} was removed, but it was not the leader.", address.getNodeID());
         }
     }
+
 
     @Override
     public void Election(long id) throws RemoteException {

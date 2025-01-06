@@ -107,12 +107,13 @@ public class BullyAlgorithm {
     private void startElectionTimer() {
         cancelElectionTimer();
         electionTimer = new Timer();
+        log.info("Election timer started for Node {}.", node.getNodeId());
         electionTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 synchronized (BullyAlgorithm.this) {
                     if (waitingForOK && !node.isReceivedOK()) {
-                        // No OK => we are the highest node or no one responded
+                        log.info("Election timeout reached for Node {}. Declaring self as leader.", node.getNodeId());
                         declareLeader(node.getAddress());
                     }
                 }
@@ -125,12 +126,13 @@ public class BullyAlgorithm {
     private void startElectedTimer() {
         cancelElectedTimer();
         electedTimer = new Timer();
+        log.info("Elected timer started for Node {}.", node.getNodeId());
         electedTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 synchronized (BullyAlgorithm.this) {
                     if (waitingForElected && !node.getNeighbours().isLeaderPresent()) {
-                        // No Elected message => let's declare ourselves
+                        log.info("Elected timeout reached for Node {}. Declaring self as leader.", node.getNodeId());
                         declareLeader(node.getAddress());
                     }
                 }

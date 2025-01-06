@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static cz.cvut.fel.dsva.Color.*;
 
@@ -19,7 +20,7 @@ public class DSNeighbours implements Serializable {
     private Address leaderNode;
 
     public DSNeighbours() {
-        this.neighbours = new ArrayList<>();
+        this.neighbours = new CopyOnWriteArrayList<>();
     }
 
     public Address getAddressById(int id) {
