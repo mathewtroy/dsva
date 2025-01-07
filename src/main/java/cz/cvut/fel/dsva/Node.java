@@ -169,7 +169,6 @@ public class Node implements Runnable {
         }
     }
 
-
     private void logNeighboursInfo() {
         log.info("Node {} neighbors info:", nodeId);
         for (Address neighbour : myNeighbours.getNeighbours()) {
@@ -249,43 +248,6 @@ public class Node implements Runnable {
     public CommunicationHub getCommHub() {
         return this.myCommHub;
     }
-
-//    public void join(Address otherNodeAddr) {
-//        if (isKilled || isLeft) {
-//            log.info("Node {} is inactive (killed or left), ignoring join(...) call.", nodeId);
-//            return;
-//        }
-//        try {
-//            // Obtain a proxy to the joining node
-//            NodeCommands remoteNode = myCommHub.getRMIProxy(otherNodeAddr);
-//            // Add the joining node to your neighbors
-//            remoteNode.join(address);
-//            myNeighbours.addNewNode(otherNodeAddr);
-//
-//            log.info("Node {} joined the network via {}", address, otherNodeAddr);
-//
-//            // Retrieve the current leader from your neighbors
-//            Address currentLeader = myNeighbours.getLeaderNode();
-//            // Start election only if there is no leader
-//            if (currentLeader == null) {
-//                log.info("No leader in the network. Node {} will start election...", nodeId);
-//                startElection();
-//            } else {
-//                log.info("Leader {} already exists, no new election needed.", currentLeader.getNodeID());
-//                // Optionally, you can notify the joining node about the current leader
-//                // This ensures the new node is aware of the existing leader
-//                try {
-//                    remoteNode.notifyAboutNewLeader(currentLeader);
-//                } catch (RemoteException e) {
-//                    log.error("Failed to notify node {} about current leader: {}", otherNodeAddr.getNodeID(), e.getMessage());
-//                }
-//            }
-//        } catch (RemoteException e) {
-//            log.error("Failed to join {}: {}", otherNodeAddr, e.getMessage(), e);
-//        }
-//    }
-
-
 
     public void startElection() {
         if (isKilled || isLeft) {
@@ -491,12 +453,6 @@ public class Node implements Runnable {
         System.out.println("Node " + nodeId + " has been revived.");
         log.info("Node {} successfully revived.", nodeId);
     }
-
-//    public void setDelay(long delay) {
-//        getCommHub().setMessageDelay(delay);
-//        System.out.println("Delay set to " + delay + " ms for node " + nodeId);
-//        log.info("Delay set to {} ms on node {}.", delay, nodeId);
-//    }
 
     public static void main(String[] args) {
         thisNode = new Node(args);

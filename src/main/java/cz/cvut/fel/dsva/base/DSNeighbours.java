@@ -19,27 +19,6 @@ public class DSNeighbours implements Serializable {
         this.neighbours = new CopyOnWriteArrayList  <>();
     }
 
-    public Address getAddressById(long id) {
-        for (Address address : neighbours) {
-            if (address.getNodeID().equals(id)) { // Ensure type consistency
-                return address;
-            }
-        }
-        return null;
-    }
-
-    public synchronized void removeNodeById(int nodeId) {
-        Address addressToRemove = getAddressById(nodeId);
-        if (addressToRemove != null) {
-            neighbours.remove(addressToRemove);
-            log.info("Node with ID {} has been removed.", nodeId);
-            log.info("Node with ID " + nodeId + " has been removed from neighbours.");
-        } else {
-            log.warn("Attempted to remove Node ID {}, but it was not found.", nodeId);
-            log.info("Node with ID " + nodeId + " not found in neighbours.");
-        }
-    }
-
     public boolean isLeaderPresent() {
         return leaderNode != null;
     }
@@ -48,14 +27,13 @@ public class DSNeighbours implements Serializable {
         boolean removed = neighbours.remove(address);
         if (removed) {
             log.info("Node {} removed from neighbours.", address.getNodeID());
-            log.info("Node " + address.getNodeID() + " removed from neighbours.");
 
             if(leaderNode != null && leaderNode.equals(address)) {
                 setLeaderNode(null);
             }
         } else {
             log.warn("Attempted to remove Node {}, but it was not found.", address.getNodeID());
-            log.info("Node " + address.getNodeID() + " not found in neighbours.");
+            log.info("Node {} not found in neighbours.", address.getNodeID());
         }
     }
 
@@ -63,10 +41,9 @@ public class DSNeighbours implements Serializable {
         if (!neighbours.contains(address)) {
             neighbours.add(address);
             log.info("Node {} added to neighbours.", address.getNodeID());
-            log.info("Node added: " + address);
+            log.info("Node added: {}", address);
         } else {
             log.debug("Node {} is already in neighbours.", address.getNodeID());
-            log.info("Node " + address.getNodeID() + " is already a neighbour.");
         }
     }
 

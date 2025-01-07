@@ -55,12 +55,6 @@ public class MessageReceiver implements NodeCommands {
         myNode.getBully().onElectionMsgFromLower(senderId);
     }
 
-//    @Override
-//    public synchronized void elected(long id, Address leaderAddr) throws RemoteException {
-//        log.info("Received Elected message from Node {} with Leader Address {}.", id, leaderAddr);
-//        myNode.getBully().onElectedReceived(id, leaderAddr);
-//    }
-
     @Override
     public synchronized void notifyAboutNewLeader(Address leader) throws RemoteException {
         Address currentLeader = myNode.getNeighbours().getLeaderNode();
@@ -122,33 +116,12 @@ public class MessageReceiver implements NodeCommands {
         log.info("Message from Node " + senderId + " to Node " + receiverID + ": " + content);
     }
 
-//    @Override
-//    public synchronized void receiveMessage(String message, long receiverId) throws RemoteException {
-//        log.info("Received message at Node " + receiverId + ": " + message);
-//    }
-
-    @Override
-    public void help() throws RemoteException {
-        log.info("Available commands: startElection, checkLeader, sendMessage.");
-    }
-
-//    @Override
-//    public void printStatus(Node node) throws RemoteException {
-//        log.info("Node status: " + node.getStatus());
-//    }
-
     @Override
     public synchronized Address getCurrentLeader() throws RemoteException {
         Address leader = myNode.getNeighbours().getLeaderNode();
         log.info("Current leader is Node {}.", leader != null ? leader.getNodeID() : "null");
         return leader;
     }
-
-//    @Override
-//    public synchronized void notifyAboutJoin(Address address) throws RemoteException {
-//        myNode.getNeighbours().addNewNode(address);
-//        log.info("Notified about a new node join: Node {}.", address.getNodeID());
-//    }
 
     @Override
     public synchronized void notifyAboutLogOut(Address address) throws RemoteException {
@@ -167,59 +140,6 @@ public class MessageReceiver implements NodeCommands {
             log.info("Node {} was removed, but it was not the leader.", address.getNodeID());
         }
     }
-
-//    @Override
-//    public synchronized void election(long id) throws RemoteException {
-//        log.info("Election command received from Node {}.", id);
-//        myNode.getBully().startElection();
-//    }
-
-//    @Override
-//    public synchronized void repairTopologyAfterJoin(Address address) throws RemoteException {
-//        log.info("Repairing topology after join of {}", address);
-//        if (!myNode.getNeighbours().getNeighbours().contains(address)) {
-//            myNode.getNeighbours().addNewNode(address);
-//            log.info("Node {} added to neighbors during topology repair.", address.getNodeID());
-//        }
-//    }
-
-//    @Override
-//    public synchronized void repairTopologyAfterLogOut(int nodeID) throws RemoteException {
-//        log.info("Repairing topology after Node {} left.", nodeID);
-//        myNode.getNeighbours().removeNodeById(nodeID);
-//    }
-//
-//    @Override
-//    public synchronized void repairTopologyWithNewLeader(List<Address> addresses, Address address) throws RemoteException {
-//        log.info("Repairing topology with new leader: {}", address);
-//        myNode.getNeighbours().setLeaderNode(address);
-//        log.info("Set new leader to Node {} during topology repair.", address.getNodeID());
-//
-//        for (Address addr : addresses) {
-//            if (!myNode.getNeighbours().getNeighbours().contains(addr)) {
-//                myNode.getNeighbours().addNewNode(addr);
-//                log.info("Node {} added to neighbors during topology repair.", addr.getNodeID());
-//            }
-//        }
-//    }
-
-//    @Override
-//    public synchronized void killNode() throws RemoteException {
-//        log.info("Kill node command received.");
-//        myNode.kill();
-//    }
-
-//    @Override
-//    public synchronized void reviveNode() throws RemoteException {
-//        log.info("Revive node command received.");
-//        myNode.revive();
-//    }
-
-//    @Override
-//    public synchronized void setDelay(long delay) throws RemoteException {
-//        log.info("Set delay command received. Delay: {}", delay);
-//        myNode.setDelay(delay);
-//    }
 
     @Override
     public synchronized void receiveOK(long fromId) throws RemoteException {
@@ -243,10 +163,4 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
-//    @Override
-//    public synchronized void resetTopology() throws RemoteException {
-//        log.info("Reset topology command received.");
-//        myNode.resetTopology();
-//        log.info("Topology has been reset by request to Node {}.", myNode.getNodeId());
-//    }
 }
