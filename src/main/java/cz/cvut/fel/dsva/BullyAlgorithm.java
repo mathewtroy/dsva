@@ -165,13 +165,14 @@ public class BullyAlgorithm {
             node.setCoordinator(node.getAddress().equals(newLeader));
             node.getNeighbours().setLeaderNode(newLeader);
 
+            // Notify all neighbors about the new leader
             node.getNeighbours().getNeighbours().forEach(neighbour -> {
                 try {
                     NodeCommands proxy = node.getCommHub().getRMIProxy(neighbour);
                     proxy.notifyAboutNewLeader(newLeader);
                     log.info("Notified Node {} about the new leader Node {}.", neighbour.getNodeID(), newLeader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about the new leader: {}", neighbour, e.getMessage());
+                    log.error("Failed to notify Node {} about the new leader: {}", neighbour.getNodeID(), e.getMessage());
                 }
             });
 

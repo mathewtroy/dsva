@@ -25,5 +25,5 @@ public interface NodeCommands extends Remote {
 
         Address getCurrentLeader() throws RemoteException;
 
-
+        void notifyAboutLeaderDeath(Address leaderNode) throws RemoteException;
 }

@@ -8,8 +8,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.rmi.RemoteException;
-import java.util.List;
-
 
 @Slf4j
 @Getter
@@ -61,12 +59,11 @@ public class MessageReceiver implements NodeCommands {
         log.info("Received notifyAboutNewLeader for Node {}.", leader.getNodeID());
 
         if (currentLeader == null) {
-            // Accept the new leader
+            // Accept the new leader if no leader is set
             myNode.getNeighbours().setLeaderNode(leader);
-            log.info("New leader notified: " + leader);
-            log.info("Set new leader to Node {}.", leader.getNodeID());
+            log.info("New leader notified: Node {}.", leader.getNodeID());
 
-            // Notify BullyAlgorithm about new leader was chosen
+            // Notify BullyAlgorithm about the new leader
             myNode.getBully().onElectedReceived(leader.getNodeID(), leader);
 
             // Notify all neighbors about the new leader
@@ -75,19 +72,16 @@ public class MessageReceiver implements NodeCommands {
                     myNode.getCommHub().getRMIProxy(neighbour).updateLeader(leader);
                     log.info("Notified Node {} about new leader Node {}.", neighbour.getNodeID(), leader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about new leader: {}", neighbour, e.getMessage());
+                    log.error("Failed to notify Node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
                 }
             }
         } else {
             if (currentLeader.equals(leader)) {
                 // Leader reconfirmed
-                log.info("Leader " + leader + " reconfirmed.");
-                log.info("Leader Node {} reconfirmed.", leader.getNodeID());
+                log.info("Leader {} reconfirmed.", leader.getNodeID());
             } else {
-                // Ignore new leader notification
-                log.info("Ignoring new leader " + leader.getNodeID() +
-                        ", because we already have leader " + currentLeader.getNodeID());
-                log.warn("Ignoring new leader Node {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
+                // Ignore new leader notification if current leader has higher or equal ID
+                log.info("Ignoring new leader {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
             }
         }
     }
@@ -98,6 +92,7 @@ public class MessageReceiver implements NodeCommands {
             myNode.getNeighbours().addNewNode(revivedNode);
             log.info("Node {} is back online.", revivedNode.getNodeID());
         }
+        // No election is initiated here to ensure that leader remains until it dies or leaves
     }
 
     @Override
@@ -105,6 +100,7 @@ public class MessageReceiver implements NodeCommands {
         if (myNode.getNeighbours().isLeaderPresent()) {
             Address leader = myNode.getNeighbours().getLeaderNode();
             log.info("Leader Node {} is alive.", leader.getNodeID());
+            // Optionally, send a response back to confirm the leader is alive
         } else {
             log.warn("Leader is missing. Initiating election.");
             myNode.startElection();
@@ -113,7 +109,8 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public synchronized void sendMessage(long senderId, int receiverID, String content) throws RemoteException {
-        log.info("Message from Node " + senderId + " to Node " + receiverID + ": " + content);
+        log.info("Message from Node {} to Node {}: {}", senderId, receiverID, content);
+        // Implement message handling as needed
     }
 
     @Override
@@ -135,6 +132,7 @@ public class MessageReceiver implements NodeCommands {
         if (currentLeader != null && currentLeader.equals(address)) {
             log.warn("Leader Node {} has left. Initiating election.", address.getNodeID());
             myNode.getNeighbours().setLeaderNode(null);
+            myNode.notifyAllNeighboursOfLeaderDeath();
             myNode.startElection();
         } else {
             log.info("Node {} was removed, but it was not the leader.", address.getNodeID());
@@ -163,4 +161,19 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    @Override
+    public synchronized void notifyAboutLeaderDeath(Address deadLeader) throws RemoteException {
+        log.warn("Received notification that Leader Node {} has died.", deadLeader.getNodeID());
+
+        // Remove the dead leader from neighbors
+        myNode.getNeighbours().removeNode(deadLeader);
+
+        // If the dead leader was the current leader, initiate election
+        if (myNode.getNeighbours().getLeaderNode() != null && myNode.getNeighbours().getLeaderNode().equals(deadLeader)) {
+            myNode.getNeighbours().setLeaderNode(null);
+            log.warn("Leader Node {} has died. Initiating election.", deadLeader.getNodeID());
+            myNode.notifyAllNeighboursOfLeaderDeath();
+            myNode.startElection();
+        }
+    }
 }
