@@ -2,7 +2,6 @@ package cz.cvut.fel.dsva.base;
 
 import cz.cvut.fel.dsva.Node;
 
-import java.io.IOException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -23,8 +22,8 @@ public interface NodeCommands extends Remote {
 
         // Алгоритм выбора лидера
         void sendElectionMsg(long senderId) throws RemoteException;
-        void Election(long id) throws RemoteException;
-        void Elected(long id, Address leaderAddr) throws RemoteException;
+        void election(long id) throws RemoteException;
+        void elected(long id, Address leaderAddr) throws RemoteException;
 
         void receiveOK(long fromId) throws RemoteException;
         void updateLeader(Address leaderAddress) throws RemoteException;
