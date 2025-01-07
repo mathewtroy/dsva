@@ -11272,3 +11272,99 @@ Caused by: java.rmi.NotBoundException: DSVNode
 2025-01-04 23:58:35 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mTopology reset on node 3.
 2025-01-04 23:58:35 [Thread-9] INFO  cz.cvut.fel.dsva.Node - [32mMessage listener stopped.
 2025-01-04 23:58:35 [Thread-9] INFO  cz.cvut.fel.dsva.Node - Node 3 successfully left the network.
+2025-01-07 18:07:43 [main] INFO  cz.cvut.fel.dsva.Node - Node initialized with ID 1 on ports RMI: 50051, API: 7001. My IP = 192.168.56.105
+2025-01-07 18:07:43 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 50051.
+2025-01-07 18:07:43 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 192.168.56.105:50051.
+2025-01-07 18:07:43 [main] INFO  cz.cvut.fel.dsva.Node - Trying to connect to all possible nodes in topology...
+2025-01-07 18:07:45 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 2: Connection refused to host: 192.168.56.154; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+2025-01-07 18:07:47 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 3: Connection refused to host: 192.168.56.106; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+2025-01-07 18:08:08 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 4: Connection refused to host: 192.168.56.107; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:08:29 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 5: Connection refused to host: 192.168.56.108; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:08:29 [main] INFO  cz.cvut.fel.dsva.Node - Node 1 neighbors info:
+2025-01-07 18:08:30 [main] INFO  cz.cvut.fel.dsva.Node - No neighbours found. Starting election for node 1...
+2025-01-07 18:08:30 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 1 initiates an election.
+2025-01-07 18:08:30 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Leader declared: Node 1.
+2025-01-07 18:08:30 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-07 18:08:30 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @48151ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-07 18:08:30 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-07 18:08:30 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 614 days old. Consider checking for a newer version.).
+2025-01-07 18:08:31 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7001/
+2025-01-07 18:08:31 [main] INFO  io.javalin.Javalin - Javalin started in 287ms \o/
+2025-01-07 18:08:37 [main] INFO  cz.cvut.fel.dsva.Node - Node initialized with ID 2 on ports RMI: 50052, API: 7002. My IP = 192.168.56.154
+2025-01-07 18:08:37 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 50052.
+2025-01-07 18:08:37 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 192.168.56.154:50052.
+2025-01-07 18:08:37 [main] INFO  cz.cvut.fel.dsva.Node - Trying to connect to all possible nodes in topology...
+2025-01-07 18:08:39 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node 1 added to neighbours.
+2025-01-07 18:08:39 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node added: Address: nodeId: 1 hostname: 192.168.56.105 port: 50051
+2025-01-07 18:08:39 [main] INFO  cz.cvut.fel.dsva.Node - Connected to node 1 at IP 192.168.56.105
+2025-01-07 18:08:41 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 3: Connection refused to host: 192.168.56.106; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.Node - Node initialized with ID 3 on ports RMI: 50053, API: 7003. My IP = 192.168.56.106
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.Node - Creating new RMI registry on port 50053.
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.Node - Message listener started on 192.168.56.106:50053.
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.Node - Trying to connect to all possible nodes in topology...
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node 1 added to neighbours.
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.base.DSNeighbours - Node added: Address: nodeId: 1 hostname: 192.168.56.105 port: 50051
+2025-01-07 18:08:44 [main] INFO  cz.cvut.fel.dsva.Node - Connected to node 1 at IP 192.168.56.105
+2025-01-07 18:08:46 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 2: Connection refused to host: 192.168.56.154; nested exception is: 
+	java.net.ConnectException: Connection refused: connect
+2025-01-07 18:09:02 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 4: Connection refused to host: 192.168.56.107; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:09:07 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 4: Connection refused to host: 192.168.56.107; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:09:23 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 5: Connection refused to host: 192.168.56.108; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:09:23 [main] INFO  cz.cvut.fel.dsva.Node - Node 2 neighbors info:
+2025-01-07 18:09:23 [main] INFO  cz.cvut.fel.dsva.Node -     Neighbor -> ID: 1, Hostname: 192.168.56.105, Port: 50051
+2025-01-07 18:09:24 [main] INFO  cz.cvut.fel.dsva.Node - No leader present. Starting election.
+2025-01-07 18:09:24 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 2 initiates an election.
+2025-01-07 18:09:24 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Notified Node 1 about the new leader Node 2.
+2025-01-07 18:09:24 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Leader declared: Node 2.
+2025-01-07 18:09:24 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-07 18:09:24 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @48126ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-07 18:09:24 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-07 18:09:24 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 614 days old. Consider checking for a newer version.).
+2025-01-07 18:09:24 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7002/
+2025-01-07 18:09:24 [main] INFO  io.javalin.Javalin - Javalin started in 235ms \o/
+2025-01-07 18:09:28 [main] DEBUG cz.cvut.fel.dsva.Node - Cannot connect to node 5: Connection refused to host: 192.168.56.108; nested exception is: 
+	java.net.ConnectException: Connection timed out: connect
+2025-01-07 18:09:28 [main] INFO  cz.cvut.fel.dsva.Node - Node 3 neighbors info:
+2025-01-07 18:09:28 [main] INFO  cz.cvut.fel.dsva.Node -     Neighbor -> ID: 1, Hostname: 192.168.56.105, Port: 50051
+2025-01-07 18:09:29 [main] INFO  cz.cvut.fel.dsva.Node - No leader present. Starting election.
+2025-01-07 18:09:29 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Node 3 initiates an election.
+2025-01-07 18:09:29 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Notified Node 1 about the new leader Node 3.
+2025-01-07 18:09:29 [main] INFO  cz.cvut.fel.dsva.BullyAlgorithm - Leader declared: Node 3.
+2025-01-07 18:09:29 [main] INFO  io.javalin.Javalin - 
+       __                      __ _            __ __
+      / /____ _ _   __ ____ _ / /(_)____      / // /
+ __  / // __ `/| | / // __ `// // // __ \    / // /_
+/ /_/ // /_/ / | |/ // /_/ // // // / / /   /__  __/
+\____/ \__,_/  |___/ \__,_//_//_//_/ /_/      /_/
+
+          https://javalin.io/documentation
+
+2025-01-07 18:09:29 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @46169ms to org.eclipse.jetty.util.log.Slf4jLog
+2025-01-07 18:09:29 [main] INFO  io.javalin.Javalin - Starting Javalin ...
+2025-01-07 18:09:29 [main] INFO  io.javalin.Javalin - You are running Javalin 4.6.8 (released May 4, 2023. Your Javalin version is 614 days old. Consider checking for a newer version.).
+2025-01-07 18:09:29 [main] INFO  io.javalin.Javalin - Listening on http://localhost:7003/
+2025-01-07 18:09:29 [main] INFO  io.javalin.Javalin - Javalin started in 185ms \o/
