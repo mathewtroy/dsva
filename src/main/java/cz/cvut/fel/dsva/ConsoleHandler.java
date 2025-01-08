@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 
 @Slf4j
 @Getter
@@ -15,8 +14,6 @@ import java.io.PrintStream;
 public class ConsoleHandler implements Runnable {
     private boolean reading = true;
     private BufferedReader reader;
-    private PrintStream out = System.out;
-    private PrintStream err = System.err;
     private final Node myNode;
 
     public ConsoleHandler(Node myNode) {
@@ -28,31 +25,31 @@ public class ConsoleHandler implements Runnable {
         switch (commandline) {
             case "e":
             case "startElection":
-                System.out.println("Starting Bully Election Algorithm...");
+                log.info("Starting Bully Election Algorithm...");
                 myNode.startElection();
                 break;
 
             case "checkLeader":
             case "cl":
-                System.out.println("Checking leader status...");
+                log.info("Checking leader status...");
                 myNode.checkLeader();
                 break;
 
             case "killNode":
             case "k":
-                System.out.println("Killing this node...");
+                log.info("Killing this node...");
                 myNode.kill();
                 break;
 
             case "leaveNode":
             case "l":
-                System.out.println("Leaving the network...");
+                log.info("Leaving the network...");
                 myNode.leave();
                 break;
 
             case "reviveNode":
             case "r":
-                System.out.println("Reviving this node...");
+                log.info("Reviving this node...");
                 myNode.revive();
                 break;
 
@@ -73,42 +70,43 @@ public class ConsoleHandler implements Runnable {
 
             case "quit":
             case "q":
-                System.out.println("Exiting...");
+                log.info("Exiting...");
                 reading = false;
                 break;
 
             default:
-                System.out.println("Unrecognized command. Type 'help' or '?' for a list of commands.");
+                log.warn("Unrecognized command. Type 'help' or '?' for a list of commands.");
         }
     }
 
-
     private void printHelp() {
-        System.out.println("\nAvailable Commands:");
-        System.out.println("e or startElection  - Start Bully Election");
-        System.out.println("cl or checkLeader   - Check status of the current leader");
-        System.out.println("k or killNode       - Kill the node");
-        System.out.println("l or leaveNode      - Leave the network gracefully");
-        System.out.println("r or reviveNode     - Revive the node");
-        System.out.println("sm or sendMsg       - Send a message to another node");
-        System.out.println("s or status         - Print the current status of the node");
-        System.out.println("q or quit           - Exit the console");
-        System.out.println("? or help           - Display this help message");
-
+        log.info("\nAvailable Commands:");
+        log.info("e or startElection  - Start Bully Election");
+        log.info("cl or checkLeader   - Check status of the current leader");
+        log.info("k or killNode       - Kill the node");
+        log.info("l or leaveNode      - Leave the network gracefully");
+        log.info("r or reviveNode     - Revive the node");
+        log.info("sm or sendMsg       - Send a message to another node");
+        log.info("s or status         - Print the current status of the node");
+        log.info("q or quit           - Exit the console");
+        log.info("? or help           - Display this help message");
     }
-
 
     private void sendMessageToNode() {
         try {
-            System.out.print("Enter recipient Node ID: ");
+            log.info("Enter recipient Node ID: ");
             String receiverIdInput = reader.readLine();
             long receiverId = Long.parseLong(receiverIdInput);
-            System.out.print("Enter message content: ");
+            log.info("Enter message content: ");
             String messageContent = reader.readLine();
-            myNode.sendMessageToNode(receiverId, messageContent);
-            System.out.println("Message sent to Node " + receiverId);
+            boolean success = myNode.sendMessageToNode(receiverId, messageContent);
+            if (success) {
+                log.info("Message successfully sent to Node {}", receiverId);
+            } else {
+                log.warn("Failed to send message to Node {}", receiverId);
+            }
         } catch (IOException | NumberFormatException e) {
-            System.err.println("Error while sending message. Please try again.");
+            log.error("Error while sending message. Please try again.", e);
         }
     }
 
@@ -117,33 +115,34 @@ public class ConsoleHandler implements Runnable {
         new Thread(this).start();
     }
 
-
     @Override
     public void run() {
-
         if (!reading) {
-            System.out.println("Restarting ConsoleHandler...");
+            log.info("Restarting ConsoleHandler...");
             restartConsole();
+            return;
         }
 
         String commandline;
         while (reading) {
             try {
-                System.out.print("\ncmd > ");
+                log.info("\ncmd > ");
                 commandline = reader.readLine();
                 if (commandline != null) {
                     parseCommandLine(commandline.trim());
                 }
             } catch (IOException e) {
-                err.println("ConsoleHandler - Error reading console input.");
-                e.printStackTrace();
+                log.error("ConsoleHandler - Error reading console input.", e);
                 reading = false;
+                restartConsole();
+
             } catch (Exception ex) {
-                err.println("Unexpected error: " + ex.getMessage());
-                ex.printStackTrace();
+                log.error("Unexpected error: {}", ex.getMessage(), ex);
+                reading = false;
+
+                restartConsole();
             }
         }
-        System.out.println("Closing ConsoleHandler.");
+        log.info("Closing ConsoleHandler.");
     }
-
 }

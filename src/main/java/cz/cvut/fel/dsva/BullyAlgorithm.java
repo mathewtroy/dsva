@@ -44,6 +44,7 @@ public class BullyAlgorithm {
             if (neighbour.getNodeID() > node.getNodeId()) {
                 higherNodeExists = true;
                 node.getCommHub().sendElectionMessage(neighbour, node.getNodeId());
+                log.info("Election message sent to higher Node {}.", neighbour.getNodeID());
             }
         }
 
@@ -154,16 +155,19 @@ public class BullyAlgorithm {
         if (node.getAddress().equals(newLeader)) {
             // Declare itself as the leader
             shouldDeclare = true;
+            log.info("Node {} recognizes itself as the new leader.", node.getNodeId());
         } else {
             // Accept a new leader only if no leader is set
             if (!node.isCoordinator() && node.getNeighbours().getLeaderNode() == null) {
                 shouldDeclare = true;
+                log.info("Node {} accepts Node {} as the new leader.", node.getNodeId(), newLeader.getNodeID());
             }
         }
 
         if (shouldDeclare) {
             node.setCoordinator(node.getAddress().equals(newLeader));
             node.getNeighbours().setLeaderNode(newLeader);
+            log.info("Node {} is declaring itself as the leader.", node.getNodeId());
 
             // Notify all neighbors about the new leader
             for (Address neighbour : node.getNeighbours().getNeighbours()) {

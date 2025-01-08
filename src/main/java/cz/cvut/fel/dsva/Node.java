@@ -12,8 +12,6 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Timer;
-import java.util.TimerTask;
 
 @Slf4j
 @Getter
@@ -44,7 +42,6 @@ public class Node implements Runnable {
     private APIHandler myAPIHandler;
     private BullyAlgorithm bully;
 
-    // Получение IP для узлов 1..5
     private String getIpForNodeId(long id) {
         switch ((int) id) {
             case 1: return "192.168.56.105";
@@ -302,10 +299,10 @@ public class Node implements Runnable {
         }
     }
 
-    public void sendMessageToNode(long receiverId, String content) {
+    public boolean sendMessageToNode(long receiverId, String content) {
         if (isKilled || isLeft) {
             log.info("Node {} is inactive, skip sendMessageToNode.", nodeId);
-            return;
+            return false;
         }
 
         Address receiverAddr = null;
@@ -338,11 +335,15 @@ public class Node implements Runnable {
                 }
             }
             if (!messageSent) {
-                log.info("Node {} is unreachable. Removing from neighbours...", receiverId);
+                log.warn("Node {} is unreachable after {} attempts. Removing from neighbours...", receiverId, 3);
                 myNeighbours.removeNode(receiverAddr);
+                return false;
+            } else {
+                return true;
             }
         } else {
-            log.info("Receiver not found in neighbours.");
+            log.warn("Receiver Node {} not found in neighbours.", receiverId);
+            return false;
         }
     }
 
@@ -361,20 +362,27 @@ public class Node implements Runnable {
     }
 
     public void killLeader() {
+        // Check if the current node is the leader
         if (!isCoordinator) {
             log.info("Node {} is not the leader. Cannot perform killLeader.", nodeId);
             log.info("You are not the leader. Cannot kill the leader.");
             return;
         }
 
-        log.info("Leader Node {} is being killed.", nodeId);
-        log.info("Killing the leader node...");
+        log.info("Leader Node {} is being killed. Initiating leader kill process.", nodeId);
 
-        // Notify nodes that the leader has been killed
+        // Notify all neighboring nodes about the leader's death
         notifyAllNeighboursOfLeaderDeath();
 
-        // Perform kill operation
-        kill();
+        // Remove the leader status from the current node
+        isCoordinator = false;
+        myNeighbours.setLeaderNode(null);
+
+        // Set the killed flag and stop the RMI service
+        isKilled = true;
+        stopRMI();
+
+        log.info("Leader Node {} has been killed and removed from the network.", nodeId);
     }
 
     public void leaveLeader() {
@@ -405,19 +413,19 @@ public class Node implements Runnable {
     }
 
     public void kill() {
+        // Check if the node is already marked as killed
         if (isKilled) {
             log.info("Node {} is already KILLED.", nodeId);
             return;
         }
 
-        // Check if the node is the leader before killing
+        // If the node is the leader, delegate to the killLeader() method
         if (isCoordinator) {
-            log.warn("Leader Node {} is being killed. Initiating leader kill process.", nodeId);
             killLeader();
             return;
         }
 
-        // Hard kill
+        // Set the killed flag and stop the RMI service
         isKilled = true;
         isLeft = false;
         stopRMI();
