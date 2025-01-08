@@ -22,7 +22,5 @@ public interface NodeCommands extends Remote {
 
         Address getCurrentLeader() throws RemoteException;
 
-        void notifyAboutLeaderDeath(Address deadLeader) throws RemoteException;
-
         void addNeighbor(Address addr) throws RemoteException;
 }

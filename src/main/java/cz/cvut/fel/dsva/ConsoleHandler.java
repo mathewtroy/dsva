@@ -41,18 +41,6 @@ public class ConsoleHandler implements Runnable {
                 myNode.kill();
                 break;
 
-            case "killLeader":
-            case "kl":
-                log.info("Killing the leader node...");
-                myNode.killLeader();
-                break;
-
-            case "leaveLeader":
-            case "ll":
-                log.info("Leader is leaving the network gracefully...");
-                myNode.leaveLeader();
-                break;
-
             case "leaveNode":
             case "l":
                 log.info("Leaving the network...");
@@ -96,8 +84,6 @@ public class ConsoleHandler implements Runnable {
         log.info("e or startElection  - Start Bully Election");
         log.info("cl or checkLeader   - Check status of the current leader");
         log.info("k or killNode       - Kill the node");
-        log.info("kl or killLeader    - Kill the leader node");
-        log.info("ll or leaveLeader   - Leader leaves the network gracefully");
         log.info("l or leaveNode      - Leave the network gracefully");
         log.info("r or reviveNode     - Revive the node");
         log.info("sm or sendMsg       - Send a message to another node");
@@ -108,10 +94,10 @@ public class ConsoleHandler implements Runnable {
 
     private void sendMessageToNode() {
         try {
-            log.info("Enter recipient Node ID: ");
+            System.out.println("Enter recipient Node ID: ");
             String receiverIdInput = reader.readLine();
-            long receiverId = Long.parseLong(receiverIdInput.trim());
-            log.info("Enter message content: ");
+            long receiverId = Long.parseLong(receiverIdInput);
+            System.out.println("Enter message content: ");
             String messageContent = reader.readLine();
             boolean success = myNode.sendMessageToNode(receiverId, messageContent);
             if (success) {
@@ -138,10 +124,10 @@ public class ConsoleHandler implements Runnable {
     public void run() {
         while (reading) {
             try {
-                log.info("cmd > ");
+                System.out.println("\ncmd > ");
                 String commandline = reader.readLine();
                 if (commandline != null) {
-                    parseCommandLine(commandline.trim());
+                    parseCommandLine(commandline);
                 }
             } catch (IOException e) {
                 log.error("ConsoleHandler - Error reading console input.", e);
