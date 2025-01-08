@@ -12,6 +12,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Slf4j
 @Getter
@@ -21,12 +23,9 @@ public class Node implements Runnable {
     public static final String COMM_INTERFACE_NAME = "DSVNode";
     public static Node thisNode = null;
 
-    // Flag indicating that the node was killed (hard stop)
+    // Flags
     private boolean isKilled = false;
-
-    // Flag indicating that the node has gracefully left the network
     private boolean isLeft = false;
-
     private boolean isCoordinator = false;
     private boolean receivedOK = false;
     private boolean voting = false;
@@ -45,7 +44,7 @@ public class Node implements Runnable {
     private APIHandler myAPIHandler;
     private BullyAlgorithm bully;
 
-    // Returns IP for nodes 1..5
+    // Получение IP для узлов 1..5
     private String getIpForNodeId(long id) {
         switch ((int) id) {
             case 1: return "192.168.56.105";
@@ -186,6 +185,42 @@ public class Node implements Runnable {
         }
     }
 
+    private void startLeaderHeartbeat() {
+        Timer heartbeatTimer = new Timer(); // Не-демон таймер
+        heartbeatTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    log.info("Heartbeat TimerTask executing for Node {}", nodeId);
+                    if (isKilled || isLeft) {
+                        log.info("Node {} is inactive, skipping heartbeat check.", nodeId);
+                        return;
+                    }
+
+                    Address leader = myNeighbours.getLeaderNode();
+                    if (leader != null) {
+                        log.info("Node {} is checking status of leader Node {}", nodeId, leader.getNodeID());
+                        try {
+                            NodeCommands remoteLeader = myCommHub.getRMIProxy(leader);
+                            remoteLeader.checkStatusOfLeader(nodeId);
+                            log.info("Checked status of leader Node {}", leader.getNodeID());
+                        } catch (RemoteException e) {
+                            log.warn("Leader Node {} is unreachable. Initiating election.", leader.getNodeID());
+                            myNeighbours.setLeaderNode(null);
+                            notifyAllNeighboursOfLeaderDeath();
+                            startElection();
+                        }
+                    } else {
+                        log.info("No leader present. Starting election.");
+                        startElection();
+                    }
+                } catch (Exception e) {
+                    log.error("Exception in heartbeat TimerTask: {}", e.getMessage(), e);
+                }
+            }
+        }, 0, 10000); // Проверка каждые 10 секунд
+    }
+
     public String getStatus() {
         // If the node was killed, show that info
         if (isKilled) {
@@ -232,6 +267,9 @@ public class Node implements Runnable {
         // Connect to other nodes
         tryConnectToTopology();
 
+        // Start leader heartbeat
+        startLeaderHeartbeat();
+
         // Start HTTP server
         myAPIHandler.start();
         // Start console
@@ -267,7 +305,7 @@ public class Node implements Runnable {
         if (leader != null) {
             try {
                 getCommHub().getRMIProxy(leader).checkStatusOfLeader(nodeId);
-                log.info("Leader is alive: " + leader);
+                log.info("Leader is alive: {}", leader);
                 log.info("Leader Node {} is alive.", leader.getNodeID());
             } catch (RemoteException e) {
                 log.info("Leader is unreachable, starting election...");
@@ -278,7 +316,6 @@ public class Node implements Runnable {
             }
         } else {
             log.info("No leader present, starting election...");
-            log.info("No leader present. Starting election.");
             startElection();
         }
     }
@@ -286,13 +323,7 @@ public class Node implements Runnable {
     public void notifyAllNeighboursOfLeaderDeath() {
         log.info("Notifying all neighbors about the leader's death.");
         for (Address neighbour : myNeighbours.getNeighbours()) {
-            try {
-                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
-                remoteNode.notifyAboutLeaderDeath(myNeighbours.getLeaderNode());
-                log.info("Notified Node {} about leader death.", neighbour.getNodeID());
-            } catch (RemoteException e) {
-                log.warn("Failed to notify Node {} about leader death.", neighbour.getNodeID(), e);
-            }
+            myCommHub.sendLeaderDeathMessage(neighbour, myNeighbours.getLeaderNode());
         }
     }
 
@@ -317,7 +348,6 @@ public class Node implements Runnable {
                 try {
                     getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
                     log.info("Message sent from {} to {}: {}", nodeId, receiverId, content);
-                    log.info("Message sent to Node " + receiverId);
                     messageSent = true;
                     break;
                 } catch (RemoteException e) {
@@ -333,8 +363,7 @@ public class Node implements Runnable {
                 }
             }
             if (!messageSent) {
-                log.info("Node " + receiverId + " is unreachable. Removing from neighbours...");
-                log.warn("Node {} is unreachable. Removing from neighbours.", receiverId);
+                log.info("Node {} is unreachable. Removing from neighbours...", receiverId);
                 myNeighbours.removeNode(receiverAddr);
             }
         } else {
@@ -365,16 +394,8 @@ public class Node implements Runnable {
         log.info("Leader Node {} is being killed.", nodeId);
         log.info("Killing the leader node...");
 
-        // Notify all neighbors that the leader is being killed
-        for (Address neighbour : myNeighbours.getNeighbours()) {
-            try {
-                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
-                remoteNode.notifyAboutLeaderDeath(address);
-                log.info("Notified Node {} about leader kill.", neighbour.getNodeID());
-            } catch (RemoteException e) {
-                log.warn("Failed to notify Node {} about leader kill.", neighbour.getNodeID(), e);
-            }
-        }
+        // Notify nodes that the leader has been killed
+        notifyAllNeighboursOfLeaderDeath();
 
         // Perform kill operation
         kill();
@@ -390,23 +411,12 @@ public class Node implements Runnable {
         log.info("Leader Node {} is leaving the leader role.", nodeId);
         log.info("Leaving the leader role...");
 
-        // Notify all neighbors that the leader is leaving
-        for (Address neighbour : myNeighbours.getNeighbours()) {
-            try {
-                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
-                remoteNode.notifyAboutLeaderDeath(address); // Reuse the leader death notification
-                log.info("Notified Node {} about leader leaving.", neighbour.getNodeID());
-            } catch (RemoteException e) {
-                log.warn("Failed to notify Node {} about leader leaving.", neighbour.getNodeID(), e);
-            }
-        }
+        // Notify nodes that the leader has been killed
+        notifyAllNeighboursOfLeaderDeath();
 
         // Step down as leader
         isCoordinator = false;
         myNeighbours.setLeaderNode(null);
-
-        // Notify all neighbors about the leader's departure
-        notifyAllNeighboursOfLeaderDeath();
 
         // Start a new election since the leader is stepping down
         startElection();
@@ -432,7 +442,6 @@ public class Node implements Runnable {
         isKilled = true;
         isLeft = false;
         stopRMI();
-        log.info("Node " + nodeId + " killed (no proper logout).");
         log.info("Node {} killed (no proper logout).", nodeId);
     }
 
@@ -449,13 +458,12 @@ public class Node implements Runnable {
             return;
         }
 
-        log.info("Node " + nodeId + " is leaving the network...");
         log.info("Node {} is leaving the network...", nodeId);
 
         for (Address neighbour : myNeighbours.getNeighbours()) {
             try {
                 NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
-                remoteNode.notifyAboutLeaderDeath(address);
+                remoteNode.notifyAboutLogOut(address);
                 log.info("Node {} notified node {} about leaving.", nodeId, neighbour.getNodeID());
             } catch (RemoteException e) {
                 log.warn("Failed to notify node {} about leaving.", neighbour.getNodeID(), e);
@@ -469,8 +477,7 @@ public class Node implements Runnable {
         isLeft = true;
         isKilled = false;
 
-        log.info("Node " + nodeId + " has left the network.");
-        log.info("Node {} successfully left the network.", nodeId);
+        log.info("Node {} has left the network.", nodeId);
 
         // If the node was the leader, initiate election
         if (isCoordinator) {

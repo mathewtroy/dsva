@@ -70,4 +70,17 @@ public class CommunicationHub {
             log.warn("Receiver Node {} not found in neighbors.", receiverId);
         }
     }
+
+    public void sendLeaderDeathMessage(Address address, Address deadLeader) {
+        try {
+            if (messageDelay > 0) {
+                Thread.sleep(messageDelay); // Simulating message delay
+            }
+            NodeCommands remoteNode = getRMIProxy(address);
+            remoteNode.notifyAboutLeaderDeath(deadLeader);
+            log.info("Sent Leader Death notification to Node {}", address.getNodeID());
+        } catch (RemoteException | InterruptedException e) {
+            log.warn("Node {} unreachable during leader death notification. Exception: {}", address, e.getMessage());
+        }
+    }
 }

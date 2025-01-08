@@ -1,10 +1,7 @@
 package cz.cvut.fel.dsva.base;
 
-import cz.cvut.fel.dsva.Node;
-
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
 
 public interface NodeCommands extends Remote {
 
@@ -12,7 +9,7 @@ public interface NodeCommands extends Remote {
         void notifyAboutNewLeader(Address address) throws RemoteException;
         void notifyAboutRevival(Address revivedNode) throws RemoteException;
 
-        DSNeighbours join(Address addr) throws RemoteException;
+        void join(Address addr) throws RemoteException;
 
         void sendElectionMsg(long senderId) throws RemoteException;
 
@@ -25,5 +22,7 @@ public interface NodeCommands extends Remote {
 
         Address getCurrentLeader() throws RemoteException;
 
-        void notifyAboutLeaderDeath(Address leaderNode) throws RemoteException;
+        void notifyAboutLeaderDeath(Address deadLeader) throws RemoteException;
+
+        void addNeighbor(Address addr) throws RemoteException;
 }
