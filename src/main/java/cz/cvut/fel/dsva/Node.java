@@ -116,6 +116,7 @@ public class Node implements Runnable {
                 }
                 UnicastRemoteObject.unexportObject(this.myMessageReceiver, true);
                 this.myMessageReceiver = null;
+                log.info("Message listener stopped for Node {}.", nodeId);
             }
         } catch (Exception e) {
             log.error("Stopping message listener failed: {}", e.getMessage(), e);
@@ -185,42 +186,6 @@ public class Node implements Runnable {
         }
     }
 
-    private void startLeaderHeartbeat() {
-        Timer heartbeatTimer = new Timer(); // Не-демон таймер
-        heartbeatTimer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                try {
-                    log.info("Heartbeat TimerTask executing for Node {}", nodeId);
-                    if (isKilled || isLeft) {
-                        log.info("Node {} is inactive, skipping heartbeat check.", nodeId);
-                        return;
-                    }
-
-                    Address leader = myNeighbours.getLeaderNode();
-                    if (leader != null) {
-                        log.info("Node {} is checking status of leader Node {}", nodeId, leader.getNodeID());
-                        try {
-                            NodeCommands remoteLeader = myCommHub.getRMIProxy(leader);
-                            remoteLeader.checkStatusOfLeader(nodeId);
-                            log.info("Checked status of leader Node {}", leader.getNodeID());
-                        } catch (RemoteException e) {
-                            log.warn("Leader Node {} is unreachable. Initiating election.", leader.getNodeID());
-                            myNeighbours.setLeaderNode(null);
-                            notifyAllNeighboursOfLeaderDeath();
-                            startElection();
-                        }
-                    } else {
-                        log.info("No leader present. Starting election.");
-                        startElection();
-                    }
-                } catch (Exception e) {
-                    log.error("Exception in heartbeat TimerTask: {}", e.getMessage(), e);
-                }
-            }
-        }, 0, 10000); // Проверка каждые 10 секунд
-    }
-
     public String getStatus() {
         // If the node was killed, show that info
         if (isKilled) {
@@ -267,9 +232,6 @@ public class Node implements Runnable {
         // Connect to other nodes
         tryConnectToTopology();
 
-        // Start leader heartbeat
-        startLeaderHeartbeat();
-
         // Start HTTP server
         myAPIHandler.start();
         // Start console
@@ -277,7 +239,20 @@ public class Node implements Runnable {
 
         // Print initial status
         printStatus();
+
+        // Wait for the node to be alive
+        while (!isKilled && !isLeft) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                log.error("Main thread interrupted.");
+            }
+        }
+
+        log.info("Node {} is shutting down.", nodeId);
     }
+
 
     public DSNeighbours getNeighbours() {
         return this.myNeighbours;
@@ -373,6 +348,7 @@ public class Node implements Runnable {
 
     public void stopRMI() {
         stopMessageReceiver();
+        log.info("RMI stopped for Node {}.", nodeId);
     }
 
     public void startRMI() {
@@ -411,18 +387,21 @@ public class Node implements Runnable {
         log.info("Leader Node {} is leaving the leader role.", nodeId);
         log.info("Leaving the leader role...");
 
-        // Notify nodes that the leader has been killed
+        // Notify neighbors about leader's death
         notifyAllNeighboursOfLeaderDeath();
 
         // Step down as leader
         isCoordinator = false;
         myNeighbours.setLeaderNode(null);
 
-        // Start a new election since the leader is stepping down
-        startElection();
+        // Stop RMI and gracefully leave the network
+        resetTopology();
+        stopRMI();
 
-        log.info("Leader Node {} has left the leader role. Election started.", nodeId);
-        log.info("Leader has left. Election started.");
+        isLeft = true;
+        isKilled = false;
+
+        log.info("Leader Node {} has left the network.", nodeId);
     }
 
     public void kill() {
@@ -478,13 +457,6 @@ public class Node implements Runnable {
         isKilled = false;
 
         log.info("Node {} has left the network.", nodeId);
-
-        // If the node was the leader, initiate election
-        if (isCoordinator) {
-            myNeighbours.setLeaderNode(null);
-            notifyAllNeighboursOfLeaderDeath();
-            startElection();
-        }
     }
 
     public void revive() {
