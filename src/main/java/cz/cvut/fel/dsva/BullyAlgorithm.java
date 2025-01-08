@@ -161,7 +161,8 @@ public class BullyAlgorithm {
             log.info("Node {} recognizes itself as the new leader.", node.getNodeId());
         } else {
             // Accept a new leader only if no leader is set
-            if (!node.isCoordinator() && node.getNeighbours().getLeaderNode() == null) {
+            Address currentLeader = node.getNeighbours().getLeaderNode();
+            if (currentLeader == null || newLeader.getNodeID() > currentLeader.getNodeID()) {
                 shouldDeclare = true;
                 log.info("Node {} accepts Node {} as the new leader.", node.getNodeId(), newLeader.getNodeID());
             }

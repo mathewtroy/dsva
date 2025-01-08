@@ -69,7 +69,10 @@ public class MessageReceiver implements NodeCommands {
             log.info("Received notifyAboutNewLeader for Node {}.", leader.getNodeID());
         }
 
-        if (currentLeader == null) {
+        // Accept the new leader if:
+        // 1. There is no current leader
+        // 2. The new leader has a higher node ID than the current leader
+        if (currentLeader == null || leader.getNodeID() > currentLeader.getNodeID()) {
             synchronized (this) {
                 myNode.getNeighbours().setLeaderNode(leader);
                 log.info("New leader notified: Node {}.", leader.getNodeID());
@@ -86,12 +89,10 @@ public class MessageReceiver implements NodeCommands {
                     log.error("Failed to notify Node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
                 }
             }
+        } else if (currentLeader.equals(leader)) {
+            log.info("Leader {} reconfirmed.", leader.getNodeID());
         } else {
-            if (currentLeader.equals(leader)) {
-                log.info("Leader {} reconfirmed.", leader.getNodeID());
-            } else {
-                log.info("Ignoring new leader {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
-            }
+            log.info("Ignoring new leader {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
         }
     }
 
