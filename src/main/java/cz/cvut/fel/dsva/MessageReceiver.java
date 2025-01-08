@@ -193,7 +193,7 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void notifyAboutLeaderDeath(Address deadLeader) throws RemoteException {
-        log.warn("Received notification that Leader Node {} has died.", deadLeader.getNodeID());
+        log.warn("Received notification that Leader Node {} has been killed.", deadLeader.getNodeID());
 
         synchronized (this) {
             myNode.getNeighbours().removeNode(deadLeader);
@@ -208,7 +208,7 @@ public class MessageReceiver implements NodeCommands {
             synchronized (this) {
                 myNode.getNeighbours().setLeaderNode(null);
             }
-            log.warn("Leader Node {} has died. Initiating election.", deadLeader.getNodeID());
+            log.warn("Leader Node {} has been killed. Initiating election.", deadLeader.getNodeID());
             myNode.startElection();
         }
     }

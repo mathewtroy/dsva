@@ -50,6 +50,7 @@ public class BullyAlgorithm {
 
         // If no higher ID node exists, declare this node as the leader
         if (!higherNodeExists) {
+            log.info("No higher node found. Node {} declares itself as leader.", node.getNodeId());
             declareLeader(node.getAddress());
         } else {
             // Wait for OK from higher node(s)
@@ -134,6 +135,7 @@ public class BullyAlgorithm {
         if (electionTimer != null) {
             electionTimer.cancel();
             electionTimer = null;
+            log.info("Election timer cancelled for Node {}.", node.getNodeId());
         }
     }
 
@@ -141,6 +143,7 @@ public class BullyAlgorithm {
         if (electedTimer != null) {
             electedTimer.cancel();
             electedTimer = null;
+            log.info("Elected timer cancelled for Node {}.", node.getNodeId());
         }
     }
 
@@ -167,6 +170,7 @@ public class BullyAlgorithm {
         if (shouldDeclare) {
             node.setCoordinator(node.getAddress().equals(newLeader));
             node.getNeighbours().setLeaderNode(newLeader);
+
             log.info("Node {} is declaring itself as the leader.", node.getNodeId());
 
             // Notify all neighbors about the new leader
@@ -182,6 +186,7 @@ public class BullyAlgorithm {
 
             log.info("Leader declared: Node {}.", newLeader.getNodeID());
 
+            // Cancel all timers and reset voting flag
             cancelAllTimers();
             node.setVoting(false);
         } else {

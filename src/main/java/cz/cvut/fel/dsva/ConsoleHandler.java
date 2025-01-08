@@ -12,7 +12,7 @@ import java.io.InputStreamReader;
 @Getter
 @Setter
 public class ConsoleHandler implements Runnable {
-    private boolean reading = true;
+    private volatile boolean reading = true;
     private BufferedReader reader;
     private final Node myNode;
 
@@ -39,6 +39,18 @@ public class ConsoleHandler implements Runnable {
             case "k":
                 log.info("Killing this node...");
                 myNode.kill();
+                break;
+
+            case "killLeader":
+            case "kl":
+                log.info("Killing the leader node...");
+                myNode.killLeader();
+                break;
+
+            case "leaveLeader":
+            case "ll":
+                log.info("Leader is leaving the network gracefully...");
+                myNode.leaveLeader();
                 break;
 
             case "leaveNode":
@@ -84,6 +96,8 @@ public class ConsoleHandler implements Runnable {
         log.info("e or startElection  - Start Bully Election");
         log.info("cl or checkLeader   - Check status of the current leader");
         log.info("k or killNode       - Kill the node");
+        log.info("kl or killLeader    - Kill the leader node");
+        log.info("ll or leaveLeader   - Leader leaves the network gracefully");
         log.info("l or leaveNode      - Leave the network gracefully");
         log.info("r or reviveNode     - Revive the node");
         log.info("sm or sendMsg       - Send a message to another node");
@@ -96,7 +110,7 @@ public class ConsoleHandler implements Runnable {
         try {
             log.info("Enter recipient Node ID: ");
             String receiverIdInput = reader.readLine();
-            long receiverId = Long.parseLong(receiverIdInput);
+            long receiverId = Long.parseLong(receiverIdInput.trim());
             log.info("Enter message content: ");
             String messageContent = reader.readLine();
             boolean success = myNode.sendMessageToNode(receiverId, messageContent);
@@ -111,35 +125,33 @@ public class ConsoleHandler implements Runnable {
     }
 
     public void restartConsole() {
+        if (myNode.isKilled() || myNode.isLeft()) {
+            log.info("Node is inactive. Console will not be restarted.");
+            return;
+        }
         reading = true;
         new Thread(this).start();
+        log.info("ConsoleHandler restarted.");
     }
 
     @Override
     public void run() {
-        if (!reading) {
-            log.info("Restarting ConsoleHandler...");
-            restartConsole();
-            return;
-        }
-
-        String commandline;
         while (reading) {
             try {
-                log.info("\ncmd > ");
-                commandline = reader.readLine();
+                log.info("cmd > ");
+                String commandline = reader.readLine();
                 if (commandline != null) {
                     parseCommandLine(commandline.trim());
                 }
             } catch (IOException e) {
                 log.error("ConsoleHandler - Error reading console input.", e);
                 reading = false;
+                // Automatic console restart on error
                 restartConsole();
-
             } catch (Exception ex) {
                 log.error("Unexpected error: {}", ex.getMessage(), ex);
                 reading = false;
-
+                // Automatic console restart in case of unexpected error
                 restartConsole();
             }
         }

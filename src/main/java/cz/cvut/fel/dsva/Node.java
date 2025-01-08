@@ -12,6 +12,8 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Slf4j
 @Getter
@@ -41,6 +43,7 @@ public class Node implements Runnable {
     private ConsoleHandler myConsoleHandler;
     private APIHandler myAPIHandler;
     private BullyAlgorithm bully;
+    private Timer leaderCheckTimer;
 
     private String getIpForNodeId(long id) {
         switch ((int) id) {
@@ -234,6 +237,9 @@ public class Node implements Runnable {
         // Start console
         new Thread(myConsoleHandler).start();
 
+        // Start leader check timer
+        startLeaderCheckTimer();
+
         // Print initial status
         printStatus();
 
@@ -246,6 +252,9 @@ public class Node implements Runnable {
                 log.error("Main thread interrupted.");
             }
         }
+
+        // Stop leader check timer
+        stopLeaderCheckTimer();
 
         log.info("Node {} is shutting down.", nodeId);
     }
@@ -283,7 +292,6 @@ public class Node implements Runnable {
                 log.info("Leader is unreachable, starting election...");
                 log.warn("Leader Node {} is unreachable. Starting election.", leader.getNodeID());
                 myNeighbours.setLeaderNode(null);
-                notifyAllNeighboursOfLeaderDeath();
                 startElection();
             }
         } else {
@@ -319,11 +327,11 @@ public class Node implements Runnable {
             while (attempts > 0) {
                 try {
                     getCommHub().getRMIProxy(receiverAddr).sendMessage(nodeId, (int) receiverId, content);
-                    log.info("Message sent from {} to {}: {}", nodeId, receiverId, content);
+                    log.info("Message sent from Node {} to Node {}: {}", nodeId, receiverId, content);
                     messageSent = true;
                     break;
                 } catch (RemoteException e) {
-                    log.warn("Failed to send message to node {}. Attempts left: {}", receiverId, attempts - 1);
+                    log.warn("Failed to send message to Node {}. Attempts left: {}", receiverId, attempts - 1);
                     attempts--;
                     try {
                         Thread.sleep(500);
@@ -362,47 +370,47 @@ public class Node implements Runnable {
     }
 
     public void killLeader() {
-        // Check if the current node is the leader
+
         if (!isCoordinator) {
-            log.info("Node {} is not the leader. Cannot perform killLeader.", nodeId);
-            log.info("You are not the leader. Cannot kill the leader.");
+            log.warn("Node {} is not the leader. killLeader() operation aborted.", nodeId);
             return;
         }
 
-        log.info("Leader Node {} is being killed. Initiating leader kill process.", nodeId);
+        log.info("Killing Leader Node {} without notifying neighbors...", nodeId);
 
-        // Notify all neighboring nodes about the leader's death
-        notifyAllNeighboursOfLeaderDeath();
-
-        // Remove the leader status from the current node
-        isCoordinator = false;
-        myNeighbours.setLeaderNode(null);
-
-        // Set the killed flag and stop the RMI service
         isKilled = true;
+        isLeft = false;
+
         stopRMI();
 
-        log.info("Leader Node {} has been killed and removed from the network.", nodeId);
+        log.info("Leader Node {} has been killed (no notification sent).", nodeId);
     }
 
+
     public void leaveLeader() {
+
         if (!isCoordinator) {
-            log.info("Node {} is not the leader. Cannot perform leaveLeader.", nodeId);
-            log.info("You are not the leader. Cannot leave the leader role.");
+            log.warn("Node {} is not the leader. leaveLeader() operation aborted.", nodeId);
             return;
         }
 
-        log.info("Leader Node {} is leaving the leader role.", nodeId);
+        log.info("Leader Node {} is leaving the network gracefully.", nodeId);
         log.info("Leaving the leader role...");
 
-        // Notify neighbors about leader's death
-        notifyAllNeighboursOfLeaderDeath();
+        // Notify neighbors about leader's departure
+        for (Address neighbour : myNeighbours.getNeighbours()) {
+            try {
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
+                remoteNode.notifyAboutLogOut(address);
+                log.info("Leader Node {} notified Node {} about leaving.", nodeId, neighbour.getNodeID());
+            } catch (RemoteException e) {
+                log.warn("Failed to notify Node {} about leader leaving.", neighbour.getNodeID(), e);            }
+        }
 
-        // Step down as leader
         isCoordinator = false;
         myNeighbours.setLeaderNode(null);
 
-        // Stop RMI and gracefully leave the network
+        // Gracefully leave the network
         resetTopology();
         stopRMI();
 
@@ -419,17 +427,14 @@ public class Node implements Runnable {
             return;
         }
 
-        // If the node is the leader, delegate to the killLeader() method
-        if (isCoordinator) {
-            killLeader();
-            return;
-        }
+        // Kill the node
+        log.info("Killing Node {} without notifying neighbors...", nodeId);
 
         // Set the killed flag and stop the RMI service
         isKilled = true;
         isLeft = false;
         stopRMI();
-        log.info("Node {} killed (no proper logout).", nodeId);
+        log.info("Node {} has been killed (no notification sent).", nodeId);
     }
 
     public void leave() {
@@ -451,9 +456,9 @@ public class Node implements Runnable {
             try {
                 NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
                 remoteNode.notifyAboutLogOut(address);
-                log.info("Node {} notified node {} about leaving.", nodeId, neighbour.getNodeID());
+                log.info("The Node {} notified Node {} about leaving.", nodeId, neighbour.getNodeID());
             } catch (RemoteException e) {
-                log.warn("Failed to notify node {} about leaving.", neighbour.getNodeID(), e);
+                log.warn("Failed to notify Node {} about leaving.", neighbour.getNodeID(), e);
             }
         }
 
@@ -526,14 +531,32 @@ public class Node implements Runnable {
             try {
                 NodeCommands remoteNode = myCommHub.getRMIProxy(neighbour);
                 remoteNode.notifyAboutRevival(address);
-                log.info("Notified node {} about revival of node {}.", neighbour.getNodeID(), nodeId);
+                log.info("Node {} notified Node {} about revival of Node {}.", nodeId, neighbour.getNodeID(), nodeId);
             } catch (RemoteException e) {
-                log.warn("Failed to notify node {} about revival.", neighbour.getNodeID(), e);
+                log.warn("Failed to notify Node {} about revival.", neighbour.getNodeID(), e);
             }
         }
 
         log.info("Node {} has been revived.", nodeId);
-        log.info("Node {} successfully revived.", nodeId);
+    }
+
+    private void startLeaderCheckTimer() {
+        leaderCheckTimer = new Timer(true);
+        leaderCheckTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                checkLeader();
+            }
+        }, 10000, 10000);
+        log.info("Leader check timer started.");
+    }
+
+    private void stopLeaderCheckTimer() {
+        if (leaderCheckTimer != null) {
+            leaderCheckTimer.cancel();
+            leaderCheckTimer = null;
+            log.info("Leader check timer stopped.");
+        }
     }
 
     public static void main(String[] args) {
