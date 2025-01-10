@@ -75,7 +75,7 @@
         <!-- SLF4J API for logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <artifactId>slf4j-simple</artifactId>
             <version>1.7.26</version>
         </dependency>
 

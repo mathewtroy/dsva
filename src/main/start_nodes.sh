@@ -24,7 +24,7 @@ fi
 mvn clean
 mvn package
 # where is fat jar stored
-FAT_JAR=TestSemREST-1.0-SNAPSHOT-jar-with-dependencies.jar
+FAT_JAR=dsva-pro-1.0-SNAPSHOT-jar-with-dependencies.jar
 FAT_JAR_PATH=target
 
 ### upload to other nodes

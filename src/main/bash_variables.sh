@@ -9,11 +9,11 @@ GIT_KEY=~/.ssh/id_rsa
 
 ### build directory
 # semwork home directory
-SEMWORK_HOMEDIR=/home/dsv/semwork
+SEMWORK_HOMEDIR=/home/dsv/semwork2
 CODE_SUBDIR=code
 
 ### nodes variables
-NUM_NODES=5
+NUM_NODES=6
 BASE_IP=127.0.0.1
 BASE_PORT=2000
 
@@ -66,6 +66,7 @@ NODE_NICKNAME[2]=Bob
 NODE_NICKNAME[3]=Cecilia
 NODE_NICKNAME[4]=Dan
 NODE_NICKNAME[5]=Ethan
+NODE_NICKNAME[6]=Ella
 
 # test
 #echo $NODE1_IP
