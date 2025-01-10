@@ -91,6 +91,16 @@ public class APIHandler {
                     ctx.result(myNode.getStatus() + "\n");
                 })
 
+                // New endpoint for joining another node
+                .get("/join/{ip}/{port}", ctx -> {
+                    String otherIP = ctx.pathParam("ip");
+                    int otherPort = Integer.parseInt(ctx.pathParam("port"));
+                    log.info("API called to join {}:{}", otherIP, otherPort);
+                    myNode.join(otherIP, otherPort);
+                    ctx.result("Joined node " + otherIP + ":" + otherPort + "\n");
+                })
+
+
                 // Start the API server
                 .start(this.port);
     }

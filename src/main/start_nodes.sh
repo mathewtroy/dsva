@@ -33,9 +33,17 @@ FAT_JAR_PATH=target
 DSV_PASS=dsv
 for ID in $(seq 1 $NUM_NODES) ; do
   echo "Starting node $ID"
+
+  # Create a directory on a remote node
   sshpass -p ${DSV_PASS} ssh -o StrictHostKeyChecking=no dsv@${NODE_IP[$ID]} mkdir -p ${SEMWORK_HOMEDIR}/NODE_${ID}
+
+  # Copy the JAR file
   sshpass -p ${DSV_PASS} scp ${FAT_JAR_PATH}/${FAT_JAR} dsv@${NODE_IP[$ID]}:${SEMWORK_HOMEDIR}/NODE_${ID}/
-  # start tmux - https://www.root.cz/clanky/okna-v-terminalu-pomoci-tmux/
+
+  # Check and kill an existing tmux session
+  sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux kill-session -t NODE_${ID} 2>/dev/null || true"
+
+  # Create a new tmux session and start the node
   sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- tmux new-session -d -s NODE_${ID}
-  sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux send -t NODE_${ID} 'cd ${SEMWORK_HOMEDIR}/NODE_${ID}/ && java -cp ${FAT_JAR} cz.cvut.fel.dsva.Node ${NODE_NICKNAME[$ID]} ${NODE_IP[$ID]} ${NODE_PORT[$ID]}' ENTER"
+  sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux send -t NODE_${ID} 'cd ${SEMWORK_HOMEDIR}/NODE_${ID}/ && java -cp ${FAT_JAR} cz.cvut.fel.dsva.Node ${ID} ${NODE_IP[$ID]} ${NODE_PORT[$ID]}' ENTER"
 done
