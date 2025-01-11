@@ -86,8 +86,9 @@ public class APIHandler {
                 })
 
                 // Get status of the node
-                .get("/status", ctx -> {
+                .get("/get_status", ctx -> {
                     System.out.println("Getting node status via API.");
+                    myNode.printStatus();
                     ctx.result(myNode.getStatus() + "\n");
                 })
 
