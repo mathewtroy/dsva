@@ -88,6 +88,26 @@ public class Node implements Runnable {
         }
     }
 
+    private long generateId(String address, int port) {
+        // address is typically myIP
+        // for example: "192.168.56.105"
+        String[] array = address.split("\\.");
+        long id = 0;
+        for (String part : array) {
+            long temp = Long.parseLong(part); // caution if parse fails
+            id = (id * 1000) + temp;
+        }
+        if (id == 0) {
+            log.warn("Failed to parse IP: {}, defaulting nodeId to 666000666000L.", address);
+            id = 666000666000L;
+        }
+        // Then add port * 1000000000000
+        id += (port * 1000000000000L);
+
+        log.info("generateId({}, {}) => {}", address, port, id);
+        return id;
+    }
+
     // ----------------------------------------------------------
     // RMI
     // ----------------------------------------------------------
@@ -430,36 +450,40 @@ public class Node implements Runnable {
     // ----------------------------------------------------------
     @Override
     public void run() {
-        // 1) Create the Address, in case you want a numeric nodeId or similar logic
+        // 1) Generate ID from IP, port
+        this.nodeId = generateId(myIP, rmiPort);
+        log.info("Node ID generated as {} based on IP={} and rmiPort={}.", nodeId, myIP, rmiPort);
+
+        // 2) Create Address
         address = new Address(myIP, rmiPort, nodeId);
 
-        // 2) Initialize DSNeighbours (no-arg constructor, since DSNeighbours(Address) doesn't exist)
+        // 3) Initialize DSNeighbours (no-arg constructor)
         myNeighbours = new DSNeighbours();
-        log.info("myNeighbours has been created for Node {}. It's currently empty.", nodeId);
+        log.info("myNeighbours created for Node {}, currently empty.", nodeId);
 
-        // 3) Start RMI
+        // 4) Start RMI
         startMessageReceiver();
 
-        // 4) Initialize auxiliary components
+        // 5) Initialize auxiliary components
         myCommHub = new CommunicationHub(this);
         bully = new BullyAlgorithm(this);
         myConsoleHandler = new ConsoleHandler(this);
         myAPIHandler = new APIHandler(this, apiPort);
 
-        // 5) Start the REST API and console
+        // 6) Start the REST API and the console
         myAPIHandler.start();
         new Thread(myConsoleHandler).start();
 
-        // 6) Print initial status
+        // 7) Print initial status
         printStatus();
 
-        // 7) If the user gave 5 args => auto-join
+        // 8) If user gave 5 arguments => auto-join at startup
         if (otherNodeIP != null && otherNodePort > 0) {
             log.info("Node {} auto-joining neighbor at {}:{} ...", nodeId, otherNodeIP, otherNodePort);
             join(otherNodeIP, otherNodePort);
         }
 
-        // 8) Keep alive until killed/left
+        // 9) Keep alive until killed or left
         while (!isKilled && !isLeft) {
             try {
                 Thread.sleep(1000);
