@@ -1,6 +1,7 @@
 package cz.cvut.fel.dsva;
 
 import cz.cvut.fel.dsva.base.Address;
+import cz.cvut.fel.dsva.base.DSNeighbours;
 import cz.cvut.fel.dsva.base.NodeCommands;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,40 +20,41 @@ public class MessageReceiver implements NodeCommands {
     }
 
     @Override
-    public void join(Address addr) throws RemoteException {
+    public DSNeighbours join(Address addr) throws RemoteException {
+        log.info("JOIN called by Node {}.", addr.getNodeID());
 
-        synchronized (this) {
-            myNode.getNeighbours().addNewNode(addr);
-            log.info("Node {} joined the network.", addr.getNodeID());
-        }
-
-        try {
-            NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(addr);
-            remoteNode.addNeighbor(myNode.getAddress());
-            log.info("Added Node {} to Node {}'s neighbor list.", myNode.getNodeId(), addr.getNodeID());
-        } catch (RemoteException e) {
-            log.error("Failed to add Node {} to Node {}'s neighbor list: {}", myNode.getNodeId(), addr.getNodeID(), e.getMessage());
-        }
-
-        Address currentLeader;
-        synchronized (this) {
-            currentLeader = myNode.getNeighbours().getLeaderNode();
-            log.info("The current leader is Node {}.", currentLeader != null ? currentLeader.getNodeID() : "null");
-        }
-
-        if (currentLeader != null) {
-            try {
-                NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(addr);
-                remoteNode.notifyAboutNewLeader(currentLeader);
-                log.info("Notified Node {} about current leader: Node {}.", addr.getNodeID(), currentLeader.getNodeID());
-            } catch (RemoteException e) {
-                log.error("Failed to notify Node {} about current leader: {}", addr.getNodeID(), e.getMessage());
-            }
+        if (addr.equals(myNode.getAddress())) {
+            log.info("I am the first node and the leader.");
+            return myNode.getNeighbours();
         } else {
-            log.info("No leader present. Initiating election.");
-            myNode.startElection();
-        }
+            log.info("Node {} is joining the network.", addr.getNodeID());
 
+            synchronized (this) {
+                myNode.getNeighbours().addNewNode(addr);
+                log.info("Node {} added to Node {}'s neighbors.", addr.getNodeID(), myNode.getNodeId());
+            }
+
+            Address currentLeader;
+            synchronized (this) {
+                currentLeader = myNode.getNeighbours().getLeaderNode();
+                log.info("Current leader is Node {}.", currentLeader != null ? currentLeader.getNodeID() : "None");
+            }
+
+            if (currentLeader != null) {
+                try {
+                    NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(addr);
+                    remoteNode.notifyAboutNewLeader(currentLeader);
+                    log.info("Notified Node {} about the current leader: Node {}.", addr.getNodeID(), currentLeader.getNodeID());
+                } catch (RemoteException e) {
+                    log.error("Failed to notify Node {} about the current leader: {}", addr.getNodeID(), e.getMessage());
+                }
+            } else {
+                log.info("No leader present. Initiating election.");
+                myNode.startElection();
+            }
+
+            return myNode.getNeighbours();
+        }
     }
 
     @Override
@@ -75,18 +77,18 @@ public class MessageReceiver implements NodeCommands {
         if (currentLeader == null || leader.getNodeID() > currentLeader.getNodeID()) {
             synchronized (this) {
                 myNode.getNeighbours().setLeaderNode(leader);
-                log.info("New leader notified: Node {}.", leader.getNodeID());
+                log.info("New leader acknowledged: Node {}.", leader.getNodeID());
             }
 
             myNode.getBully().onElectedReceived(leader.getNodeID(), leader);
 
-            for (Address neighbour : myNode.getNeighbours().getNeighbours()) {
+            for (Address neighbor : myNode.getNeighbours().getNeighbours()) {
                 try {
-                    NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(neighbour);
+                    NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(neighbor);
                     remoteNode.updateLeader(leader);
-                    log.info("Notified Node {} about new leader Node {}.", neighbour.getNodeID(), leader.getNodeID());
+                    log.info("Notified Node {} about the new leader Node {}.", neighbor.getNodeID(), leader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about new leader: {}", neighbour.getNodeID(), e.getMessage());
+                    log.error("Failed to notify Node {} about the new leader: {}", neighbor.getNodeID(), e.getMessage());
                 }
             }
         } else if (currentLeader.equals(leader)) {
@@ -123,7 +125,6 @@ public class MessageReceiver implements NodeCommands {
 
         if (leader != null) {
             log.info("Leader Node {} is alive.", leader.getNodeID());
-
         } else {
             log.warn("Leader is missing. Initiating election.");
             myNode.startElection();
@@ -140,7 +141,7 @@ public class MessageReceiver implements NodeCommands {
         Address leader;
         synchronized (this) {
             leader = myNode.getNeighbours().getLeaderNode();
-            log.info("Current leader is Node {}.", leader != null ? leader.getNodeID() : "null");
+            log.info("Current leader is Node {}.", leader != null ? leader.getNodeID() : "None");
         }
         return leader;
     }
@@ -152,7 +153,7 @@ public class MessageReceiver implements NodeCommands {
             currentLeader = myNode.getNeighbours().getLeaderNode();
             log.info("Received notifyAboutLogOut for Node {}.", address.getNodeID());
             myNode.getNeighbours().removeNode(address);
-            log.info("Node {} left the network.", address.getNodeID());
+            log.info("Node {} has left the network.", address.getNodeID());
         }
 
         if (currentLeader != null && currentLeader.equals(address)) {

@@ -47,11 +47,11 @@ public class Node implements Runnable {
     private String myIP;                 // second arg
     private int rmiPort = 3010;          // third arg
     private int apiPort = 7010;          // auto-calc or leftover
-    private long nodeId = 0;            // optional numeric ID if needed
+    private long nodeId = 0;             // optional numeric ID if needed
 
     // Additional optional info for auto-join
-    private String otherNodeIP;   // 4th arg
-    private int otherNodePort = 0; // 5th arg
+    private String otherNodeIP;          // 4th arg
+    private int otherNodePort = 0;       // 5th arg
 
     // ----------------------------------------------------------
     // Node structure
@@ -66,19 +66,19 @@ public class Node implements Runnable {
 
     /**
      * Constructor that expects:
-     *   - 3 args: nickname, myIP, rmiPort
-     *   - 5 args: nickname, myIP, rmiPort, otherNodeIP, otherNodePort
+     *   - 4 args: nickname, myIP, rmiPort, apiPort
+     *   - 6 args: nickname, myIP, rmiPort, otherNodeIP, otherNodePort, apiPort
      * If the argument count doesn't match, we use some default logic.
      */
     public Node(String[] args) {
         if (args.length == 4) {
-            log.info("Node constructor invoked with 3 args (nickname, IP, rmiPort).");
+            log.info("Node constructor invoked with 4 args (nickname, IP, rmiPort, apiPort).");
             nickname = args[0];
             myIP     = args[1];
             rmiPort  = Integer.parseInt(args[2]);
             apiPort  = Integer.parseInt(args[3]);
         } else if (args.length == 6) {
-            log.info("Node constructor invoked with 5 args (nickname, IP, rmiPort, otherIP, otherPort).");
+            log.info("Node constructor invoked with 6 args (nickname, IP, rmiPort, otherIP, otherPort, apiPort).");
             nickname      = args[0];
             myIP          = args[1];
             rmiPort       = Integer.parseInt(args[2]);
@@ -133,13 +133,15 @@ public class Node implements Runnable {
                 // Try to get a registry on the chosen port
                 registry = LocateRegistry.getRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
+                log.info("Bound to existing RMI registry on port {}.", rmiPort);
             } catch (RemoteException re) {
-                log.info("Creating new RMI registry on port {}.", rmiPort);
+                // There is no RMI registry - create one
+                log.info("Creating a new RMI registry on port {}.", rmiPort);
                 registry = LocateRegistry.createRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
             }
         } catch (Exception e) {
-            log.error("Starting message listener failed: {}", e.getMessage(), e);
+            log.error("Failed to start message listener: {}", e.getMessage(), e);
         }
 
         log.info("Message listener started on {}:{}.", address.getHostname(), rmiPort);
@@ -151,15 +153,16 @@ public class Node implements Runnable {
                 Registry registry = LocateRegistry.getRegistry(rmiPort);
                 try {
                     registry.unbind(COMM_INTERFACE_NAME);
+                    log.info("Unbound RMI service {}.", COMM_INTERFACE_NAME);
                 } catch (NotBoundException e) {
-                    log.warn("RMI object was not bound: {}", e.getMessage());
+                    log.warn("RMI service {} was not bound: {}", COMM_INTERFACE_NAME, e.getMessage());
                 }
                 UnicastRemoteObject.unexportObject(this.myMessageReceiver, true);
                 this.myMessageReceiver = null;
                 log.info("Message listener stopped for Node {}.", nodeId);
             }
         } catch (Exception e) {
-            log.error("Stopping message listener failed: {}", e.getMessage(), e);
+            log.error("Failed to stop message listener: {}", e.getMessage(), e);
         }
         log.info("Message listener stopped.");
     }
@@ -172,27 +175,27 @@ public class Node implements Runnable {
             log.warn("Node {} is inactive, cannot join another node.", nodeId);
             return;
         }
-        log.info("Node {} attempting to join node at {}:{}", nodeId, otherIP, otherPort);
+        log.info("Node {} attempting to join node at {}:{}.", nodeId, otherIP, otherPort);
 
         try {
-            Address otherAddr = new Address(otherIP, otherPort, -1L);
+            Address otherAddr = new Address(otherIP, otherPort);
             NodeCommands remoteNode = myCommHub.getRMIProxy(otherAddr);
 
-            // remoteNode.join(...) presumably returns void in your scenario
+            log.info("Calling remoteNode.join(...) on Node {}.", otherAddr.getNodeID());
             remoteNode.join(this.address);
+            log.info("Join call invoked. Node {} notified {}:{} to join.", nodeId, otherIP, otherPort);
 
-            log.info("Join call invoked (void). Node {} told {}:{} to join.", nodeId, otherIP, otherPort);
-
-            // Optionally add that node into my own neighbors list
             if (myNeighbours != null) {
                 myNeighbours.addNewNode(otherAddr);
+                log.info("Node {} added to own neighbors list.", otherAddr.getNodeID());
             } else {
-                log.warn("myNeighbours is null while trying to add a new neighbor?");
+                log.warn("myNeighbours is null while trying to add a new neighbor.");
             }
 
         } catch (RemoteException e) {
             log.warn("Failed to join node at {}:{} => {}", otherIP, otherPort, e.getMessage());
         }
+        log.info("Neighbors after JOIN: {}", myNeighbours);
     }
 
     // ----------------------------------------------------------
@@ -210,7 +213,7 @@ public class Node implements Runnable {
         sb.append("Node ID: ").append(nodeId).append("\n");
         sb.append("Address: ").append(address).append("\n");
 
-        sb.append("Neighbours:\n");
+        sb.append("Neighbors:\n");
         if (myNeighbours != null) {
             for (Address neighbor : myNeighbours.getNeighbours()) {
                 sb.append("    ").append(neighbor).append("\n");
@@ -248,7 +251,7 @@ public class Node implements Runnable {
     // ----------------------------------------------------------
     public void startElection() {
         if (isKilled || isLeft) {
-            log.info("Node {} is inactive, skip startElection.", nodeId);
+            log.info("Node {} is inactive, skipping startElection.", nodeId);
             return;
         }
         bully.startElection();
@@ -256,7 +259,7 @@ public class Node implements Runnable {
 
     public void checkLeader() {
         if (isKilled || isLeft) {
-            log.info("Node {} is inactive, skip checkLeader.", nodeId);
+            log.info("Node {} is inactive, skipping checkLeader.", nodeId);
             return;
         }
 
@@ -286,7 +289,7 @@ public class Node implements Runnable {
     // ----------------------------------------------------------
     public boolean sendMessageToNode(long receiverId, String content) {
         if (isKilled || isLeft) {
-            log.info("Node {} is inactive, skip sendMessageToNode.", nodeId);
+            log.info("Node {} is inactive, skipping sendMessageToNode.", nodeId);
             return false;
         }
         if (myNeighbours == null) {
@@ -433,7 +436,7 @@ public class Node implements Runnable {
         log.info("Leader Node {} has left the network.", nodeId);
     }
 
-    public void revive() {
+    public void revive(String joinNodeIP, int joinNodePort) {
         if (!isKilled && !isLeft) {
             log.info("Node {} is neither killed nor left; no need to revive.", nodeId);
             return;
@@ -444,15 +447,19 @@ public class Node implements Runnable {
         isLeft = false;
 
         startRMI();
-        log.info("Node {} revived. You can join neighbors or start an election if needed.", nodeId);
+        log.info("Node {} revived. Attempting to join the network...", nodeId);
+
+        // Perform a join to reconnect to the network
+        join(joinNodeIP, joinNodePort);
     }
+
 
     // ----------------------------------------------------------
     // MAIN + run()
     // ----------------------------------------------------------
     @Override
     public void run() {
-        // 1) Generate ID from IP, port
+        // 1) Generate ID from IP and port
         this.nodeId = generateId(myIP, rmiPort);
         log.info("Node ID generated as {} based on IP={} and rmiPort={}.", nodeId, myIP, rmiPort);
 
@@ -461,7 +468,7 @@ public class Node implements Runnable {
 
         // 3) Initialize DSNeighbours (no-arg constructor)
         myNeighbours = new DSNeighbours();
-        log.info("myNeighbours created for Node {}, currently empty.", nodeId);
+        log.info("myNeighbours initialized for Node {}, currently empty.", nodeId);
 
         // 4) Start RMI
         startMessageReceiver();
@@ -479,7 +486,7 @@ public class Node implements Runnable {
         // 7) Print initial status
         printStatus();
 
-        // 8) If user gave 5 arguments => auto-join at startup
+        // 8) If user provided 5 arguments => auto-join at startup
         if (otherNodeIP != null && otherNodePort > 0) {
             log.info("Node {} auto-joining neighbor at {}:{} ...", nodeId, otherNodeIP, otherNodePort);
             join(otherNodeIP, otherNodePort);

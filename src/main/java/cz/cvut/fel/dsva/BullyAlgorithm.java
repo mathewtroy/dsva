@@ -26,6 +26,9 @@ public class BullyAlgorithm {
         this.node = node;
     }
 
+    /**
+     * Starts the Bully election process.
+     */
     public synchronized void startElection() {
         // If already participating in an election, do nothing
         if (node.isVoting()) {
@@ -59,6 +62,11 @@ public class BullyAlgorithm {
         }
     }
 
+    /**
+     * Handles receiving an election message from a lower node.
+     *
+     * @param senderId ID of the sender node
+     */
     public synchronized void onElectionMsgFromLower(long senderId) {
         log.info("Election message received from Node {}.", senderId);
         if (node.getNodeId() > senderId) {
@@ -72,6 +80,11 @@ public class BullyAlgorithm {
         }
     }
 
+    /**
+     * Handles receiving an OK message from a higher node.
+     *
+     * @param fromId ID of the node that sent the OK message
+     */
     public synchronized void onOKReceived(long fromId) {
         node.setReceivedOK(true);
         waitingForOK = false;
@@ -81,6 +94,12 @@ public class BullyAlgorithm {
         startElectedTimer();       // Start waiting for the Elected message
     }
 
+    /**
+     * Handles receiving an Elected message indicating the new leader.
+     *
+     * @param leaderId ID of the elected leader
+     * @param leaderAddr Address of the elected leader
+     */
     public synchronized void onElectedReceived(long leaderId, Address leaderAddr) {
         log.info("Leader elected: Node {}.", leaderId);
 
@@ -97,6 +116,9 @@ public class BullyAlgorithm {
         cancelElectedTimer();
     }
 
+    /**
+     * Starts the election timeout timer.
+     */
     private void startElectionTimer() {
         cancelElectionTimer();
         electionTimer = new Timer();
@@ -114,6 +136,9 @@ public class BullyAlgorithm {
         }, electionTimeout);
     }
 
+    /**
+     * Starts the elected timeout timer.
+     */
     private void startElectedTimer() {
         cancelElectedTimer();
         electedTimer = new Timer();
@@ -131,6 +156,9 @@ public class BullyAlgorithm {
         }, electedTimeout);
     }
 
+    /**
+     * Cancels the election timer if it's running.
+     */
     private void cancelElectionTimer() {
         if (electionTimer != null) {
             electionTimer.cancel();
@@ -139,6 +167,9 @@ public class BullyAlgorithm {
         }
     }
 
+    /**
+     * Cancels the elected timer if it's running.
+     */
     private void cancelElectedTimer() {
         if (electedTimer != null) {
             electedTimer.cancel();
@@ -147,11 +178,19 @@ public class BullyAlgorithm {
         }
     }
 
+    /**
+     * Cancels all active timers.
+     */
     private void cancelAllTimers() {
         cancelElectionTimer();
         cancelElectedTimer();
     }
 
+    /**
+     * Declares a node as the leader and notifies all neighbors.
+     *
+     * @param newLeader Address of the node to declare as leader
+     */
     public synchronized void declareLeader(Address newLeader) {
         boolean shouldDeclare = false;
 
@@ -160,7 +199,7 @@ public class BullyAlgorithm {
             shouldDeclare = true;
             log.info("Node {} recognizes itself as the new leader.", node.getNodeId());
         } else {
-            // Accept a new leader only if no leader is set
+            // Accept a new leader only if no leader is set or the new leader has a higher ID
             Address currentLeader = node.getNeighbours().getLeaderNode();
             if (currentLeader == null || newLeader.getNodeID() > currentLeader.getNodeID()) {
                 shouldDeclare = true;
@@ -172,7 +211,7 @@ public class BullyAlgorithm {
             node.setCoordinator(node.getAddress().equals(newLeader));
             node.getNeighbours().setLeaderNode(newLeader);
 
-            log.info("Node {} is declaring itself as the leader.", node.getNodeId());
+            log.info("Node {} is declaring Node {} as the leader.", node.getNodeId(), newLeader.getNodeID());
 
             // Notify all neighbors about the new leader
             for (Address neighbour : node.getNeighbours().getNeighbours()) {

@@ -9,7 +9,7 @@ public interface NodeCommands extends Remote {
         void notifyAboutNewLeader(Address address) throws RemoteException;
         void notifyAboutRevival(Address revivedNode) throws RemoteException;
 
-        void join(Address addr) throws RemoteException;
+        DSNeighbours join(Address addr) throws RemoteException;
 
         void sendElectionMsg(long senderId) throws RemoteException;
 

@@ -24,6 +24,9 @@ public class APIHandler {
         this(myNode, 7000);
     }
 
+    /**
+     * Starts the REST API server with defined endpoints.
+     */
     public void start() {
         this.app = Javalin.create()
                 // Start election
@@ -51,14 +54,14 @@ public class APIHandler {
 
                 // Start RMI
                 .get("/start_rmi", ctx -> {
-                    System.out.println("Starting RMI part via API.");
+                    System.out.println("Starting RMI service via API.");
                     myNode.startRMI();
                     ctx.result("RMI started\n");
                 })
 
                 // Stop RMI
                 .get("/stop_rmi", ctx -> {
-                    System.out.println("Stopping RMI part via API.");
+                    System.out.println("Stopping RMI service via API.");
                     myNode.stopRMI();
                     myNode.resetTopology();
                     ctx.result("RMI stopped and topology reset\n");
@@ -78,11 +81,13 @@ public class APIHandler {
                     ctx.result("Node left the network gracefully\n");
                 })
 
-                // Revive node
-                .get("/revive", ctx -> {
-                    System.out.println("Reviving node via API.");
-                    myNode.revive();
-                    ctx.result("Node revived\n");
+                // Revive node by providing a node to join
+                .get("/revive/{join_node_ip}/{join_node_port}", ctx -> {
+                    String joinNodeIP = ctx.pathParam("join_node_ip");
+                    int joinNodePort = Integer.parseInt(ctx.pathParam("join_node_port"));
+                    System.out.println("Reviving node and joining to Node " + joinNodeIP + ":" + joinNodePort + " via API.");
+                    myNode.revive(joinNodeIP, joinNodePort);
+                    ctx.result("Node revived and attempted to join Node " + joinNodeIP + ":" + joinNodePort + "\n");
                 })
 
                 // Get status of the node
@@ -92,21 +97,14 @@ public class APIHandler {
                     ctx.result(myNode.getStatus() + "\n");
                 })
 
-                // New endpoint for joining another node
-//                .get("/join/{ip}/{port}", ctx -> {
-//                    String otherIP = ctx.pathParam("ip");
-//                    int otherPort = Integer.parseInt(ctx.pathParam("port"));
-//                    log.info("API called to join {}:{}", otherIP, otherPort);
-//                    myNode.join(otherIP, otherPort);
-//                    ctx.result("Joined node " + otherIP + ":" + otherPort + "\n");
-//                })
-
+                // Join another node
                 .get("/join/{other_node_ip}/{other_node_port}", ctx -> {
-                    System.out.println("Joining node: " + ctx.pathParam("other_node_ip") + ":" + ctx.pathParam("other_node_port"));
-                    myNode.join(ctx.pathParam("other_node_ip"), Integer.parseInt(ctx.pathParam("other_node_port")));
-                    ctx.result("Tried to join to: " + ctx.pathParam("other_node_ip") + " " + ctx.pathParam("other_node_port") + "\n");
+                    String otherNodeIP = ctx.pathParam("other_node_ip");
+                    int otherNodePort = Integer.parseInt(ctx.pathParam("other_node_port"));
+                    System.out.println("Joining node: " + otherNodeIP + ":" + otherNodePort + " via API.");
+                    myNode.join(otherNodeIP, otherNodePort);
+                    ctx.result("Tried to join Node " + otherNodeIP + ":" + otherNodePort + "\n");
                 })
-
 
                 // Start the API server
                 .start(this.port);
