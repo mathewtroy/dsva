@@ -52,6 +52,6 @@ for ID in $(seq 1 $NUM_NODES) ; do
     sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux send -t NODE_${ID} 'cd ${SEMWORK_HOMEDIR}/NODE_${ID}/ && java -cp ${FAT_JAR} cz.cvut.fel.dsva.Node ${ID} ${NODE_IP[$ID]}' ENTER"
   else
     # Other nodes: 4 arguments (nodeId, myIP, otherNodeIP, otherNodePort) => auto-join the first node
-    sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux send -t NODE_${ID} 'cd ${SEMWORK_HOMEDIR}/NODE_${ID}/ && java -cp ${FAT_JAR} cz.cvut.fel.dsva.Node ${ID} ${NODE_IP[$ID]} ${NODE_IP[1]} ${NODE_PORT[1]}' ENTER"
+    sshpass -p ${DSV_PASS} ssh dsv@${NODE_IP[$ID]} -- "tmux send -t NODE_${ID} 'cd ${SEMWORK_HOMEDIR}/NODE_${ID}/ && java -cp ${FAT_JAR} cz.cvut.fel.dsva.Node ${NODE_NICKNAME[$ID]} ${NODE_IP[$ID]} ${NODE_PORT[$ID]}' ENTER"
   fi
 done

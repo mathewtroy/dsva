@@ -66,39 +66,22 @@ public class Node implements Runnable {
      *   Minimum: args[0] = nodeId, args[1] = myIP
      *   Optional: args[2] = otherNodeIP, args[3] = otherNodePort
      */
-    public Node(String[] args) {
-        if (args.length >= 2) {
-            try {
-                this.nodeId = Long.parseLong(args[0]);
-                this.myIP   = args[1];
-
-                // Adjust ports
-                this.rmiPort = 50050 + (int) nodeId;
-                this.apiPort = 7000   + (int) nodeId;
-
-                // If user provided 4 arguments, let's store them for an auto-join
-                if (args.length >= 4) {
-                    this.otherNodeIP   = args[2];
-                    this.otherNodePort = Integer.parseInt(args[3]);
-                }
-
-                // Initialize neighbors
-                myNeighbours = new DSNeighbours();
-
-                log.info("Node initialized with ID {} on ports RMI: {}, API: {}. My IP = {}",
-                        nodeId, rmiPort, apiPort, myIP);
-
-                if (otherNodeIP != null && otherNodePort > 0) {
-                    log.info("If run() calls auto-join, we will join {}:{}", otherNodeIP, otherNodePort);
-                }
-
-            } catch (NumberFormatException e) {
-                log.error("Invalid node ID or port: {}", args[0], e);
-                System.exit(1);
-            }
+    public Node (String[] args) {
+        // handle commandline arguments
+        if (args.length == 3) {
+            nickname = args[0];
+            myIP = otherNodeIP = args[1];
+            rmiPort = otherNodePort = Integer.parseInt(args[2]);
+        } else if (args.length == 5) {
+            nickname = args[0];
+            myIP = args[1];
+            rmiPort = Integer.parseInt(args[2]);
+            otherNodeIP = args[3];
+            otherNodePort = Integer.parseInt(args[4]);
         } else {
-            log.error("At least 2 arguments are required: <nodeId> <myIP> [otherNodeIP otherNodePort]");
-            System.exit(1);
+            // something is wrong - use default values
+            // add log
+            System.err.println("Wrong number of commandline parameters - using default values.");
         }
     }
 
