@@ -45,11 +45,8 @@ declare -A NODE_API_PORT
 
 # Network range to scan (adjust based on your network configuration)
 NETWORK_RANGE="192.168.56.0/24"
-
-# Use nmap to find active hosts
 ACTIVE_HOSTS=$(nmap -sn $NETWORK_RANGE | grep "Nmap scan report" | awk '{print $NF}' | tr -d '()')
 
-# Assign IPs and ports dynamically
 ID=1
 for IP in $ACTIVE_HOSTS; do
   if [ $ID -le $NUM_NODES ]; then
@@ -60,6 +57,7 @@ for IP in $ACTIVE_HOSTS; do
     ((ID++))
   fi
 done
+
 
 NODE_NICKNAME[1]=Alice
 NODE_NICKNAME[2]=Bob

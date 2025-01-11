@@ -92,12 +92,18 @@ public class APIHandler {
                 })
 
                 // New endpoint for joining another node
-                .get("/join/{ip}/{port}", ctx -> {
-                    String otherIP = ctx.pathParam("ip");
-                    int otherPort = Integer.parseInt(ctx.pathParam("port"));
-                    log.info("API called to join {}:{}", otherIP, otherPort);
-                    myNode.join(otherIP, otherPort);
-                    ctx.result("Joined node " + otherIP + ":" + otherPort + "\n");
+//                .get("/join/{ip}/{port}", ctx -> {
+//                    String otherIP = ctx.pathParam("ip");
+//                    int otherPort = Integer.parseInt(ctx.pathParam("port"));
+//                    log.info("API called to join {}:{}", otherIP, otherPort);
+//                    myNode.join(otherIP, otherPort);
+//                    ctx.result("Joined node " + otherIP + ":" + otherPort + "\n");
+//                })
+
+                .get("/join/{other_node_ip}/{other_node_port}", ctx -> {
+                    System.out.println("Joining node: " + ctx.pathParam("other_node_ip") + ":" + ctx.pathParam("other_node_port"));
+                    myNode.join(ctx.pathParam("other_node_ip"), Integer.parseInt(ctx.pathParam("other_node_port")));
+                    ctx.result("Tried to join to: " + ctx.pathParam("other_node_ip") + " " + ctx.pathParam("other_node_port") + "\n");
                 })
 
 
