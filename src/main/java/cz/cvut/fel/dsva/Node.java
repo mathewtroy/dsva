@@ -12,16 +12,15 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Node class implementing the Bully Leader Election algorithm with dynamic IP assignment.
  *
  * Usage:
- *   - If you provide 3 args:  nickname, myIP, rmiPort        (old style)
- *   - If you provide 5 args:  nickname, myIP, rmiPort, otherNodeIP, otherNodePort
- *       => it will auto-join the specified neighbor.
- *
- * Note: In your older demo, 3 or 5 arguments were used. Adjust as needed for your exact logic.
+ *   - 4 args: nickname, myIP, rmiPort, apiPort
+ *   - 6 args: nickname, myIP, rmiPort, otherNodeIP, otherNodePort, apiPort
  */
 @Slf4j
 @Getter
@@ -43,21 +42,21 @@ public class Node implements Runnable {
     // ----------------------------------------------------------
     // Basic info
     // ----------------------------------------------------------
-    private String nickname = "Unknown";  // first arg
-    private String myIP;                 // second arg
-    private int rmiPort = 3010;          // third arg
-    private int apiPort = 7010;          // auto-calc or leftover
-    private long nodeId = 0;             // optional numeric ID if needed
+    private String nickname = "Unknown";
+    private String myIP;
+    private int rmiPort = 3010;
+    private int apiPort = 7010;
+    private long nodeId = 0;
 
     // Additional optional info for auto-join
-    private String otherNodeIP;          // 4th arg
-    private int otherNodePort = 0;       // 5th arg
+    private String otherNodeIP;
+    private int otherNodePort = 0;
 
     // ----------------------------------------------------------
     // Node structure
     // ----------------------------------------------------------
     private Address address;
-    private DSNeighbours myNeighbours;         // Must be initialized to avoid NPE
+    private DSNeighbours myNeighbours;
     private MessageReceiver myMessageReceiver;
     private CommunicationHub myCommHub;
     private ConsoleHandler myConsoleHandler;
@@ -65,10 +64,13 @@ public class Node implements Runnable {
     private BullyAlgorithm bully;
 
     /**
-     * Constructor that expects:
-     *   - 4 args: nickname, myIP, rmiPort, apiPort
-     *   - 6 args: nickname, myIP, rmiPort, otherNodeIP, otherNodePort, apiPort
-     * If the argument count doesn't match, we use some default logic.
+     * List to store neighbors if the node is killed or leaves,
+     * so it can reconnect to them upon revive.
+     */
+    private final List<Address> savedNeighbors = new CopyOnWriteArrayList<>();
+
+    /**
+     * Constructor that expects either 4 args or 6 args.
      */
     public Node(String[] args) {
         if (args.length == 4) {
@@ -91,12 +93,10 @@ public class Node implements Runnable {
     }
 
     private long generateId(String address, int port) {
-        // address is typically myIP
-        // for example: "192.168.56.105"
         String[] array = address.split("\\.");
         long id = 0;
         for (String part : array) {
-            long temp = Long.parseLong(part); // caution if parse fails
+            long temp = Long.parseLong(part);
             id = (id * 1000) + temp;
         }
         if (id == 0) {
@@ -114,11 +114,7 @@ public class Node implements Runnable {
     // RMI
     // ----------------------------------------------------------
     private void startMessageReceiver() {
-        // We create the address after we parse arguments,
-        // but before we run the logic that needs it.
         address = new Address(myIP, rmiPort, nodeId);
-
-        // Let RMI know the hostname
         System.setProperty("java.rmi.server.hostname", address.getHostname());
 
         try {
@@ -126,16 +122,15 @@ public class Node implements Runnable {
                 this.myMessageReceiver = new MessageReceiver(this);
             }
 
-            NodeCommands skeleton = (NodeCommands) UnicastRemoteObject.exportObject(this.myMessageReceiver, rmiPort);
+            NodeCommands skeleton =
+                    (NodeCommands) UnicastRemoteObject.exportObject(this.myMessageReceiver, rmiPort);
 
             Registry registry;
             try {
-                // Try to get a registry on the chosen port
                 registry = LocateRegistry.getRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
                 log.info("Bound to existing RMI registry on port {}.", rmiPort);
             } catch (RemoteException re) {
-                // There is no RMI registry - create one
                 log.info("Creating a new RMI registry on port {}.", rmiPort);
                 registry = LocateRegistry.createRegistry(rmiPort);
                 registry.rebind(COMM_INTERFACE_NAME, skeleton);
@@ -183,7 +178,8 @@ public class Node implements Runnable {
 
             log.info("Calling remoteNode.join(...) on Node {}.", otherAddr.getNodeID());
             remoteNode.join(this.address);
-            log.info("Join call invoked. Node {} notified {}:{} to join.", nodeId, otherIP, otherPort);
+            log.info("Join call invoked. Node {} notified {}:{} to join.",
+                    nodeId, otherIP, otherPort);
 
             if (myNeighbours != null) {
                 myNeighbours.addNewNode(otherAddr);
@@ -191,7 +187,6 @@ public class Node implements Runnable {
             } else {
                 log.warn("myNeighbours is null while trying to add a new neighbor.");
             }
-
         } catch (RemoteException e) {
             log.warn("Failed to join node at {}:{} => {}", otherIP, otherPort, e.getMessage());
         }
@@ -331,7 +326,8 @@ public class Node implements Runnable {
             }
         }
         if (!messageSent) {
-            log.warn("Node {} is unreachable after 3 attempts. Removing from neighbors of Node {}...", receiverId, nodeId);
+            log.warn("Node {} is unreachable after 3 attempts. Removing from neighbors of Node {}...",
+                    receiverId, nodeId);
             myNeighbours.removeNode(receiverAddr);
             return false;
         }
@@ -362,6 +358,10 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Kills the node abruptly without notifying neighbors.
+     * Saves current neighbors so we can rejoin them if revived.
+     */
     public void kill() {
         if (isKilled) {
             log.info("Node {} is already KILLED.", nodeId);
@@ -369,12 +369,22 @@ public class Node implements Runnable {
         }
         log.info("Killing Node {} without notifying neighbors...", nodeId);
 
+        // Save current neighbors
+        this.savedNeighbors.clear();
+        if (myNeighbours != null) {
+            this.savedNeighbors.addAll(myNeighbours.getNeighbours());
+        }
+
         isKilled = true;
         isLeft = false;
         stopRMI();
-        log.info("Node {} has been killed (no neighbor notification).", nodeId);
+        log.info("Node {} has been killed. Saved neighbors for potential revive: {}", nodeId, savedNeighbors);
     }
 
+    /**
+     * Leaves the network gracefully by notifying neighbors.
+     * Saves current neighbors so we can rejoin them if revived.
+     */
     public void leave() {
         if (isKilled || isLeft) {
             log.info("Node {} is already inactive (killed or left).", nodeId);
@@ -386,7 +396,15 @@ public class Node implements Runnable {
             return;
         }
 
-        log.info("Node {} is leaving the network...", nodeId);
+        log.info("Node {} is leaving the network...");
+
+        // Save current neighbors
+        this.savedNeighbors.clear();
+        if (myNeighbours != null) {
+            this.savedNeighbors.addAll(myNeighbours.getNeighbours());
+        }
+
+        // Notify neighbors
         if (myNeighbours != null) {
             for (Address neighbor : myNeighbours.getNeighbours()) {
                 try {
@@ -406,11 +424,17 @@ public class Node implements Runnable {
 
         isLeft = true;
         isKilled = false;
-        log.info("Node {} has left the network.", nodeId);
+        log.info("Node {} has left the network. Saved neighbors for potential revive: {}", nodeId, savedNeighbors);
     }
 
     private void leaveNode() {
         log.info("Leader Node {} is leaving the network gracefully.", nodeId);
+
+        // Save neighbors
+        this.savedNeighbors.clear();
+        if (myNeighbours != null) {
+            this.savedNeighbors.addAll(myNeighbours.getNeighbours());
+        }
 
         if (myNeighbours != null) {
             for (Address neighbor : myNeighbours.getNeighbours()) {
@@ -433,10 +457,14 @@ public class Node implements Runnable {
 
         isLeft = true;
         isKilled = false;
-        log.info("Leader Node {} has left the network.", nodeId);
+        log.info("Leader Node {} has left the network. Saved neighbors for potential revive: {}", nodeId, savedNeighbors);
     }
 
-    public void revive(String joinNodeIP, int joinNodePort) {
+    /**
+     * Revive method with no arguments (used by ConsoleHandler).
+     * Just restarts RMI and optionally rejoins saved neighbors.
+     */
+    public void revive() {
         if (!isKilled && !isLeft) {
             log.info("Node {} is neither killed nor left; no need to revive.", nodeId);
             return;
@@ -447,52 +475,66 @@ public class Node implements Runnable {
         isLeft = false;
 
         startRMI();
-        log.info("Node {} revived. Attempting to join the network...", nodeId);
+        log.info("Node {} revived (no-arg). You can manually join neighbors or rejoin automatically.\n" +
+                "Currently, we won't auto-join. Or you could uncomment code below if you want auto-join.");
 
-        // Perform a join to reconnect to the network
-        join(joinNodeIP, joinNodePort);
+        // EXAMPLE auto-join all saved neighbors (uncomment if desired):
+        /*
+        for (Address neighbor : savedNeighbors) {
+            join(neighbor.getHostname(), neighbor.getPort());
+        }
+        */
     }
 
+    /**
+     * Revive method with IP:port if user wants to specify a node to rejoin immediately.
+     */
+    public void revive(String joinNodeIP, int joinNodePort) {
+        if (!isKilled && !isLeft) {
+            log.info("Node {} is neither killed nor left; no need to revive (with IP/port).", nodeId);
+            return;
+        }
+        log.info("Reviving node {} and auto-joining {}:{}...", nodeId, joinNodeIP, joinNodePort);
+
+        isKilled = false;
+        isLeft = false;
+
+        startRMI();
+        join(joinNodeIP, joinNodePort);
+        log.info("Node {} revived and attempted to rejoin {}:{}.", nodeId, joinNodeIP, joinNodePort);
+    }
 
     // ----------------------------------------------------------
     // MAIN + run()
     // ----------------------------------------------------------
     @Override
     public void run() {
-        // 1) Generate ID from IP and port
         this.nodeId = generateId(myIP, rmiPort);
         log.info("Node ID generated as {} based on IP={} and rmiPort={}.", nodeId, myIP, rmiPort);
 
-        // 2) Create Address
         address = new Address(myIP, rmiPort, nodeId);
 
-        // 3) Initialize DSNeighbours (no-arg constructor)
         myNeighbours = new DSNeighbours();
         log.info("myNeighbours initialized for Node {}, currently empty.", nodeId);
 
-        // 4) Start RMI
         startMessageReceiver();
 
-        // 5) Initialize auxiliary components
         myCommHub = new CommunicationHub(this);
         bully = new BullyAlgorithm(this);
         myConsoleHandler = new ConsoleHandler(this);
         myAPIHandler = new APIHandler(this, apiPort);
 
-        // 6) Start the REST API and the console
         myAPIHandler.start();
         new Thread(myConsoleHandler).start();
 
-        // 7) Print initial status
         printStatus();
 
-        // 8) If user provided 5 arguments => auto-join at startup
+        // If user provided 6 arguments => auto-join at startup
         if (otherNodeIP != null && otherNodePort > 0) {
             log.info("Node {} auto-joining neighbor at {}:{} ...", nodeId, otherNodeIP, otherNodePort);
             join(otherNodeIP, otherNodePort);
         }
 
-        // 9) Keep alive until killed or left
         while (!isKilled && !isLeft) {
             try {
                 Thread.sleep(1000);
