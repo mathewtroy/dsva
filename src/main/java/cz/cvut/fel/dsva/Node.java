@@ -71,18 +71,20 @@ public class Node implements Runnable {
      * If the argument count doesn't match, we use some default logic.
      */
     public Node(String[] args) {
-        if (args.length == 3) {
+        if (args.length == 4) {
             log.info("Node constructor invoked with 3 args (nickname, IP, rmiPort).");
             nickname = args[0];
             myIP     = args[1];
             rmiPort  = Integer.parseInt(args[2]);
-        } else if (args.length == 5) {
+            apiPort  = Integer.parseInt(args[3]);
+        } else if (args.length == 6) {
             log.info("Node constructor invoked with 5 args (nickname, IP, rmiPort, otherIP, otherPort).");
             nickname      = args[0];
             myIP          = args[1];
             rmiPort       = Integer.parseInt(args[2]);
             otherNodeIP   = args[3];
             otherNodePort = Integer.parseInt(args[4]);
+            apiPort       = Integer.parseInt(args[5]);
         } else {
             log.warn("Wrong number of command-line parameters. Using default values for Node.");
         }
