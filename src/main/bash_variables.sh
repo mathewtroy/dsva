@@ -13,7 +13,7 @@ SEMWORK_HOMEDIR=/home/dsv/semwork2
 CODE_SUBDIR=code
 
 ### nodes variables
-NUM_NODES=4
+NUM_NODES=5
 BASE_IP=127.0.0.1
 BASE_PORT=2000
 
