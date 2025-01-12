@@ -1,10 +1,10 @@
 #!/bin/bash
 # Scenario 5: Testing RMI stop/start on Node1 among 5 nodes.
 
-source scenario_1_connect_nodes.sh
+source bash_variables.sh
 SLEEP_TIME=1
 
-echo "=== SCENARIO 5: stop_rmi/start_rmi on Node1 (while 5 nodes exist) ==="
+echo "=== SCENARIO 3: stop_rmi/start_rmi on Node1 (while 5 nodes exist) ==="
 
 # 1) Check initial statuses for all 5
 echo "=== Checking initial statuses of all 5 nodes ==="
@@ -40,12 +40,6 @@ echo "=== Re-joining Node1 -> Node2, for instance ==="
 curl http://${NODE_IP[1]}:${NODE_API_PORT[1]}/join/${NODE_IP[2]}/${NODE_PORT[2]}
 sleep ${SLEEP_TIME}
 
-# 7) Final statuses
-echo "=== Checking final statuses for all 5 nodes ==="
-for i in 1 2 3 4 5
-do
-  curl http://${NODE_IP[$i]}:${NODE_API_PORT[$i]}/get_status
-  sleep ${SLEEP_TIME}
-done
 
-echo "=== SCENARIO 5 COMPLETE ==="
+
+echo "=== SCENARIO 3 COMPLETE ==="

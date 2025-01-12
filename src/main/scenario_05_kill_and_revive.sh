@@ -1,10 +1,10 @@
 #!/bin/bash
 # Kill/revive Node1, leave/revive Node2.
 
-source scenario_1_connect_nodes.sh
+source 02_connect_nodes.sh
 SLEEP_TIME=1
 
-echo "=== SCENARIO 4: Kill/Revive on Node1, then Leave/Revive on Node2 ==="
+echo "=== SCENARIO 5: Kill/Revive on Node1, then Leave/Revive on Node2 ==="
 
 # 1) Kill Node1
 echo "=== Killing Node1 ==="
@@ -45,12 +45,5 @@ echo "=== Checking Node2 status after revive ==="
 curl http://${NODE_IP[2]}:${NODE_API_PORT[2]}/get_status
 sleep ${SLEEP_TIME}
 
-# 5) Optionally, final statuses for all
-echo "=== Final statuses for all 5 nodes ==="
-for i in 1 2 3 4 5
-do
-  curl http://${NODE_IP[$i]}:${NODE_API_PORT[$i]}/get_status
-  sleep ${SLEEP_TIME}
-done
 
-echo "=== SCENARIO 4 COMPLETE ==="
+echo "=== SCENARIO 5 COMPLETE ==="
