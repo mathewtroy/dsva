@@ -5,7 +5,7 @@
 source 02_connect_nodes.sh
 SLEEP_TIME=1
 
-echo "=== SCENARIO 6: Checking leader from Node1 and Node5 ==="
+echo "=== SCENARIO 4: Checking leader from Node1 and Node5 ==="
 
 # 1) Check leader from Node1
 echo "=== Checking leader via Node1 ==="
@@ -21,4 +21,4 @@ sleep ${SLEEP_TIME}
 curl http://${NODE_IP[5]}:${NODE_API_PORT[5]}/get_status
 sleep ${SLEEP_TIME}
 
-echo "=== SCENARIO 6 COMPLETE ==="
+echo "=== SCENARIO 4 COMPLETE ==="

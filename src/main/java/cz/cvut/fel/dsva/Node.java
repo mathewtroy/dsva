@@ -265,11 +265,17 @@ public class Node implements Runnable {
         Address leader = myNeighbours.getLeaderNode();
         if (leader != null) {
             try {
-                getCommHub().getRMIProxy(leader).checkStatusOfLeader(nodeId);
+                // Attempt to contact the leader
+                myCommHub.getRMIProxy(leader).checkStatusOfLeader(nodeId);
+
                 log.info("Leader is alive: {}", leader);
             } catch (RemoteException e) {
-                log.warn("Leader Node {} unreachable. Starting election...", leader.getNodeID());
+                log.warn("Leader Node {} is unreachable. Starting election for Node {} ...", leader.getNodeID(), nodeId);
+
+                // Remove that leader from neighbors so we don't keep referencing it
+                myNeighbours.removeNode(leader);
                 myNeighbours.setLeaderNode(null);
+
                 startElection();
             }
         } else {
