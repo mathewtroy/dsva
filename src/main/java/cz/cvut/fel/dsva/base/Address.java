@@ -10,45 +10,46 @@ import java.util.Objects;
 @Slf4j
 @Getter
 @Setter
-public class Address implements Comparable<Address>, Serializable {
+public class Address implements Serializable {
+    private long nodeID;       // might be 0 if not set
     private String hostname;
-    private Integer port;
-    private Long nodeID;
-    private boolean isOnline = true;
+    private int port;
 
-    // Constructor without nodeID
-    public Address(String hostname, int port){
-        this.hostname = hostname;
-        this.port = port;
+    // For printing
+    @Override
+    public String toString() {
+        return "Address: nodeId: " + (nodeID == 0 ? "null" : nodeID) +
+                " hostname: " + hostname +
+                " port: " + port;
     }
 
-    // Constructor with nodeID
-    public Address(String hostname, int port, Long nodeID){
-        this.hostname = hostname;
-        this.port = port;
+    // *** ADDED ***
+    // If you want a convenience constructor that sets nodeID directly
+    public Address(long nodeID, String hostname, int port) {
         this.nodeID = nodeID;
+        this.hostname = hostname;
+        this.port = port;
+    }
+
+    // *** CHANGED ***
+    // Default constructor (no nodeID)
+    public Address(String hostname, int port) {
+        this.nodeID = 0;  // or 'null' effectively
+        this.hostname = hostname;
+        this.port = port;
     }
 
     @Override
-    public String toString(){
-        return "Address: nodeId: " + nodeID + " hostname: " + hostname + " port: " + port;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Address)) return false;
+        Address that = (Address) o;
+        // We typically consider them equal if same hostname & port
+        return this.port == that.port && Objects.equals(this.hostname, that.hostname);
     }
 
     @Override
-    public boolean equals(Object object){
-        if (this == object) return true;
-        if (!(object instanceof Address)) return false;
-        Address address = (Address) object;
-        return Objects.equals(nodeID, address.nodeID);
-    }
-
-    @Override
-    public int hashCode(){
-        return Objects.hash(nodeID);
-    }
-
-    @Override
-    public int compareTo(Address address) {
-        return this.nodeID.compareTo(address.nodeID);
+    public int hashCode() {
+        return Objects.hash(hostname, port);
     }
 }

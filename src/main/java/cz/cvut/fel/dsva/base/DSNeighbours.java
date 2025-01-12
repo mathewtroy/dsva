@@ -27,21 +27,18 @@ public class DSNeighbours implements Serializable {
         boolean removed = neighbours.remove(address);
         if (removed) {
             log.info("Node {} removed from neighbours.", address.getNodeID());
-
-            if(leaderNode != null && leaderNode.equals(address)) {
+            if (leaderNode != null && leaderNode.equals(address)) {
                 setLeaderNode(null);
             }
         } else {
-            log.warn("Attempted to remove Node {}, but it was not found.", address.getNodeID());
-            log.info("Node {} not found in neighbours.", address.getNodeID());
+            log.warn("Attempted to remove Node {}, but not found in neighbours.", address.getNodeID());
         }
     }
 
     public synchronized void addNewNode(Address address) {
         if (!neighbours.contains(address)) {
             neighbours.add(address);
-            log.info("Node {} added to neighbours.", address.getNodeID());
-            log.info("Node added: {}", address);
+            log.info("Node {} added to neighbours. Address = {}", address.getNodeID(), address);
         } else {
             log.debug("Node {} is already in neighbours.", address.getNodeID());
         }

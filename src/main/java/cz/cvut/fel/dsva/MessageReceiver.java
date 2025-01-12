@@ -21,35 +21,51 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public DSNeighbours join(Address addr) throws RemoteException {
-        log.info("JOIN called by Node {}.", addr.getNodeID());
+        log.info("JOIN called by Node {} (id={}), on local Node {} (id={}).",
+                addr.getHostname(), addr.getNodeID(),
+                myNode.getAddress().getHostname(), myNode.getNodeId());
 
+        // *** CHANGED ***: If the incoming address doesn't have a nodeID set, generate it
+        if (addr.getNodeID() == 0) {
+            long newID = myNode.generateId(addr.getHostname(), addr.getPort());
+            addr.setNodeID(newID);
+            log.info("Assigned nodeId={} to newly joined Address: {}", newID, addr);
+        }
+
+        // If it's the same node, we might skip
         if (addr.equals(myNode.getAddress())) {
-            log.info("I am the first node and the leader.");
+            log.info("I am the first node and the leader => returning my neighbours.");
             return myNode.getNeighbours();
         } else {
-            log.info("Node {} is joining the network.", addr.getNodeID());
+            log.info("Node {} is joining the network of local Node {}.",
+                    addr.getNodeID(), myNode.getNodeId());
 
             synchronized (this) {
                 myNode.getNeighbours().addNewNode(addr);
-                log.info("Node {} added to Node {}'s neighbors.", addr.getNodeID(), myNode.getNodeId());
+                log.info("Node {} added to Node {}'s neighbors from RMI join().",
+                        addr.getNodeID(), myNode.getNodeId());
             }
 
             Address currentLeader;
             synchronized (this) {
                 currentLeader = myNode.getNeighbours().getLeaderNode();
-                log.info("Current leader is Node {}.", currentLeader != null ? currentLeader.getNodeID() : "None");
+                log.info("Current leader is {} for local Node {}.",
+                        currentLeader != null ? currentLeader.getNodeID() : "None",
+                        myNode.getNodeId());
             }
 
             if (currentLeader != null) {
                 try {
                     NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(addr);
                     remoteNode.notifyAboutNewLeader(currentLeader);
-                    log.info("Notified Node {} about the current leader: Node {}.", addr.getNodeID(), currentLeader.getNodeID());
+                    log.info("Notified Node {} about the current leader: Node {}.",
+                            addr.getNodeID(), currentLeader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about the current leader: {}", addr.getNodeID(), e.getMessage());
+                    log.error("Failed to notify Node {} about the current leader: {}",
+                            addr.getNodeID(), e.getMessage());
                 }
             } else {
-                log.info("No leader present. Initiating election.");
+                log.info("No leader present in local Node {}. Initiating election.", myNode.getNodeId());
                 myNode.startElection();
             }
 
@@ -59,7 +75,8 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void sendElectionMsg(long senderId) throws RemoteException {
-        log.info("Received Election message from Node {}.", senderId);
+        log.info("Received Election message from Node {} for local Node {}.",
+                senderId, myNode.getNodeId());
         myNode.getBully().onElectionMsgFromLower(senderId);
     }
 
@@ -68,41 +85,48 @@ public class MessageReceiver implements NodeCommands {
         Address currentLeader;
         synchronized (this) {
             currentLeader = myNode.getNeighbours().getLeaderNode();
-            log.info("Received notifyAboutNewLeader for Node {}.", leader.getNodeID());
+            log.info("Received notifyAboutNewLeader for Node {} from remote side. Our current leader is {}.",
+                    leader.getNodeID(),
+                    currentLeader != null ? currentLeader.getNodeID() : "None");
         }
 
-        // Accept the new leader if:
-        // 1. There is no current leader
-        // 2. The new leader has a higher node ID than the current leader
         if (currentLeader == null || leader.getNodeID() > currentLeader.getNodeID()) {
             synchronized (this) {
                 myNode.getNeighbours().setLeaderNode(leader);
-                log.info("New leader acknowledged: Node {}.", leader.getNodeID());
+                log.info("Local Node {} acknowledges new leader: Node {}.",
+                        myNode.getNodeId(), leader.getNodeID());
             }
-
             myNode.getBully().onElectedReceived(leader.getNodeID(), leader);
 
             for (Address neighbor : myNode.getNeighbours().getNeighbours()) {
                 try {
                     NodeCommands remoteNode = myNode.getCommHub().getRMIProxy(neighbor);
                     remoteNode.updateLeader(leader);
-                    log.info("Notified Node {} about the new leader Node {}.", neighbor.getNodeID(), leader.getNodeID());
+                    log.info("We told Node {} about new leader Node {}.",
+                            neighbor.getNodeID(), leader.getNodeID());
                 } catch (RemoteException e) {
-                    log.error("Failed to notify Node {} about the new leader: {}", neighbor.getNodeID(), e.getMessage());
+                    log.error("Failed to notify Node {} about new leader: {}",
+                            neighbor.getNodeID(), e.getMessage());
                 }
             }
         } else if (currentLeader.equals(leader)) {
-            log.info("Leader {} reconfirmed.", leader.getNodeID());
+            log.info("Leader {} reconfirmed for local Node {}.",
+                    leader.getNodeID(), myNode.getNodeId());
         } else {
-            log.info("Ignoring new leader {} because current leader is Node {}.", leader.getNodeID(), currentLeader.getNodeID());
+            log.info("Ignoring new leader {} because our current leader is Node {} (which is higher ID?).",
+                    leader.getNodeID(), currentLeader.getNodeID());
         }
     }
 
     @Override
     public void addNeighbor(Address addr) throws RemoteException {
+        // If you want some RMI-based method that forcibly inserts a neighbor
         synchronized (this) {
+            long newID = myNode.generateId(addr.getHostname(), addr.getPort());
+            addr.setNodeID(newID);
             myNode.getNeighbours().addNewNode(addr);
-            log.info("Added Node {} to neighbor list.", addr.getNodeID());
+            log.info("Explicitly added Node {} to neighbor list via addNeighbor() call on local Node {}.",
+                    addr.getNodeID(), myNode.getNodeId());
         }
     }
 
@@ -110,8 +134,14 @@ public class MessageReceiver implements NodeCommands {
     public void notifyAboutRevival(Address revivedNode) throws RemoteException {
         synchronized (this) {
             if (!myNode.getNeighbours().getNeighbours().contains(revivedNode)) {
+                // Generate ID if missing
+                if (revivedNode.getNodeID() == 0) {
+                    long revivedID = myNode.generateId(revivedNode.getHostname(), revivedNode.getPort());
+                    revivedNode.setNodeID(revivedID);
+                }
                 myNode.getNeighbours().addNewNode(revivedNode);
-                log.info("Node {} is back online.", revivedNode.getNodeID());
+                log.info("Node {} is back online, added to local Node {} neighbors.",
+                        revivedNode.getNodeID(), myNode.getNodeId());
             }
         }
     }
@@ -122,18 +152,18 @@ public class MessageReceiver implements NodeCommands {
         synchronized (this) {
             leader = myNode.getNeighbours().getLeaderNode();
         }
-
         if (leader != null) {
-            log.info("Leader Node {} is alive.", leader.getNodeID());
+            log.info("Leader Node {} is alive for local Node {}.", leader.getNodeID(), myNode.getNodeId());
         } else {
-            log.warn("Leader is missing. Initiating election.");
+            log.warn("No leader for local Node {}. Start election now.", myNode.getNodeId());
             myNode.startElection();
         }
     }
 
     @Override
     public void sendMessage(long senderId, int receiverID, String content) throws RemoteException {
-        log.info("Message from Node {} to Node {}: {}", senderId, receiverID, content);
+        log.info("Message from Node {} to Node {} (local node ID {} sees this). Content: {}",
+                senderId, receiverID, myNode.getNodeId(), content);
     }
 
     @Override
@@ -141,7 +171,8 @@ public class MessageReceiver implements NodeCommands {
         Address leader;
         synchronized (this) {
             leader = myNode.getNeighbours().getLeaderNode();
-            log.info("Current leader is Node {}.", leader != null ? leader.getNodeID() : "None");
+            log.info("Local Node {} sees current leader as {}.",
+                    myNode.getNodeId(), leader != null ? leader.getNodeID() : "None");
         }
         return leader;
     }
@@ -151,23 +182,24 @@ public class MessageReceiver implements NodeCommands {
         Address currentLeader;
         synchronized (this) {
             currentLeader = myNode.getNeighbours().getLeaderNode();
-            log.info("Received notifyAboutLogOut for Node {}.", address.getNodeID());
+            log.info("notifyAboutLogOut for Node {} on local Node {}.",
+                    address.getNodeID(), myNode.getNodeId());
             myNode.getNeighbours().removeNode(address);
-            log.info("Node {} has left the network.", address.getNodeID());
+            log.info("Node {} removed from local Node {} neighbors.",
+                    address.getNodeID(), myNode.getNodeId());
         }
-
         if (currentLeader != null && currentLeader.equals(address)) {
-            log.warn("Leader Node {} has left. Initiating election.", address.getNodeID());
+            log.warn("Leader Node {} left. Local Node {} will start election.",
+                    address.getNodeID(), myNode.getNodeId());
             myNode.getNeighbours().setLeaderNode(null);
             myNode.startElection();
-        } else {
-            log.info("Node {} was removed, but it was not the leader.", address.getNodeID());
         }
     }
 
     @Override
     public void receiveOK(long fromId) throws RemoteException {
-        log.info("Received OK message from Node {}.", fromId);
+        log.info("Local Node {} received OK from Node {} in Bully election.",
+                myNode.getNodeId(), fromId);
         myNode.getBully().onOKReceived(fromId);
     }
 
@@ -177,16 +209,15 @@ public class MessageReceiver implements NodeCommands {
         synchronized (this) {
             currentLeader = myNode.getNeighbours().getLeaderNode();
         }
-
         if (currentLeader == null || leaderAddress.getNodeID() > currentLeader.getNodeID()) {
             synchronized (this) {
                 myNode.getNeighbours().setLeaderNode(leaderAddress);
-                log.info("Node {} acknowledges new leader: Node {}.", myNode.getNodeId(), leaderAddress.getNodeID());
+                log.info("Local Node {} acknowledges new leader Node {} via updateLeader().",
+                        myNode.getNodeId(), leaderAddress.getNodeID());
             }
-
             myNode.getBully().onElectedReceived(leaderAddress.getNodeID(), leaderAddress);
         } else {
-            log.warn("Node {} received conflicting leader information. Current leader: Node {}, Received leader: Node {}.",
+            log.warn("Local Node {} sees conflicting leader info: we have leader Node {}, but got Node {}.",
                     myNode.getNodeId(),
                     currentLeader.getNodeID(),
                     leaderAddress.getNodeID());
