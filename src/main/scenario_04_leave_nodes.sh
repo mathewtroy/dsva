@@ -39,7 +39,7 @@ curl http://${NODE_IP[5]}:${NODE_API_PORT[5]}/get_status
 sleep ${SLEEP_TIME}
 
 ### 5) Now only Node4 remains (192.168.56.109). It should be the sole node => becomes leader
-echo "=== Checking Node4 final status (it should be alone and thus leader). ==="
+echo "=== Checking Node4 final status (it should be a leader). ==="
 curl http://${NODE_IP[4]}:${NODE_API_PORT[4]}/get_status
 sleep ${SLEEP_TIME}
 

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Scenario 6: Simple demonstration of checking the leader via API from Node1 and Node5.
+# Simple demonstration of checking the leader via API from Node1 and Node5.
 
 # We assume 5 nodes, with Node5 possibly the leader, etc.
 source 02_connect_nodes.sh
