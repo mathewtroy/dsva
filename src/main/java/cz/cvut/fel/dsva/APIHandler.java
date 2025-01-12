@@ -81,13 +81,10 @@ public class APIHandler {
                     ctx.result("Node left the network gracefully\n");
                 })
 
-                // Revive node by providing a node to join
-                .get("/revive/{join_node_ip}/{join_node_port}", ctx -> {
-                    String joinNodeIP = ctx.pathParam("join_node_ip");
-                    int joinNodePort = Integer.parseInt(ctx.pathParam("join_node_port"));
-                    System.out.println("Reviving node and joining to Node " + joinNodeIP + ":" + joinNodePort + " via API.");
-                    myNode.revive(joinNodeIP, joinNodePort);
-                    ctx.result("Node revived and attempted to join Node " + joinNodeIP + ":" + joinNodePort + "\n");
+                .get("/revive", ctx -> {
+                    System.out.println("Reviving node via API.");
+                    myNode.revive();  // call the no-arg revive() in Node
+                    ctx.result("Node revived successfully\n");
                 })
 
                 // Get status of the node
