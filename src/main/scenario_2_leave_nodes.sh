@@ -1,7 +1,7 @@
 #!/bin/bash
-# Scenario 2 (updated for 5 nodes): multiple nodes leave the network, verifying statuses and leadership changes.
+# Nodes leave the network
 
-source bash_variables.sh
+source scenario_1_connect_nodes.sh
 SLEEP_TIME=1
 
 echo "=== SCENARIO 2: 5 nodes. Multiple leaves, final node becomes leader. ==="
