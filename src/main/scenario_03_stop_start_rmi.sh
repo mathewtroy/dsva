@@ -1,5 +1,6 @@
 #!/bin/bash
-# Scenario 5: Testing RMI stop/start on Node1 among 5 nodes.
+
+# RMI stop/start on Node1.
 
 source bash_variables.sh
 SLEEP_TIME=1

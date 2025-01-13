@@ -1,7 +1,7 @@
 #!/bin/bash
-# Simple demonstration of checking the leader via API from Node1 and Node5.
 
-# We assume 5 nodes, with Node5 possibly the leader, etc.
+# Checking the leader via API from Node1 and Node5.
+
 source 02_connect_nodes.sh
 SLEEP_TIME=1
 

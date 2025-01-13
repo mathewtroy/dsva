@@ -1,5 +1,6 @@
 #!/bin/bash
-# Send messages, then check statuses.
+
+# Send messages.
 
 source bash_variables.sh
 SLEEP_TIME=1

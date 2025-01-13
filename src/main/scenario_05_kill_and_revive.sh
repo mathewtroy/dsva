@@ -1,6 +1,6 @@
 #!/bin/bash
-# scenario_5_kill_revive.sh
-# Scenario 5: Kill & then no-arg revive Node1.
+
+# Kill and then revive Node1.
 
 source 02_connect_nodes.sh
 SLEEP_TIME=1
