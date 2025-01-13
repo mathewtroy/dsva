@@ -412,30 +412,46 @@ public class Node implements Runnable {
         log.info("Node {} left network. Saved neighbors: {}", nodeId, savedNeighbors);
     }
 
-    private void leaveNode() {
-        log.info("Leader Node {} is leaving gracefully.", nodeId);
+    public void leaveNode() {
+        log.info("Leader Node {} is leaving gracefully...", nodeId);
+
+        // 1) Mark not coordinator (so we don't do more leadership steps)
+        isCoordinator = false;
+
+        // 2) Save neighbors (for potential revival)
         savedNeighbors.clear();
         if (myNeighbours != null) {
             savedNeighbors.addAll(myNeighbours.getNeighbours());
-            for (Address neighbor : myNeighbours.getNeighbours()) {
+        }
+
+        // 3) Stop RMI or unbind local registry to avoid re-entrant RMI calls
+        stopRMI();
+
+        // 4) Now safely notify neighbors (but do NOT attempt local RMI calls from the same node).
+        if (myNeighbours != null) {
+            for (Address neighbor : savedNeighbors) {
                 try {
                     NodeCommands remoteNode = myCommHub.getRMIProxy(neighbor);
                     remoteNode.notifyAboutLogOut(address);
                     log.info("Leader Node {} told Node {} about leaving.", nodeId, neighbor.getNodeID());
                 } catch (RemoteException e) {
-                    log.warn("Failed to notify Node {} about leader leaving.", neighbor.getNodeID(), e);
+                    log.warn("Failed to notify Node {} about leader Node {} leaving: {}",
+                            neighbor.getNodeID(), nodeId, e.getMessage());
                 }
             }
-            isCoordinator = false;
             myNeighbours.setLeaderNode(null);
         }
 
+        // 5) Reset local topology
         resetTopology();
-        stopRMI();
+
+        // 6) Mark states
         isLeft   = true;
         isKilled = false;
+
         log.info("Leader Node {} left. Saved neighbors: {}", nodeId, savedNeighbors);
     }
+
 
     /**
      * Revive with neighbor notification

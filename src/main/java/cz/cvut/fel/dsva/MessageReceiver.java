@@ -179,22 +179,34 @@ public class MessageReceiver implements NodeCommands {
 
     @Override
     public void notifyAboutLogOut(Address address) throws RemoteException {
+        // If the node that is logging out is ourselves, ignore
+        if (myNode.getNodeId() == address.getNodeID()) {
+            log.warn("Received notifyAboutLogOut for ourselves (Node {}); ignoring.", address.getNodeID());
+            return;
+        }
+
         Address currentLeader;
         synchronized (this) {
             currentLeader = myNode.getNeighbours().getLeaderNode();
-            log.info("notifyAboutLogOut for Node {} on local Node {}.",
-                    address.getNodeID(), myNode.getNodeId());
+            log.info("notifyAboutLogOut for Node {} on local Node {}. Current leader is {}.",
+                    address.getNodeID(), myNode.getNodeId(),
+                    currentLeader != null ? currentLeader.getNodeID() : "None");
+
+            // Remove that node from neighbors
             myNode.getNeighbours().removeNode(address);
-            log.info("Node {} removed from local Node {} neighbors.",
+            log.info("Node {} removed from local Node {} neighbors due to logout.",
                     address.getNodeID(), myNode.getNodeId());
         }
+
+        // If the departing node was the leader, start election
         if (currentLeader != null && currentLeader.equals(address)) {
-            log.warn("Leader Node {} left. Local Node {} will start election.",
+            log.warn("Leader Node {} left. Local Node {} will start election now.",
                     address.getNodeID(), myNode.getNodeId());
             myNode.getNeighbours().setLeaderNode(null);
             myNode.startElection();
         }
     }
+
 
     @Override
     public void receiveOK(long fromId) throws RemoteException {
