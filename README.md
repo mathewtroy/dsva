@@ -1,196 +1,41 @@
+# Distributed System with Leader Election (Bully Algorithm)
 
-# Running and Testing via API Handler
+This project implements a distributed system using the **Bully Algorithm** for leader election.
+Nodes communicate via **Java RMI** and expose a REST API for easy management and interaction.
+The project also includes automated **Bash scripts** to simplify deployment and testing across multiple virtual machines.
 
-To test and interact with the API Handler on different nodes, follow these steps. Each node will listen on a unique API port corresponding to its `nodeId`.
+## Running and Testing via API Handler
 
-## 1. Starting Nodes
+## 1. Clone and Build the Project
 
-Suppose we have multiple nodes (Node 1, Node 2, Node 3, etc.), each running on a unique API port:
+Clone the repository from GitHub.
 
-1. **Node 1**:
-    - API Port: 7001
-    - Command to start:
-      `java -jar node.jar 1`
+Build the project using Maven:  `mvn clean package`
 
-2. **Node 2**:
-    - API Port: 7002
-    - Command to start:
-      `java -jar node.jar 2`
+## 2. Detect Virtual Machine IPs
 
-3. **Node 3**:
-    - API Port: 7003
-    - Command to start:
-      `java -jar node.jar 3`
+Use the provided script to dynamically find and configure IPs of active virtual machines.
 
-4. **Node 4**:
-   - API Port: 7004
-   - Command to start:
-     `java -jar node.jar 4`
+The detected IPs are stored in `bash_variables.sh`.
 
-5. **Node 5**:
-   - API Port: 7005
-   - Command to start:
-     `java -jar node.jar 5`
+## 3. Start and Connect Nodes
 
-   Continue the same pattern for other nodes.
+Start all nodes using: `./01_start_nodes.sh`
 
-## 2. API Commands for Testing
+Connect the nodes to form a network: `./02_connect_nodes.sh`
 
-Each node exposes several commands via the HTTP API, which can be tested using `curl`. Here are examples of how to use the API:
+## 4. Run Test Scenarios
 
-**2.1. Start Election**
+**Use the following scripts to test various functionalities:**
 
-To start an election via the API:
+Get Node Status: `./scenario_01_get_status.sh`
 
-For Node 1:
-`curl http://localhost:7001/start_election`
+Send Messages: `./scenario_02_send_messages.sh`
 
-For Node 2:
-`curl http://localhost:7002/start_election`
+Stop/Start RMI: `./scenario_03_stop_start_rmi.sh`
 
-For Node 3:
-`curl http://localhost:7003/start_election`
+Check Leader: `./scenario_04_check_leader.sh`
 
-For Node 4:
-`curl http://localhost:7004/start_election`
+Kill and Revive Nodes: `./scenario_05_kill_and_revive.sh`
 
-For Node 5:
-`curl http://localhost:7005/start_election`
-
-**2.2. Check Leader Status**
-
-To check the leader's status via the API:
-
-For Node 1:
-`curl http://localhost:7001/check_leader`
-
-For Node 2:
-`curl http://localhost:7002/check_leader`
-
-For Node 3:
-`curl http://localhost:7003/check_leader`
-
-For Node 4:
-`curl http://localhost:7004/check_leader`
-
-For Node 5:
-`curl http://localhost:7005/check_leader`
-
-**2.3. Send Message to Another Node**
-
-To send a message to another node via the API:
-
-For Node 1 (send message to Node 2):
-`curl http://localhost:7001/send_message/2/hello`
-
-For Node 2 (send message to Node 1):
-`curl http://localhost:7002/send_message/1/hi`
-
-**2.4. Get Node Status**
-
-To retrieve the status of a node via the API:
-
-For Node 1:
-`curl http://localhost:7001/status`
-
-For Node 2:
-`curl http://localhost:7002/status`
-
-For Node 3:
-`curl http://localhost:7003/status`
-
-For Node 4:
-`curl http://localhost:7004/status`
-
-For Node 5:
-`curl http://localhost:7005/status`
-
-## 3. Additional Commands
-
-**Start RMI (for all nodes):**
-
-`curl http://localhost:7001/start_rmi`
-
-`curl http://localhost:7002/start_rmi`
-
-`curl http://localhost:7003/start_rmi`
-
-`curl http://localhost:7004/start_rmi`
-
-`curl http://localhost:7005/start_rmi`
-
-**Stop RMI (for all nodes):**
-
-`curl http://localhost:7001/stop_rmi`
-
-`curl http://localhost:7002/stop_rmi`
-
-`curl http://localhost:7003/stop_rmi`
-
-`curl http://localhost:7004/stop_rmi`
-
-`curl http://localhost:7005/stop_rmi`
-
-
-**Kill Node (for all nodes):**
-
-`curl http://localhost:7001/kill`
-
-`curl http://localhost:7002/kill`
-
-`curl http://localhost:7003/kill`
-
-`curl http://localhost:7004/kill`
-
-`curl http://localhost:7005/kill`
-
-
-**Leave Network Gracefully (for all nodes):**
-
-`curl http://localhost:7001/leave`
-
-`curl http://localhost:7002/leave`
-
-`curl http://localhost:7003/leave`
-
-`curl http://localhost:7004/leave`
-
-`curl http://localhost:7005/leave`
-
-
-**Revive Node (for all nodes):**
-
-`curl http://localhost:7001/revive`
-
-`curl http://localhost:7002/revive`
-
-`curl http://localhost:7003/revive`
-
-`curl http://localhost:7004/revive`
-
-`curl http://localhost:7005/revive`
-
-## 4. Testing API via Browser
-
-Besides using curl, you can also test the API by simply opening the URLs in your browser:
-
-**Start Election:**
-
-`http://localhost:7001/start_election`
-
-**Check Leader:**
-
-`http://localhost:7001/check_leader`
-
-**Send Message:**
-
-`http://localhost:7001/send_message/2/hello`
-
-**Get Node Status:**
-
-`http://localhost:7001/status`
-
-## 5. Notes
-
-Make sure the nodes are correctly configured and can connect to each other via the specified IPs and ports.
-If you are using a remote server, replace localhost with the appropriate node IP.
+Leave Nodes: `./scenario_06_leave_nodes.sh`
