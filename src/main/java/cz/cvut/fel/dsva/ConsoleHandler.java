@@ -8,19 +8,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Handles user commands entered through the console for interacting with a node in a distributed system.
+ * Supports operations like starting elections, checking leader status, sending messages, and more.
+ */
 @Slf4j
 @Getter
 @Setter
 public class ConsoleHandler implements Runnable {
-    private volatile boolean reading = true;
-    private BufferedReader reader;
-    private final Node myNode;
+    private volatile boolean reading = true; // Flag for console input loop
+    private BufferedReader reader;          // Reader for console input
+    private final Node myNode;              // Reference to the current node
 
+    /**
+     * Constructs a ConsoleHandler for managing console interactions with the given node.
+     *
+     * @param myNode The node managed by this ConsoleHandler.
+     */
     public ConsoleHandler(Node myNode) {
         this.myNode = myNode;
         reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    /**
+     * Parses a command entered in the console and executes the corresponding action.
+     *
+     * @param commandline The command entered by the user.
+     */
     private void parseCommandLine(String commandline) {
         switch (commandline) {
             case "e":
@@ -79,6 +93,9 @@ public class ConsoleHandler implements Runnable {
         }
     }
 
+    /**
+     * Displays a list of available commands to the user.
+     */
     private void printHelp() {
         log.info("\nAvailable Commands:");
         log.info("e or startElection  - Start Bully Election");
@@ -92,6 +109,10 @@ public class ConsoleHandler implements Runnable {
         log.info("? or help           - Display this help message");
     }
 
+    /**
+     * Prompts the user to input a recipient node ID and message content,
+     * then sends the message to the specified node.
+     */
     private void sendMessageToNode() {
         try {
             System.out.println("Enter recipient Node ID: ");
@@ -110,6 +131,9 @@ public class ConsoleHandler implements Runnable {
         }
     }
 
+    /**
+     * Restarts the console input loop if the node is active.
+     */
     public void restartConsole() {
         if (myNode.isKilled() || myNode.isLeft()) {
             log.info("Node is inactive. Console will not be restarted.");
@@ -120,11 +144,14 @@ public class ConsoleHandler implements Runnable {
         log.info("ConsoleHandler restarted.");
     }
 
+    /**
+     * Continuously reads and processes user input from the console until the loop is terminated.
+     */
     @Override
     public void run() {
         while (reading) {
             try {
-                System.out.println("\ncmd > ");
+                System.out.print("\ncmd > ");
                 String commandline = reader.readLine();
                 if (commandline != null) {
                     parseCommandLine(commandline);
@@ -132,13 +159,11 @@ public class ConsoleHandler implements Runnable {
             } catch (IOException e) {
                 log.error("ConsoleHandler - Error reading console input.", e);
                 reading = false;
-                // Automatic console restart on error
-                restartConsole();
+                restartConsole(); // Automatically restart console on error
             } catch (Exception ex) {
                 log.error("Unexpected error: {}", ex.getMessage(), ex);
                 reading = false;
-                // Automatic console restart in case of unexpected error
-                restartConsole();
+                restartConsole(); // Automatically restart console on unexpected error
             }
         }
         log.info("Closing ConsoleHandler.");

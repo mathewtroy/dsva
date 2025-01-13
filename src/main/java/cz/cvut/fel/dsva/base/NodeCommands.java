@@ -3,6 +3,10 @@ package cz.cvut.fel.dsva.base;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * Defines the remote commands for a node in a distributed system.
+ * These commands are used for communication and coordination between nodes.
+ */
 public interface NodeCommands extends Remote {
 
         void notifyAboutLogOut(Address address) throws RemoteException;

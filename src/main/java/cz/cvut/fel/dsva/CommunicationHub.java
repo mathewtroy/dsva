@@ -11,21 +11,37 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
+/**
+ * Manages communication between nodes in a distributed system.
+ * Provides methods for sending messages and interacting with nodes via RMI.
+ */
 @Slf4j
 @Getter
 @Setter
 public class CommunicationHub {
-    private final Node myNode;
-    private long messageDelay = 0; // Delay in milliseconds for simulating message transmission delay
+    private final Node myNode;         // Reference to the current node
+    private long messageDelay = 0;    // Delay in milliseconds for simulating message transmission delay
 
+    /**
+     * Constructs a CommunicationHub for the given node.
+     *
+     * @param node The current node using this communication hub.
+     */
     public CommunicationHub(Node node) {
         this.myNode = node;
     }
 
+    /**
+     * Retrieves an RMI proxy for a given node address.
+     *
+     * @param address The address of the node to connect to.
+     * @return A proxy object for the remote node implementing NodeCommands.
+     * @throws RemoteException If there is an issue with RMI communication.
+     */
     public NodeCommands getRMIProxy(Address address) throws RemoteException {
         try {
             if (messageDelay > 0) {
-                Thread.sleep(messageDelay); // Simulating message delay
+                Thread.sleep(messageDelay); // Simulate network delay
             }
             Registry registry = LocateRegistry.getRegistry(address.getHostname(), address.getPort());
             return (NodeCommands) registry.lookup(Node.COMM_INTERFACE_NAME);
@@ -34,10 +50,16 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Sends an election message to a specified node.
+     *
+     * @param address  The address of the recipient node.
+     * @param senderId The ID of the node initiating the election.
+     */
     public void sendElectionMessage(Address address, long senderId) {
         try {
             if (messageDelay > 0) {
-                Thread.sleep(messageDelay); // Simulating message delay
+                Thread.sleep(messageDelay); // Simulate network delay
             }
             NodeCommands remoteNode = getRMIProxy(address);
             remoteNode.sendElectionMsg(senderId);
@@ -47,6 +69,11 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Sends an OK message to a specific node in response to an election message.
+     *
+     * @param receiverId The ID of the node to send the OK message to.
+     */
     public void sendOKMessage(long receiverId) {
         Address receiverAddr = null;
 

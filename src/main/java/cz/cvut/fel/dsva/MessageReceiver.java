@@ -9,16 +9,32 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.rmi.RemoteException;
 
+/**
+ * Implements the NodeCommands interface for handling distributed system messages.
+ * Provides methods for leader election, joining/leaving the network, and updating leader information.
+ */
 @Slf4j
 @Getter
 @Setter
 public class MessageReceiver implements NodeCommands {
     private final Node myNode;
 
+    /**
+     * Constructs a MessageReceiver for the given node.
+     *
+     * @param node The node associated with this MessageReceiver.
+     */
     public MessageReceiver(Node node) {
         this.myNode = node;
     }
 
+    /**
+     * Handles a join request from a new node.
+     *
+     * @param addr Address of the joining node.
+     * @return The current neighbor list of the node.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public DSNeighbours join(Address addr) throws RemoteException {
         log.info("JOIN called by Node {} (id={}), on local Node {} (id={}).",
@@ -73,6 +89,12 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Processes an election message from another node.
+     *
+     * @param senderId ID of the node that initiated the election.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void sendElectionMsg(long senderId) throws RemoteException {
         log.info("Received Election message from Node {} for local Node {}.",
@@ -80,6 +102,12 @@ public class MessageReceiver implements NodeCommands {
         myNode.getBully().onElectionMsgFromLower(senderId);
     }
 
+    /**
+     * Notifies the node about a newly elected leader.
+     *
+     * @param leader Address of the new leader.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void notifyAboutNewLeader(Address leader) throws RemoteException {
         Address currentLeader;
@@ -118,6 +146,12 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Adds a neighbor to the node's neighbor list.
+     *
+     * @param addr Address of the neighbor to add.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void addNeighbor(Address addr) throws RemoteException {
         // If you want some RMI-based method that forcibly inserts a neighbor
@@ -130,6 +164,12 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Notifies the node about a revived neighbor.
+     *
+     * @param revivedNode Address of the revived node.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void notifyAboutRevival(Address revivedNode) throws RemoteException {
         synchronized (this) {
@@ -146,6 +186,12 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Checks the status of the current leader.
+     *
+     * @param senderId ID of the node requesting the check.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void checkStatusOfLeader(long senderId) throws RemoteException {
         Address leader;
@@ -160,12 +206,26 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Sends a message between nodes.
+     *
+     * @param senderId   ID of the sending node.
+     * @param receiverID ID of the receiving node.
+     * @param content    Content of the message.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void sendMessage(long senderId, int receiverID, String content) throws RemoteException {
         log.info("Message from Node {} to Node {} (local node ID {} sees this). Content: {}",
                 senderId, receiverID, myNode.getNodeId(), content);
     }
 
+    /**
+     * Returns the address of the current leader.
+     *
+     * @return Address of the current leader.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public Address getCurrentLeader() throws RemoteException {
         Address leader;
@@ -177,6 +237,12 @@ public class MessageReceiver implements NodeCommands {
         return leader;
     }
 
+    /**
+     * Handles notification about a node logging out.
+     *
+     * @param address Address of the departing node.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void notifyAboutLogOut(Address address) throws RemoteException {
         // If the departing node is ourselves, skip
@@ -205,6 +271,12 @@ public class MessageReceiver implements NodeCommands {
         }
     }
 
+    /**
+     * Processes an OK response during an election.
+     *
+     * @param fromId ID of the node sending the OK response.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void receiveOK(long fromId) throws RemoteException {
         log.info("Local Node {} received OK from Node {} in Bully election.",
@@ -212,6 +284,12 @@ public class MessageReceiver implements NodeCommands {
         myNode.getBully().onOKReceived(fromId);
     }
 
+    /**
+     * Updates the node with new leader information.
+     *
+     * @param leaderAddress Address of the new leader.
+     * @throws RemoteException If an error occurs during RMI communication.
+     */
     @Override
     public void updateLeader(Address leaderAddress) throws RemoteException {
         Address currentLeader;

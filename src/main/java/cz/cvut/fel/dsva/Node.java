@@ -15,6 +15,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Represents a node in a distributed system.
+ * Handles RMI communication, leader election (Bully algorithm), and node lifecycle (join, leave, revive, etc.).
+ */
 @Slf4j
 @Getter
 @Setter
@@ -23,18 +27,14 @@ public class Node implements Runnable {
     public static final String COMM_INTERFACE_NAME = "DSVNode";
     public static Node thisNode = null;
 
-    // ----------------------------------------------------------
     // Bully / Node states
-    // ----------------------------------------------------------
     private boolean isKilled = false;
     private boolean isLeft = false;
     private boolean isCoordinator = false;
     private boolean receivedOK = false;
     private boolean voting = false;
 
-    // ----------------------------------------------------------
     // Basic Info
-    // ----------------------------------------------------------
     private String nickname = "Unknown";
     private String myIP;
     private int rmiPort = 3010;
@@ -45,9 +45,7 @@ public class Node implements Runnable {
     private String otherNodeIP;
     private int otherNodePort = 0;
 
-    // ----------------------------------------------------------
     // Node Structure
-    // ----------------------------------------------------------
     private Address address;
     private DSNeighbours myNeighbours;
     private MessageReceiver myMessageReceiver;
@@ -56,15 +54,17 @@ public class Node implements Runnable {
     private APIHandler myAPIHandler;
     private BullyAlgorithm bully;
 
-    /**
-     * Save neighbors if we kill or leave,
-     * so we can rejoin or notify them upon revival.
-     */
+    // Save neighbors if we kill or leave, so we can rejoin or notify them upon revival.
     private final List<Address> savedNeighbors = new CopyOnWriteArrayList<>();
 
-    // ----------------------------------------------------------
-    // Constructor
-    // ----------------------------------------------------------
+    /**
+     * Constructs a Node instance based on command-line arguments.
+     * Handles different configurations such as auto-joining a network or starting as a standalone node.
+     *
+     * @param args Command-line arguments:
+     *             - 4 arguments: [nickname, myIP, rmiPort, apiPort]
+     *             - 6 arguments (auto-join): [nickname, myIP, rmiPort, otherNodeIP, otherNodePort, apiPort]
+     */
     public Node(String[] args) {
         if (args.length == 4) {
             log.info("Node constructor with 4 args.");
@@ -85,9 +85,13 @@ public class Node implements Runnable {
         }
     }
 
-    // ----------------------------------------------------------
-    // Utility: Generate a Node ID
-    // ----------------------------------------------------------
+    /**
+     * Generates a unique node ID based on the IP address and port.
+     *
+     * @param address The IP address of the node.
+     * @param port    The port associated with the node.
+     * @return A long value representing the unique node ID.
+     */
     public long generateId(String address, int port) {
         String[] array = address.split("\\.");
         long id = 0;
@@ -103,9 +107,10 @@ public class Node implements Runnable {
         return id;
     }
 
-    // ----------------------------------------------------------
-    // RMI Setup
-    // ----------------------------------------------------------
+    /**
+     * Starts the RMI message receiver for the node.
+     * Initializes the RMI registry and binds the message receiver to the specified port.
+     */
     private void startMessageReceiver() {
         // Create local address & nodeId
         address = new Address(myIP, rmiPort);
@@ -139,6 +144,10 @@ public class Node implements Runnable {
                 address.getHostname(), rmiPort, nodeId);
     }
 
+    /**
+     * Stops the RMI message receiver for the node.
+     * Unbinds the RMI service and stops the associated registry.
+     */
     private void stopMessageReceiver() {
         try {
             if (myMessageReceiver != null) {
@@ -159,9 +168,12 @@ public class Node implements Runnable {
         log.info("Message listener fully stopped.");
     }
 
-    // ----------------------------------------------------------
-    // Join Logic
-    // ----------------------------------------------------------
+    /**
+     * Joins another node in the distributed system.
+     *
+     * @param otherIP   The IP address of the node to join.
+     * @param otherPort The port of the node to join.
+     */
     public void join(String otherIP, int otherPort) {
         if (isKilled || isLeft) {
             log.warn("Node {} is inactive, cannot join another node.", nodeId);
@@ -195,9 +207,11 @@ public class Node implements Runnable {
         log.info("Neighbors after join: {}", myNeighbours);
     }
 
-    // ----------------------------------------------------------
-    // Status & Topology
-    // ----------------------------------------------------------
+    /**
+     * Retrieves the current status of the node, including its ID, address, and neighbors.
+     *
+     * @return A string representation of the node's status.
+     */
     public String getStatus() {
         if (isKilled) {
             return "Node " + nodeId + " = KILLED (no RMI)\n";
@@ -208,7 +222,7 @@ public class Node implements Runnable {
 
         StringBuilder sb = new StringBuilder();
         sb.append("Node ID: ").append(nodeId).append("\n");
-        sb.append("Address: ").append(address).append("\n");
+        sb.append(" ").append(address).append("\n");
 
         sb.append("Neighbors:\n");
         if (myNeighbours != null) {
@@ -228,10 +242,16 @@ public class Node implements Runnable {
         return sb.toString();
     }
 
+    /**
+     * Logs and prints the current status of the node, including its ID, address, and neighbors.
+     */
     public void printStatus() {
         log.info(getStatus());
     }
 
+    /**
+     * Resets the topology of the node by clearing its neighbors and unsetting the leader.
+     */
     public void resetTopology() {
         if (myNeighbours != null) {
             myNeighbours.getNeighbours().clear();
@@ -242,9 +262,10 @@ public class Node implements Runnable {
         }
     }
 
-    // ----------------------------------------------------------
-    // Bully Methods (startElection, checkLeader, etc.)
-    // ----------------------------------------------------------
+    /**
+     * Initiates the Bully leader election algorithm for this node.
+     * Skips execution if the node is killed or has left the network.
+     */
     public void startElection() {
         if (isKilled || isLeft) {
             log.info("Node {} is inactive, skipping startElection.", nodeId);
@@ -253,6 +274,9 @@ public class Node implements Runnable {
         bully.startElection();
     }
 
+    /**
+     * Checks the current leader's status. If the leader is unreachable, starts a new election.
+     */
     public void checkLeader() {
         if (isKilled || isLeft) {
             log.info("Node {} is inactive, skipping checkLeader.", nodeId);
@@ -284,6 +308,13 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Sends a message to a specified node.
+     *
+     * @param receiverId The ID of the receiver node.
+     * @param content    The content of the message to send.
+     * @return {@code true} if the message was sent successfully, {@code false} otherwise.
+     */
     public boolean sendMessageToNode(long receiverId, String content) {
         if (isKilled || isLeft) {
             log.info("Node {} is inactive, skip sendMessageToNode.", nodeId);
@@ -345,14 +376,17 @@ public class Node implements Runnable {
         return this.myCommHub;
     }
 
-    // ----------------------------------------------------------
-    // Lifecycle (kill, leave, revive)
-    // ----------------------------------------------------------
+    /**
+     * Stops the RMI message receiver for this node.
+     */
     public void stopRMI() {
         stopMessageReceiver();
         log.info("RMI stopped for Node {}.", nodeId);
     }
 
+    /**
+     * Starts the RMI message receiver for this node, if the node is active.
+     */
     public void startRMI() {
         if (!isKilled && !isLeft) {
             startMessageReceiver();
@@ -361,6 +395,10 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Marks the node as killed, stopping its RMI service and saving its neighbors for potential revival.
+     * This action does not notify neighbors.
+     */
     public void kill() {
         if (isKilled) {
             log.info("Node {} is already KILLED.", nodeId);
@@ -379,6 +417,10 @@ public class Node implements Runnable {
         log.info("Node {} has been killed. Saved neighbors: {}", nodeId, savedNeighbors);
     }
 
+    /**
+     * Leaves the network gracefully, notifying neighbors of the departure.
+     * If the node is the leader, it will transfer responsibilities before leaving.
+     */
     public void leave() {
         if (isKilled || isLeft) {
             log.info("Node {} is already inactive (killed or left).", nodeId);
@@ -421,6 +463,10 @@ public class Node implements Runnable {
         log.info("Node {} left network gracefully. Saved neighbors: {}", nodeId, savedNeighbors);
     }
 
+    /**
+     * Handles the departure of the node when it is the leader.
+     * Transfers responsibilities and notifies neighbors before exiting the network.
+     */
     private void leaveNode() {
         log.info("Leader Node {} is leaving gracefully...", nodeId);
 
@@ -464,7 +510,8 @@ public class Node implements Runnable {
 
 
     /**
-     * Revive with neighbor notification
+     * Revives a previously killed or left node, restarting its RMI service
+     * and notifying saved neighbors about its return.
      */
     public void revive() {
         if (!isKilled && !isLeft) {
@@ -494,6 +541,10 @@ public class Node implements Runnable {
         log.info("Revival process completed for Node {}.", nodeId);
     }
 
+    /**
+     * The main loop of the node. Initializes components, starts RMI and API services,
+     * handles auto-joining if specified, and keeps the node alive until it is killed or leaves.
+     */
     @Override
     public void run() {
         // We'll do final ID creation in startMessageReceiver
@@ -533,6 +584,11 @@ public class Node implements Runnable {
         log.info("Node {} shutting down from run().", nodeId);
     }
 
+    /**
+     * The entry point of the application. Initializes a Node instance and starts its execution.
+     *
+     * @param args Command-line arguments for node initialization.
+     */
     public static void main(String[] args) {
         thisNode = new Node(args);
         thisNode.run();
