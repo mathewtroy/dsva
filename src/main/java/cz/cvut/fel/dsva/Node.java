@@ -390,45 +390,55 @@ public class Node implements Runnable {
             return;
         }
 
-        log.info("Node {} is leaving the network...", nodeId);
+        log.info("Node {} is leaving the network (non-leader)...", nodeId);
+
+        // 1) Save neighbors
         savedNeighbors.clear();
         if (myNeighbours != null) {
             savedNeighbors.addAll(myNeighbours.getNeighbours());
-            for (Address neighbor : myNeighbours.getNeighbours()) {
-                try {
-                    NodeCommands remoteNode = myCommHub.getRMIProxy(neighbor);
-                    remoteNode.notifyAboutLogOut(address);
-                    log.info("Node {} told Node {} about leaving.", nodeId, neighbor.getNodeID());
-                } catch (RemoteException e) {
-                    log.warn("Failed to notify Node {} about leaving.", neighbor.getNodeID(), e);
-                }
+        }
+
+        // 2) STOP RMI
+        stopRMI();
+
+        // 3) Notify each neighbor that we are leaving
+        for (Address neighbor : savedNeighbors) {
+            try {
+                NodeCommands remoteNode = myCommHub.getRMIProxy(neighbor);
+                remoteNode.notifyAboutLogOut(address);
+                log.info("Node {} told Node {} about leaving.", nodeId, neighbor.getNodeID());
+            } catch (RemoteException e) {
+                log.warn("Failed to notify Node {} about leaving Node {}: {}",
+                        neighbor.getNodeID(), nodeId, e.getMessage());
             }
         }
 
+        // 4) Clean up
         resetTopology();
-        stopRMI();
         isLeft   = true;
         isKilled = false;
-        log.info("Node {} left network. Saved neighbors: {}", nodeId, savedNeighbors);
+
+        log.info("Node {} left network gracefully. Saved neighbors: {}", nodeId, savedNeighbors);
     }
 
-    public void leaveNode() {
+    private void leaveNode() {
         log.info("Leader Node {} is leaving gracefully...", nodeId);
 
-        // 1) Mark not coordinator (so we don't do more leadership steps)
+        // 1) Mark not coordinator first
         isCoordinator = false;
 
-        // 2) Save neighbors (for potential revival)
+        // 2) Save neighbors, so we can do some logic after unbinding from RMI
         savedNeighbors.clear();
         if (myNeighbours != null) {
             savedNeighbors.addAll(myNeighbours.getNeighbours());
         }
 
-        // 3) Stop RMI or unbind local registry to avoid re-entrant RMI calls
+        // 3) Stop RMI or unbind local registry, so any callback to this node fails fast
         stopRMI();
 
-        // 4) Now safely notify neighbors (but do NOT attempt local RMI calls from the same node).
+        // 4) Now that RMI is stopped, safely notify neighbors about leaving
         if (myNeighbours != null) {
+            // We do NOT iterate myNeighbours.getNeighbours() now, because we reset it soon
             for (Address neighbor : savedNeighbors) {
                 try {
                     NodeCommands remoteNode = myCommHub.getRMIProxy(neighbor);
@@ -449,7 +459,7 @@ public class Node implements Runnable {
         isLeft   = true;
         isKilled = false;
 
-        log.info("Leader Node {} left. Saved neighbors: {}", nodeId, savedNeighbors);
+        log.info("Leader Node {} has fully left. Saved neighbors: {}", nodeId, savedNeighbors);
     }
 
 
