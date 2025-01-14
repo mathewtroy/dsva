@@ -3,6 +3,7 @@
 # Check nodes status.
 
 source 02_connect_nodes.sh
+#source bash_variables.sh
 SLEEP_TIME=1
 
 # Join commands
