@@ -35,6 +35,15 @@ public class DSNeighbours implements Serializable {
         return leaderNode != null;
     }
 
+    public synchronized void setLeaderNode(Address leaderNode) {
+        this.leaderNode = leaderNode;
+        if (leaderNode != null) {
+            log.info("Leader is now Node {}.", leaderNode.getNodeID());
+        } else {
+            log.warn("Leader is now unset.");
+        }
+    }
+
     /**
      * Removes a node from the neighbours list. If the removed node is the leader,
      * the leader node reference is cleared.

@@ -201,6 +201,11 @@ public class Node implements Runnable {
             log.info("Join call done. Node {} told {}:{} to join.",
                     nodeId, otherIP, otherPort);
 
+            if (!myNeighbours.isLeaderPresent()) {
+                log.info("No leader present after joining. Starting election...");
+                startElection();
+            }
+
         } catch (RemoteException e) {
             log.warn("Failed to join node at {}:{} => {}", otherIP, otherPort, e.getMessage());
         }
@@ -415,6 +420,11 @@ public class Node implements Runnable {
         isLeft   = false;
         stopRMI();
         log.info("Node {} has been killed. Saved neighbors: {}", nodeId, savedNeighbors);
+
+        if (myNeighbours.getLeaderNode() == null) {
+            log.info("Leader left the network. Starting election...");
+            startElection();
+        }
     }
 
     /**
@@ -461,6 +471,11 @@ public class Node implements Runnable {
         isKilled = false;
 
         log.info("Node {} left network gracefully. Saved neighbors: {}", nodeId, savedNeighbors);
+
+        if (myNeighbours.getLeaderNode() == null) {
+            log.info("Leader left the network. Starting election...");
+            startElection();
+        }
     }
 
     /**
@@ -565,6 +580,11 @@ public class Node implements Runnable {
 
         // Print initial status
         printStatus();
+
+        if (!myNeighbours.isLeaderPresent()) {
+            log.info("No leader present at startup. Starting election...");
+            startElection();
+        }
 
         // If user gave 6 args => auto-join
         if (otherNodeIP != null && otherNodePort > 0) {
