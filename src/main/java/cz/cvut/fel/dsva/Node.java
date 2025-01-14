@@ -494,9 +494,6 @@ public class Node implements Runnable {
             savedNeighbors.addAll(myNeighbours.getNeighbours());
         }
 
-        // 3) Stop RMI or unbind local registry, so any callback to this node fails fast
-        stopRMI();
-
         // 4) Now that RMI is stopped, safely notify neighbors about leaving
         if (myNeighbours != null) {
             // We do NOT iterate myNeighbours.getNeighbours() now, because we reset it soon
@@ -519,6 +516,9 @@ public class Node implements Runnable {
         // 6) Mark states
         isLeft   = true;
         isKilled = false;
+
+        // 3) Stop RMI or unbind local registry, so any callback to this node fails fast
+        stopRMI();
 
         log.info("Leader Node {} has fully left. Saved neighbors: {}", nodeId, savedNeighbors);
     }
