@@ -5,88 +5,31 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
-/**
- * Represents the list of neighbours in a distributed system and the leader node.
- * Manages the addition and removal of nodes and tracks the current leader.
- */
 @Slf4j
 @Getter
 @Setter
 public class DSNeighbours implements Serializable {
-    private List<Address> neighbours;   // List of neighbouring nodes
-    private volatile Address leaderNode; // The leader node in the distributed system
+    private Set<Address> knownNodes = new HashSet<>();
+    private Address leader;
 
-    /**
-     * Default constructor that initializes the neighbours list as a thread-safe CopyOnWriteArrayList.
-     */
-    public DSNeighbours() {
-        this.neighbours = new CopyOnWriteArrayList<>();
+    public DSNeighbours(Address self) {
+        this.leader = self;
+        knownNodes.add(self);
     }
 
-    /**
-     * Checks if a leader node is currently present in the system.
-     *
-     * @return true if the leader node is set, false otherwise.
-     */
-    public boolean isLeaderPresent() {
-        return leaderNode != null;
+    public void addNode(Address addr) {
+        knownNodes.add(addr);
     }
 
-    public synchronized void setLeaderNode(Address leaderNode) {
-        this.leaderNode = leaderNode;
-        if (leaderNode != null) {
-            log.info("Leader is now Node {}.", leaderNode.getNodeID());
-        } else {
-            log.warn("Leader is now unset.");
-        }
+    public void removeNode(Address addr) {
+        knownNodes.remove(addr);
     }
 
-    /**
-     * Removes a node from the neighbours list. If the removed node is the leader,
-     * the leader node reference is cleared.
-     *
-     * @param address The address of the node to remove.
-     */
-    public synchronized void removeNode(Address address) {
-        boolean removed = neighbours.remove(address);
-        if (removed) {
-            log.info("Node {} removed from neighbours.", address.getNodeID());
-            if (leaderNode != null && leaderNode.equals(address)) {
-                setLeaderNode(null);
-            }
-        } else {
-            log.warn("Attempted to remove Node {}, but not found in neighbours.", address.getNodeID());
-        }
-    }
-
-    /**
-     * Adds a new node to the neighbours list if it is not already present.
-     *
-     * @param address The address of the node to add.
-     */
-    public synchronized void addNewNode(Address address) {
-        if (!neighbours.contains(address)) {
-            neighbours.add(address);
-            log.info("Node {} added to neighbours. Address = {}", address.getNodeID(), address);
-        } else {
-            log.debug("Node {} is already in neighbours.", address.getNodeID());
-        }
-    }
-
-    /**
-     * Provides a string representation of the DSNeighbours object, including the list
-     * of neighbours and the current leader node.
-     *
-     * @return A string describing the current state of the object.
-     */
     @Override
-    public synchronized String toString() {
-        return "DSNeighbours {" +
-                "neighbours=" + neighbours +
-                ", leaderNode=" + leaderNode +
-                '}';
+    public String toString() {
+        return "DSNeighbours{ leader=" + leader + ", knownNodes=" + knownNodes + " }";
     }
 }

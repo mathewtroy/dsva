@@ -1,6 +1,7 @@
 package cz.cvut.fel.dsva;
 
 import cz.cvut.fel.dsva.base.Address;
+import cz.cvut.fel.dsva.base.DSNeighbours;
 import cz.cvut.fel.dsva.base.NodeCommands;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,90 +12,118 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-/**
- * Manages communication between nodes in a distributed system.
- * Provides methods for sending messages and interacting with nodes via RMI.
- */
 @Slf4j
 @Getter
 @Setter
 public class CommunicationHub {
-    private final Node myNode;         // Reference to the current node
-    private long messageDelay = 0;    // Delay in milliseconds for simulating message transmission delay
+    private final Node node;
 
-    /**
-     * Constructs a CommunicationHub for the given node.
-     *
-     * @param node The current node using this communication hub.
-     */
     public CommunicationHub(Node node) {
-        this.myNode = node;
+        this.node = node;
     }
 
-    /**
-     * Retrieves an RMI proxy for a given node address.
-     *
-     * @param address The address of the node to connect to.
-     * @return A proxy object for the remote node implementing NodeCommands.
-     * @throws RemoteException If there is an issue with RMI communication.
-     */
-    public NodeCommands getRMIProxy(Address address) throws RemoteException {
+    public NodeCommands getProxy(Address addr) throws RemoteException {
+        if (addr.compareTo(node.getAddress()) == 0) {
+            return node.getMessageReceiver();
+        }
         try {
-            if (messageDelay > 0) {
-                Thread.sleep(messageDelay); // Simulate network delay
-            }
-            Registry registry = LocateRegistry.getRegistry(address.getHostname(), address.getPort());
+            Registry registry = LocateRegistry.getRegistry(addr.getHostname(), addr.getPort());
             return (NodeCommands) registry.lookup(Node.COMM_INTERFACE_NAME);
-        } catch (NotBoundException | InterruptedException e) {
-            throw new RemoteException("Failed to get RMI proxy for: " + address, e);
+        } catch (NotBoundException e) {
+            throw new RemoteException("Node " + addr + " not bound: " + e.getMessage());
         }
     }
 
-    /**
-     * Sends an election message to a specified node.
-     *
-     * @param address  The address of the recipient node.
-     * @param senderId The ID of the node initiating the election.
-     */
-    public void sendElectionMessage(Address address, long senderId) {
-        try {
-            if (messageDelay > 0) {
-                Thread.sleep(messageDelay); // Simulate network delay
+    public void sendElectionToBiggerNodes() {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            if (a.compareTo(node.getAddress()) != 0) {
+                long theirId = node.computeId(a.getHostname(), a.getPort());
+                if (theirId > node.getNodeId() && node.isActive()) {
+                    try {
+                        NodeCommands proxy = getProxy(a);
+                        proxy.startElection(node.getNodeId());
+                        System.out.println("Sent startElection to " + a);
+                    } catch (RemoteException e) {
+                        System.err.println("Error sending startElection to " + a + ": " + e.getMessage());
+                    }
+                }
             }
-            NodeCommands remoteNode = getRMIProxy(address);
-            remoteNode.sendElectionMsg(senderId);
-            log.info("Sent Election message to Node {}", address.getNodeID());
-        } catch (RemoteException | InterruptedException e) {
-            log.warn("Node {} unreachable during election. Exception: {}", address, e.getMessage());
         }
     }
 
-    /**
-     * Sends an OK message to a specific node in response to an election message.
-     *
-     * @param receiverId The ID of the node to send the OK message to.
-     */
-    public void sendOKMessage(long receiverId) {
-        Address receiverAddr = null;
-
-        // Find the address of the receiver in the list of neighbors
-        for (Address addr : myNode.getNeighbours().getNeighbours()) {
-            if (addr.getNodeID() == receiverId) {
-                receiverAddr = addr;
+    public void sendRespondOk(long candidateId) {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            long theirId = node.computeId(a.getHostname(), a.getPort());
+            if (theirId == candidateId) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.respondOk(node.getNodeId());
+                    System.out.println("Sent respondOk to " + a);
+                } catch (RemoteException e) {
+                    System.err.println("Error sending respondOk to " + a + ": " + e.getMessage());
+                }
                 break;
             }
         }
+    }
 
-        if (receiverAddr != null) {
+    public void broadcastLeader() {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
             try {
-                NodeCommands remoteNode = getRMIProxy(receiverAddr);
-                remoteNode.receiveOK(myNode.getNodeId());
-                log.info("Sent OK message to Node {}", receiverId);
+                NodeCommands proxy = getProxy(a);
+                proxy.announceLeader(node.getNodeId(), node.getAddress());
+                System.out.println("Announced leader to " + a);
             } catch (RemoteException e) {
-                log.error("Failed to send OK message to Node {}: {}", receiverId, e.getMessage());
+                System.err.println("Error announcing leader to " + a + ": " + e.getMessage());
             }
-        } else {
-            log.warn("Receiver Node {} not found in neighbors.", receiverId);
+        }
+    }
+
+    public void notifyLeave(Address leavingNode) {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            if (a.compareTo(leavingNode) != 0) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.leave(leavingNode);
+                    System.out.println("Notified " + a + " about leaving node " + leavingNode);
+                } catch (RemoteException e) {
+                    System.err.println("Error notifying " + a + " about leaving node " + leavingNode + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void notifyRevive(Address revivedNode) {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            if (a.compareTo(revivedNode) != 0) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.revive(revivedNode);
+                    System.out.println("Notified " + a + " about revived node " + revivedNode);
+                } catch (RemoteException e) {
+                    System.err.println("Error notifying " + a + " about revived node " + revivedNode + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void sendMessageTo(String toNick, String fromNick, String message) {
+        // Implement mapping from nickname to Address if needed
+        // For simplicity, send to all or implement as required
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            try {
+                NodeCommands proxy = getProxy(a);
+                proxy.sendMessage(fromNick, toNick, message);
+                System.out.println("Sent message to " + a);
+            } catch (RemoteException e) {
+                System.err.println("Error sending message to " + a + ": " + e.getMessage());
+            }
         }
     }
 }

@@ -8,164 +8,116 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-/**
- * Handles user commands entered through the console for interacting with a node in a distributed system.
- * Supports operations like starting elections, checking leader status, sending messages, and more.
- */
 @Slf4j
 @Getter
 @Setter
 public class ConsoleHandler implements Runnable {
-    private volatile boolean reading = true; // Flag for console input loop
-    private BufferedReader reader;          // Reader for console input
-    private final Node myNode;              // Reference to the current node
+    private boolean reading = true;
+    private final Node myNode;
+    private final BufferedReader reader;
 
-    /**
-     * Constructs a ConsoleHandler for managing console interactions with the given node.
-     *
-     * @param myNode The node managed by this ConsoleHandler.
-     */
     public ConsoleHandler(Node myNode) {
         this.myNode = myNode;
-        reader = new BufferedReader(new InputStreamReader(System.in));
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
-    /**
-     * Parses a command entered in the console and executes the corresponding action.
-     *
-     * @param commandline The command entered by the user.
-     */
-    private void parseCommandLine(String commandline) {
-        switch (commandline) {
-            case "e":
-            case "startElection":
-                log.info("Starting Bully Election Algorithm...");
-                myNode.startElection();
-                break;
+    private void parseCommand(String commandline) {
+        String[] parts = commandline.trim().split("\\s+");
+        if (parts.length == 0) return;
 
-            case "checkLeader":
+        String command = parts[0].toLowerCase();
+
+        switch (command) {
+            case "join":
+                if (parts.length != 3) {
+                    System.out.println("Usage: join <ip> <port>");
+                } else {
+                    String ip = parts[1];
+                    int port;
+                    try {
+                        port = Integer.parseInt(parts[2]);
+                        myNode.join(ip, port);
+                        System.out.println("Join command executed: " + ip + ":" + port);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid port number: " + parts[2]);
+                    }
+                }
+                break;
+            case "startelection":
+            case "se":
+                myNode.startElection();
+                System.out.println("Start election command executed.");
+                break;
+            case "checkleader":
             case "cl":
-                log.info("Checking leader status...");
                 myNode.checkLeader();
                 break;
-
-            case "killNode":
-            case "k":
-                log.info("Killing this node...");
-                myNode.kill();
-                break;
-
-            case "leaveNode":
-            case "l":
-                log.info("Leaving the network...");
-                myNode.leave();
-                break;
-
-            case "reviveNode":
-            case "r":
-                log.info("Reviving this node...");
-                myNode.revive();
-                break;
-
-            case "sendMsg":
+            case "sendmessage":
             case "sm":
-                sendMessageToNode();
+                if (parts.length < 3) {
+                    System.out.println("Usage: sendMessage <toNick> <message>");
+                } else {
+                    String toNick = parts[1];
+                    String message = String.join(" ", java.util.Arrays.copyOfRange(parts, 2, parts.length));
+                    myNode.sendMessage(toNick, message);
+                }
                 break;
-
+            case "leave":
+            case "l":
+                myNode.leaveNetwork();
+                break;
+            case "revive":
+            case "r":
+                myNode.reviveNode();
+                break;
+            case "kill":
+            case "k":
+                myNode.killNetwork();
+                break;
             case "status":
             case "s":
                 myNode.printStatus();
                 break;
-
-            case "help":
             case "?":
+            case "help":
                 printHelp();
                 break;
-
-            case "quit":
-            case "q":
-                log.info("Exiting...");
-                reading = false;
-                break;
-
             default:
-                log.warn("Unrecognized command. Type 'help' or '?' for a list of commands.");
+                System.out.println("Unrecognized command. Type '?' or 'help' for assistance.");
         }
     }
 
-    /**
-     * Displays a list of available commands to the user.
-     */
     private void printHelp() {
-        log.info("\nAvailable Commands:");
-        log.info("e or startElection  - Start Bully Election");
-        log.info("cl or checkLeader   - Check status of the current leader");
-        log.info("k or killNode       - Kill the node");
-        log.info("l or leaveNode      - Leave the network gracefully");
-        log.info("r or reviveNode     - Revive the node");
-        log.info("sm or sendMsg       - Send a message to another node");
-        log.info("s or status         - Print the current status of the node");
-        log.info("q or quit           - Exit the console");
-        log.info("? or help           - Display this help message");
+        System.out.println("Available commands:");
+        System.out.println("join <ip> <port>            - Join another node");
+        System.out.println("startElection (se)          - Start leader election");
+        System.out.println("checkLeader (cl)            - Check current leader");
+        System.out.println("sendMessage (sm) <to> <msg> - Send a message to a user");
+        System.out.println("leave (l)                   - Leave the network gracefully");
+        System.out.println("revive (r)                  - Revive a previously left node");
+        System.out.println("kill (k)                    - Abruptly kill this node (no graceful leave)");
+        System.out.println("status (s)                  - Show node status");
+        System.out.println("? / help                    - Show this help message");
     }
 
-    /**
-     * Prompts the user to input a recipient node ID and message content,
-     * then sends the message to the specified node.
-     */
-    private void sendMessageToNode() {
-        try {
-            System.out.println("Enter recipient Node ID: ");
-            String receiverIdInput = reader.readLine();
-            long receiverId = Long.parseLong(receiverIdInput);
-            System.out.println("Enter message content: ");
-            String messageContent = reader.readLine();
-            boolean success = myNode.sendMessageToNode(receiverId, messageContent);
-            if (success) {
-                log.info("Message successfully sent to Node {}", receiverId);
-            } else {
-                log.warn("Failed to send message to Node {}", receiverId);
-            }
-        } catch (IOException | NumberFormatException e) {
-            log.error("Error while sending message. Please try again.", e);
-        }
-    }
-
-    /**
-     * Restarts the console input loop if the node is active.
-     */
-    public void restartConsole() {
-        if (myNode.isKilled() || myNode.isLeft()) {
-            log.info("Node is inactive. Console will not be restarted.");
-            return;
-        }
-        reading = true;
-        new Thread(this).start();
-        log.info("ConsoleHandler restarted.");
-    }
-
-    /**
-     * Continuously reads and processes user input from the console until the loop is terminated.
-     */
     @Override
     public void run() {
+        System.out.println("ConsoleHandler started. Type '?' or 'help' for commands.");
         while (reading) {
+            System.out.print("\ncmd > ");
             try {
-                System.out.print("\ncmd > ");
                 String commandline = reader.readLine();
-                if (commandline != null) {
-                    parseCommandLine(commandline);
+                if (commandline == null) {
+                    reading = false;
+                    break;
                 }
+                parseCommand(commandline);
             } catch (IOException e) {
-                log.error("ConsoleHandler - Error reading console input.", e);
+                System.out.println("ConsoleHandler - error reading input.");
+                e.printStackTrace();
                 reading = false;
-                restartConsole(); // Automatically restart console on error
-            } catch (Exception ex) {
-                log.error("Unexpected error: {}", ex.getMessage(), ex);
-                reading = false;
-                restartConsole(); // Automatically restart console on unexpected error
             }
         }
-        log.info("Closing ConsoleHandler.");
+        System.out.println("ConsoleHandler stopped.");
     }
 }
