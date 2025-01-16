@@ -108,6 +108,12 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Notifies all known neighboring nodes that a specific node has been killed or
+     * is no longer active.
+     *
+     * @param killedNode The address of the node that has been killed
+     */
     public void notifyKill(Address killedNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
