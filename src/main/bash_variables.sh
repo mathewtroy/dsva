@@ -21,30 +21,26 @@ declare -A NODE_PORT
 declare -A NODE_API_PORT
 declare -A NODE_NICKNAME
 
-# If you already know the IP addresses of each VM, you can set them directly:
-# NODE_IP[1]=192.168.56.101
-# NODE_IP[2]=192.168.56.102
-# ...
-# Otherwise, you can use an nmap-based approach or manual assignment.
-
+# Manual assignment.
 # Example manual assignment:
-NODE_IP[1]=192.168.56.105
-NODE_IP[2]=192.168.56.106
-NODE_IP[3]=192.168.56.107
-NODE_IP[4]=192.168.56.109
-NODE_IP[5]=192.168.56.154
+
+#NODE_IP[1]=192.168.56.105
+#NODE_IP[2]=192.168.56.106
+#NODE_IP[3]=192.168.56.107
+#NODE_IP[4]=192.168.56.109
+#NODE_IP[5]=192.168.56.154
 
 # Alternatively, you can attempt to dynamically discover them using nmap, if your network supports it.
 # Example (commented):
-# NETWORK_RANGE="192.168.56.0/24"
-# ACTIVE_HOSTS=$(nmap -sn $NETWORK_RANGE | grep "Nmap scan report" | awk '{print $NF}' | tr -d '()')
-# ID=1
-# for IP in $ACTIVE_HOSTS; do
-#   if [ $ID -le $NUM_NODES ]; then
-#     NODE_IP[$ID]=$IP
-#     ((ID++))
-#   fi
-# done
+NETWORK_RANGE="192.168.56.0/24"
+ACTIVE_HOSTS=$(nmap -sn $NETWORK_RANGE | grep "Nmap scan report" | awk '{print $NF}' | tr -d '()')
+ID=1
+for IP in $ACTIVE_HOSTS; do
+ if [ $ID -le $NUM_NODES ]; then
+   NODE_IP[$ID]=$IP
+   ((ID++))
+ fi
+done
 
 # Generate ports for each node
 for i in $(seq 1 $NUM_NODES) ; do
