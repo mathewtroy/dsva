@@ -1,3 +1,4 @@
+#!/bin/bash
 # Join all nodes
 
 source bash_variables.sh

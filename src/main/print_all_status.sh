@@ -1,3 +1,4 @@
+#!/bin/bash
 # Print all status information
 
 source bash_variables.sh
