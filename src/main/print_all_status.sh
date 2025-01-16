@@ -1,6 +1,7 @@
 # Print all status information
 
 source bash_variables.sh
+SLEEP_TIME=1
 
 echo "Check status of all nodes..."
 for i in $(seq 1 $NUM_NODES); do
