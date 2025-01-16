@@ -6,6 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 
+/**
+ * Represents the network address of a node, including its hostname and port number.
+ *
+ * <p>This class implements {@link Comparable} to allow comparison based on hostname and port.
+ * It also overrides {@link #equals(Object)} and {@link #hashCode()} for proper comparison and usage in collections.
+ *
+ * @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter

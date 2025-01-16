@@ -3,6 +3,15 @@ package cz.cvut.fel.dsva.base;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
+/**
+ * Defines the remote methods that can be invoked by other nodes via RMI.
+ *
+ * <p>This interface extends {@link Remote} and includes methods for joining the network,
+ * starting elections, responding to elections, announcing leaders, sending messages,
+ * handling node departures and revivals, and receiving simple hello messages.
+ *
+ * @see java.rmi.Remote
+ */
 public interface NodeCommands extends Remote {
         DSNeighbours join(Address newNodeAddr) throws RemoteException;
         void broadcastNewNode(Address newAddr) throws RemoteException;

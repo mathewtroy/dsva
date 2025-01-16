@@ -7,23 +7,63 @@ import lombok.extern.slf4j.Slf4j;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
+/**
+ * Handles HTTP API requests for the Node, allowing external control and monitoring
+ * of the node's functionalities via RESTful endpoints.
+ *
+ * <p>This class implements the {@link Runnable} interface and runs in a separate thread
+ * to handle incoming HTTP requests using the Javalin framework.
+ *
+ * <p>Supported API endpoints include:
+ * <ul>
+ *     <li><b>GET /join/{ip}/{port}</b>: Join another node in the network.</li>
+ *     <li><b>GET /start_election</b>: Initiate a leader election.</li>
+ *     <li><b>GET /check_leader</b>: Retrieve the current leader of the network.</li>
+ *     <li><b>POST /send_message</b>: Send a message to another node.</li>
+ *     <li><b>GET /leave</b>: Leave the network gracefully.</li>
+ *     <li><b>GET /kill</b>: Simulate an abrupt node crash.</li>
+ *     <li><b>GET /revive</b>: Revive a previously killed node.</li>
+ *     <li><b>GET /get_status</b>: Retrieve the current status of the node.</li>
+ *     <li><b>GET /stop_rmi</b>: Stop the RMI registry.</li>
+ *     <li><b>GET /start_rmi</b>: Start the RMI registry.</li>
+ * </ul>
+ *
+ * @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter
 public class APIHandler implements Runnable {
     private int port = 7000;
     private final Node myNode;
+    /**
+     * The Javalin instance handling HTTP requests.
+     */
     private Javalin app;
 
+    /**
+     * Constructs an APIHandler associated with the specified node and port.
+     *
+     * @param myNode The parent Node instance to control.
+     * @param port   The port number for the HTTP API server.
+     */
     public APIHandler(Node myNode, int port) {
         this.myNode = myNode;
         this.port = port;
     }
 
+    /**
+     * Constructs an APIHandler associated with the specified node using the default port.
+     *
+     * @param myNode The parent Node instance to control.
+     */
     public APIHandler(Node myNode) {
         this(myNode, 7000);
     }
 
+    /**
+     * Initializes and starts the Javalin HTTP server with defined routes and handlers.
+     */
     public void start() {
         app = Javalin.create().routes(() -> {
             path("/join", () -> {

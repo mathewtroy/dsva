@@ -14,17 +14,48 @@ import java.rmi.registry.Registry;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Manages all communication between nodes, including sending and receiving messages,
+ * handling elections, and notifying nodes of changes in the network.
+ *
+ * <p>This class abstracts the complexity of RMI communication, providing methods
+ * to interact with other nodes seamlessly.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Sending election messages to higher-ID nodes.</li>
+ *     <li>Responding to election requests.</li>
+ *     <li>Broadcasting leader announcements.</li>
+ *     <li>Notifying nodes when a node leaves or is revived.</li>
+ *     <li>Handling message passing between nodes.</li>
+ * </ul>
+ *
+ * @author @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter
 public class CommunicationHub {
     private final Node node;
 
+    /**
+     * Constructs a CommunicationHub associated with the given node.
+     *
+     * @param node The parent Node instance.
+     */
     public CommunicationHub(Node node) {
         this.node = node;
     }
 
+    /**
+     * Retrieves the RMI proxy for a given node address.
+     *
+     * @param addr The address of the node to connect to.
+     * @return The {@link NodeCommands} proxy for the specified node.
+     * @throws RemoteException If an RMI error occurs or the node is not bound.
+     */
     public NodeCommands getProxy(Address addr) throws RemoteException {
+        // If attempting to connect to self
         if (addr.compareTo(node.getAddress()) == 0) {
             return node.getMessageReceiver();
         }
@@ -36,6 +67,11 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Broadcasts the addition of a new node to all known neighbors.
+     *
+     * @param newAddr The address of the new node to broadcast.
+     */
     public void broadcastNewNode(Address newAddr) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -51,6 +87,9 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Sends an election request to all nodes with a higher ID.
+     */
     public void sendElectionToBiggerNodes() {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -69,6 +108,11 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Sends an OK response to the candidate initiating an election.
+     *
+     * @param candidateId The ID of the node that initiated the election.
+     */
     public void sendRespondOk(long candidateId) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -86,6 +130,9 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Broadcasts the announcement of a new leader to all known neighbors.
+     */
     public void broadcastLeader() {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -99,6 +146,11 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Notifies all neighbors about this node leaving the network.
+     *
+     * @param leavingNode The address of the node that is leaving.
+     */
     public void notifyLeave(Address leavingNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -114,6 +166,11 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Notifies all neighbors about this node being revived.
+     *
+     * @param revivedNode The address of the node that has been revived.
+     */
     public void notifyRevive(Address revivedNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -129,6 +186,16 @@ public class CommunicationHub {
         }
     }
 
+    /**
+     * Sends a message from one node to another identified by their nicknames.
+     *
+     * <p>Note: This method currently sends the message to all known nodes.
+     * To target a specific node, implement a mapping from nickname to {@link Address}.
+     *
+     * @param toNick   The nickname of the recipient node.
+     * @param fromNick The nickname of the sender node.
+     * @param message  The message content to send.
+     */
     public void sendMessageTo(String toNick, String fromNick, String message) {
         // Snapshot of current neighbors to avoid changes inside a loop
         Set<Address> snapshot = new HashSet<>(node.getNeighbours().getKnownNodes());
@@ -159,7 +226,14 @@ public class CommunicationHub {
         }
     }
 
-
+    /**
+     * Handles the scenario when a node is considered dead/unresponsive.
+     *
+     * <p>This method removes the dead node from the known neighbors, notifies other nodes
+     * about the dead node, and initiates a leader election if necessary.
+     *
+     * @param deadAddr The address of the dead node.
+     */
     private void handleDeadNode(Address deadAddr) {
         // Removing from list
         node.getNeighbours().removeNode(deadAddr);
@@ -179,13 +253,10 @@ public class CommunicationHub {
             }
         }
 
-        // If the dead person was a leader - elections
+        // If the dead node was the leader, initiate an election
         if (deadAddr.equals(node.getNeighbours().getLeader())) {
             log.info("Dead node was our leader => starting election");
             node.startElection();
         }
     }
-
-
-
 }

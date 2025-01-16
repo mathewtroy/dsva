@@ -12,6 +12,22 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 
+/**
+ * Represents a node in a distributed system implementing the Bully leader election algorithm.
+ * This class manages the node's state, communication via RMI, and interactions with other nodes.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Joining and leaving the network.</li>
+ *     <li>Starting and handling elections.</li>
+ *     <li>Sending and receiving messages.</li>
+ *     <li>Maintaining a list of neighbors in a full mesh topology.</li>
+ * </ul>
+ *
+ * <p>The node can also be controlled via console commands and an HTTP API.
+ *
+ * @author @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter
@@ -37,6 +53,17 @@ public class Node implements Runnable {
     private NodeCommands messageReceiver;
     private CommunicationHub communicationHub;
 
+    /**
+     * Constructs a Node instance with the provided command-line arguments.
+     *
+     * <p>The expected arguments are:
+     * <ul>
+     *     <li>If length is 3: <code>nickname</code>, <code>IP</code>, <code>port</code>.</li>
+     *     <li>If length is 5: <code>nickname</code>, <code>IP</code>, <code>port</code>, <code>otherNodeIP</code>, <code>otherNodePort</code>.</li>
+     * </ul>
+     *
+     * @param args Command-line arguments for node configuration.
+     */
     public Node(String[] args) {
         if (args.length == 3) {
             nickname = args[0];
@@ -56,6 +83,13 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Generates a unique identifier based on the IP address and port number.
+     *
+     * @param ip    The IP address of the node.
+     * @param port  The port number of the node.
+     * @return A unique long identifier.
+     */
     private long generateId(String ip, int port) {
         String[] parts = ip.split("\\.");
         long id = 0;
@@ -71,14 +105,33 @@ public class Node implements Runnable {
         return id;
     }
 
+    /**
+     * Computes the unique identifier for a node based on its IP and port.
+     *
+     * @param ip    The IP address of the node.
+     * @param port  The port number of the node.
+     * @return The unique long identifier.
+     */
     public long computeId(String ip, int port) {
         return generateId(ip, port);
     }
 
+    /**
+     * Retrieves the address of the node.
+     *
+     * @return The {@link Address} of the node.
+     */
     public Address getAddress() {
         return myAddress;
     }
 
+    /**
+     * The main execution method for the node.
+     *
+     * <p>This method initializes the node's ID and address, starts RMI communication,
+     * joins the network if necessary, and starts console and API handlers.
+     * It then enters a loop to keep the node running until it becomes inactive, killed, or leaves.
+     */
     @Override
     public void run() {
         nodeId = generateId(myIP, myPort);
@@ -113,6 +166,9 @@ public class Node implements Runnable {
         log.warn("Node run() method finished for {} (ID={}).", nickname, nodeId);
     }
 
+    /**
+     * Initializes and starts the RMI registry and binds the message receiver.
+     */
     public void startRMI() {
         try {
             System.setProperty("java.rmi.server.hostname", myAddress.getHostname());
@@ -135,6 +191,9 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Stops the RMI registry and unexports the message receiver.
+     */
     public void stopRMI() {
         try {
             Registry registry = LocateRegistry.getRegistry(myPort);
@@ -147,6 +206,12 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Joins the node to an existing network by connecting to another node.
+     *
+     * @param ip    The IP address of the node to join.
+     * @param port  The port number of the node to join.
+     */
     public void join(String ip, int port) {
         Address other = new Address(ip, port);
         try {
@@ -163,6 +228,9 @@ public class Node implements Runnable {
         }
     }
 
+    /**
+     * Initiates the leader election process using the Bully algorithm.
+     */
     public void startElection() {
         if (!isActive() || isKilled || isLeft) {
             log.info("Cannot start election: node is not active.");
@@ -171,6 +239,12 @@ public class Node implements Runnable {
         internalStartElection();
     }
 
+    /**
+     * Internal method to handle the election process.
+     *
+     * <p>Notifies higher-ID nodes and waits for responses.
+     * If no higher-ID nodes respond, declares itself as the new leader.
+     */
     public void internalStartElection() {
         if (electionInProgress) {
             log.info("Election already in progress.");
@@ -196,10 +270,19 @@ public class Node implements Runnable {
         }).start();
     }
 
+    /**
+     * Logs the current leader of the network.
+     */
     public void checkLeader() {
         log.info("Current leader: {}", neighbours.getLeader());
     }
 
+    /**
+     * Sends a message to another node identified by its nickname.
+     *
+     * @param toNick   The nickname of the recipient node.
+     * @param message  The message content to send.
+     */
     public void sendMessage(String toNick, String message) {
         if (isKilled || isLeft) {
             log.warn("Cannot send message: node is inactive (killed or left).");
@@ -209,6 +292,9 @@ public class Node implements Runnable {
         communicationHub.sendMessageTo(toNick, nickname, message);
     }
 
+    /**
+     * Gracefully leaves the network by notifying all neighbors and clearing internal state.
+     */
     public void leaveNetwork() {
         if (isLeft) {
             log.warn("Already left the network.");
@@ -222,6 +308,9 @@ public class Node implements Runnable {
         log.info("Node {} has left the network. Neighbors cleared, leader set to null.", myAddress);
     }
 
+    /**
+     * Abruptly kills the node, making it unresponsive without notifying neighbors.
+     */
     public void killNode() {
         if (isKilled) {
             log.warn("Node {} is already killed.", myAddress);
@@ -237,6 +326,9 @@ public class Node implements Runnable {
         log.warn("Node {} is killed/unresponsive. Neighbors cleared, leader set to null.", myAddress);
     }
 
+    /**
+     * Revives a previously killed node by restarting RMI and notifying neighbors.
+     */
     public void reviveNode() {
         if (!isKilled) {
             log.warn("Node {} is not killed, cannot revive. Use 'leave' or 'join' if needed.", myAddress);
@@ -253,10 +345,20 @@ public class Node implements Runnable {
         log.warn("Node {} has been revived. Neighbors cleared, leader set to null.", myAddress);
     }
 
+    /**
+     * Checks if the node is currently active.
+     *
+     * @return {@code true} if the node is active, {@code false} otherwise.
+     */
     public boolean isActive() {
         return isActive && !isKilled && !isLeft;
     }
 
+    /**
+     * Retrieves the current status of the node, including its configuration and state.
+     *
+     * @return A string representation of the node's status.
+     */
     public String getStatus() {
         StringBuilder sb = new StringBuilder();
         sb.append("Node status:\n");
@@ -279,10 +381,18 @@ public class Node implements Runnable {
         return sb.toString();
     }
 
+    /**
+     * Logs the current status of the node.
+     */
     public void printStatus() {
         log.info("\n{}", getStatus());
     }
 
+    /**
+     * Returns a string representation of the node, including its state and configuration.
+     *
+     * @return A string describing the node.
+     */
     @Override
     public String toString() {
         return "Node[" + nickname +
@@ -295,9 +405,13 @@ public class Node implements Runnable {
                 "]";
     }
 
+    /**
+     * The entry point of the application. Initializes and runs a Node instance.
+     *
+     * @param args Command-line arguments for node configuration.
+     */
     public static void main(String[] args) {
         Node node = new Node(args);
         node.run();
     }
 }
-

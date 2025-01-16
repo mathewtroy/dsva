@@ -8,6 +8,20 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Manages the collection of known neighboring nodes in the network.
+ *
+ * <p>This class maintains a set of {@link Address} instances representing known nodes,
+ * and tracks the current leader of the network.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ *     <li>Adding and removing nodes from the known neighbors.</li>
+ *     <li>Setting and retrieving the current leader.</li>
+ * </ul>
+ *
+ * @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter

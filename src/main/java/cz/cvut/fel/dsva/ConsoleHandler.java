@@ -8,6 +8,29 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * Handles console input for the Node, allowing users to execute various commands
+ * to control the node's behavior, such as joining the network, starting elections,
+ * sending messages, and managing the node's state.
+ *
+ * <p>This class implements the {@link Runnable} interface and runs in a separate thread
+ * to continuously listen for and process user commands from the console.
+ *
+ * <p>Supported commands include:
+ * <ul>
+ *     <li><b>join</b>: Join another node in the network.</li>
+ *     <li><b>start_election (se)</b>: Initiate a leader election.</li>
+ *     <li><b>check_leader (cl)</b>: Check the current leader of the network.</li>
+ *     <li><b>send_message (sm)</b>: Send a message to another node.</li>
+ *     <li><b>leave (l)</b>: Leave the network gracefully.</li>
+ *     <li><b>kill (k)</b>: Simulate an abrupt node crash.</li>
+ *     <li><b>revive (r)</b>: Revive a previously killed node.</li>
+ *     <li><b>status (s)</b>: Display the current status of the node.</li>
+ *     <li><b>? / help</b>: Display help information.</li>
+ * </ul>
+ *
+ * @author @author Kross Aleksandr
+ */
 @Slf4j
 @Getter
 @Setter
@@ -16,11 +39,21 @@ public class ConsoleHandler implements Runnable {
     private final Node myNode;
     private final BufferedReader reader;
 
+    /**
+     * Constructs a ConsoleHandler associated with the specified node.
+     *
+     * @param myNode The parent Node instance to control.
+     */
     public ConsoleHandler(Node myNode) {
         this.myNode = myNode;
         this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
+    /**
+     * Parses and executes a given command line input.
+     *
+     * @param commandline The command line input entered by the user.
+     */
     private void parseCommand(String commandline) {
         String[] parts = commandline.trim().split("\\s+");
         if (parts.length == 0) return;
@@ -86,19 +119,28 @@ public class ConsoleHandler implements Runnable {
         }
     }
 
+    /**
+     * Displays a list of available commands and their usage.
+     */
     private void printHelp() {
         log.info("Available commands:");
-        log.info("join <ip> <port>             - Join another node");
-        log.info("start_election (se)          - Start leader election");
-        log.info("check_leader (cl)            - Check current leader");
-        log.info("send_message (sm) <nick> <message> - Send a message to a user");
-        log.info("leave (l)                    - Leave the network gracefully");
-        log.info("kill (k)                     - Simulate a node crash (killed)");
-        log.info("revive (r)                   - Revive a previously killed node");
-        log.info("status (s)                   - Show node status");
-        log.info("? / help                     - Show this help message");
+        log.info("join <ip> <port>                     - Join another node");
+        log.info("start_election (se)                  - Start leader election");
+        log.info("check_leader (cl)                    - Check current leader");
+        log.info("send_message (sm) <nick> <message>    - Send a message to a user");
+        log.info("leave (l)                            - Leave the network gracefully");
+        log.info("kill (k)                             - Simulate a node crash (killed)");
+        log.info("revive (r)                           - Revive a previously killed node");
+        log.info("status (s)                           - Show node status");
+        log.info("? / help                             - Show this help message");
     }
 
+    /**
+     * The main execution loop for the ConsoleHandler.
+     *
+     * <p>Continuously reads input from the console, parses commands, and executes them
+     * until the reading flag is set to false or an error occurs.
+     */
     @Override
     public void run() {
         log.info("ConsoleHandler started. Type '?' or 'help' for commands.");
