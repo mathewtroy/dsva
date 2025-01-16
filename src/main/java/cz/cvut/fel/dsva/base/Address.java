@@ -10,6 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Address implements Comparable<Address>, Serializable {
+
     private String hostname;
     private Integer port;
 

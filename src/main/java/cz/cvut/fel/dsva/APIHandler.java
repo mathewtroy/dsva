@@ -72,13 +72,6 @@ public class APIHandler implements Runnable {
                     ctx.result("Node has been revived\n");
                 });
             });
-            path("/kill", () -> {
-                get("", ctx -> {
-                    System.out.println("API: Kill node request");
-                    myNode.killNetwork();
-                    ctx.result("Node has been killed abruptly\n");
-                });
-            });
             path("/get_status", () -> {
                 get("", ctx -> {
                     System.out.println("API: Get Status request");

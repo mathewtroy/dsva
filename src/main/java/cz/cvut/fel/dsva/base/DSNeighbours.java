@@ -12,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 public class DSNeighbours implements Serializable {
+    // Getters and Setters
     private Set<Address> knownNodes = new HashSet<>();
     private Address leader;
 

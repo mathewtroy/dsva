@@ -29,16 +29,11 @@ public class Node implements Runnable {
     private int myPort = 2010;
     private String otherNodeIP = "127.0.0.1";
     private int otherNodePort = 2010;
-    private int apiPort;
 
-    @Getter
     private long nodeId = 0;
     private Address myAddress;
-    @Getter
     private DSNeighbours neighbours;
-    @Getter
     private NodeCommands messageReceiver;
-    @Getter
     private CommunicationHub communicationHub;
 
     public Node(String[] args) {
@@ -55,7 +50,6 @@ public class Node implements Runnable {
         } else {
             System.err.println("Wrong number of parameters - using defaults.");
         }
-        this.apiPort = 5000 + myPort;
     }
 
     private long generateId(String ip, int port) {
@@ -99,7 +93,7 @@ public class Node implements Runnable {
         Thread consoleThread = new Thread(new ConsoleHandler(this));
         consoleThread.start();
 
-        Thread apiThread = new Thread(new APIHandler(this, apiPort));
+        Thread apiThread = new Thread(new APIHandler(this, 5000 + myPort));
         apiThread.start();
 
         while (isActive && !isKilled && !isLeft) {
@@ -166,19 +160,9 @@ public class Node implements Runnable {
     }
 
     public String getStatus() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Node status:\n");
-        sb.append(" Nickname: ").append(nickname).append("\n");
-        sb.append(" NodeId:   ").append(nodeId).append("\n");
-        sb.append(" Address:  ").append(myAddress).append("\n");
-        sb.append(" ApiPort:  ").append(apiPort).append("\n");
-        sb.append(" RMIPort:  ").append(myPort).append("\n");
-        sb.append(" Active:   ").append(isActive()).append("\n");
-        sb.append(" Killed:   ").append(isKilled).append("\n");
-        sb.append(" Left:     ").append(isLeft).append("\n");
-        sb.append(" Leader:   ").append(neighbours.getLeader()).append("\n");
-        sb.append(" Neighbors:").append(neighbours.getKnownNodes()).append("\n");
-        return sb.toString();
+        return "Node:\n " + nickname + ",\n nodeId=" + nodeId + ",\n address=" + myAddress +
+                ",\n leader=" + neighbours.getLeader() +
+                ",\n knownNodes=" + neighbours.getKnownNodes() + "\n";
     }
 
     public void printStatus() {
@@ -249,15 +233,6 @@ public class Node implements Runnable {
         System.out.println("Node " + myAddress + " has been revived.");
     }
 
-    public void killNetwork() {
-        if (isKilled) {
-            System.out.println("Node is already killed.");
-            return;
-        }
-        isKilled = true;
-        System.out.println("Node " + myAddress + " was killed abruptly (no graceful leave).");
-        // Optionally stop RMI or do any other steps for a "dead" node
-    }
     // Getters for necessary fields
     public Address getAddress() {
         return myAddress;

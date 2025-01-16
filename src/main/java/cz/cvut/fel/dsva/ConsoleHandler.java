@@ -43,16 +43,16 @@ public class ConsoleHandler implements Runnable {
                     }
                 }
                 break;
-            case "startelection":
+            case "start_election":
             case "se":
                 myNode.startElection();
                 System.out.println("Start election command executed.");
                 break;
-            case "checkleader":
+            case "check_leader":
             case "cl":
                 myNode.checkLeader();
                 break;
-            case "sendmessage":
+            case "send_message":
             case "sm":
                 if (parts.length < 3) {
                     System.out.println("Usage: sendMessage <toNick> <message>");
@@ -70,10 +70,6 @@ public class ConsoleHandler implements Runnable {
             case "r":
                 myNode.reviveNode();
                 break;
-            case "kill":
-            case "k":
-                myNode.killNetwork();
-                break;
             case "status":
             case "s":
                 myNode.printStatus();
@@ -90,13 +86,12 @@ public class ConsoleHandler implements Runnable {
     private void printHelp() {
         System.out.println("Available commands:");
         System.out.println("join <ip> <port>            - Join another node");
-        System.out.println("startElection (se)          - Start leader election");
-        System.out.println("checkLeader (cl)            - Check current leader");
-        System.out.println("sendMessage (sm) <to> <msg> - Send a message to a user");
-        System.out.println("leave (l)                   - Leave the network gracefully");
-        System.out.println("revive (r)                  - Revive a previously left node");
-        System.out.println("kill (k)                    - Abruptly kill this node (no graceful leave)");
-        System.out.println("status (s)                  - Show node status");
+        System.out.println("startElection               - Start leader election");
+        System.out.println("checkLeader                 - Check current leader");
+        System.out.println("sendMessage <toNick> <msg>  - Send a message to a user");
+        System.out.println("leave                       - Leave the network gracefully");
+        System.out.println("revive                      - Revive a previously left node");
+        System.out.println("status                      - Show node status");
         System.out.println("? / help                    - Show this help message");
     }
 
