@@ -231,9 +231,6 @@ public class Node implements Runnable {
         setActive(false);
         stopRMI();
         // We do not notify others ourselves, because the node "died" abruptly
-        // But let's still do it to simulate that the network sees it's killed
-        //communicationHub.notifyKill(myAddress);
-
         // Clear neighbors & leader in the local node
         neighbours.getKnownNodes().clear();
         neighbours.setLeader(null);

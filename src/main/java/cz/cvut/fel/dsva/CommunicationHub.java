@@ -114,21 +114,6 @@ public class CommunicationHub {
         }
     }
 
-    public void notifyKill(Address killedNode) {
-        DSNeighbours ds = node.getNeighbours();
-        for (Address a : ds.getKnownNodes()) {
-            if (!a.equals(killedNode)) {
-                try {
-                    NodeCommands proxy = getProxy(a);
-                    proxy.killNode(killedNode);
-                    log.info("Notified {} that node was killed {}", a, killedNode);
-                } catch (RemoteException e) {
-                    log.error("Error notifying kill to {} about {}: {}", a, killedNode, e.getMessage());
-                }
-            }
-        }
-    }
-
     public void notifyRevive(Address revivedNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
