@@ -1,41 +1,111 @@
 # Distributed System with Leader Election (Bully Algorithm)
 
+
 This project implements a distributed system using the **Bully Algorithm** for leader election.
-Nodes communicate via **Java RMI** and expose a REST API for easy management and interaction.
-The project also includes automated **Bash scripts** to simplify deployment and testing across multiple virtual machines.
+Nodes communicate via **Java RMI** and expose a REST API for easy management and interaction. 
+The project includes automated **Bash scripts** for deployment and testing across multiple virtual machines.
 
-## Running and Testing via API Handler
 
-## 1. Clone and Build the Project
+## Features
 
-Clone the repository from GitHub.
+1. **Leader Election**:
+    - Automatic leader election using the Bully Algorithm.
+    - Handles leader death or exit gracefully.
 
-Build the project using Maven:  `mvn clean package`
+2. **Node Communication**:
+    - REST API for node management.
+    - Java RMI for internal node-to-node communication.
 
-## 2. Detect Virtual Machine IPs
+3. **Scenarios**:
+    - Incremental joins.
+    - Leader reelection on node failure.
+    - Concurrent operations.
+    - Node leave and revive.
 
-Use the provided script to dynamically find and configure IPs of active virtual machines.
+4. **Testing**:
+    - Automated Bash scripts for running test scenarios.
 
-The detected IPs are stored in `bash_variables.sh`.
 
-## 3. Start and Connect Nodes
+## Files Overview
 
-Start all nodes using: `./01_start_nodes.sh`
+### Core Bash Scripts
 
-Connect the nodes to form a network: `./02_connect_nodes.sh`
+1. **`01_start_nodes.sh`**:
+    - Starts all nodes on virtual machines.
+    - Uses `bash_variables.sh` for node IP and port configurations.
+    ```bash
+       ./01_start_nodes.sh
+    ```
 
-## 4. Run Test Scenarios
+2. **`02_control_nodes.sh`**:
+    - Allows manual control of node states (e.g., start/stop RMI, join operations).
+   ```bash
+      ./02_control_nodes.sh
+   ```
 
-**Use the following scripts to test various functionalities:**
+3. **`bash_variables.sh`**:
+   - Stores dynamically detected IPs and ports of virtual machines.
+   ```bash
+      ./bash_variables.sh
+   ```
 
-Get Node Status: `./scenario_01_get_status.sh`
+4. **`info.txt`**:
+    - Contains a brief overview of nodes and their configurations.
+ 
+### Test Scripts
 
-Send Messages: `./scenario_02_send_messages.sh`
+1. **`test_1_incremental_join.sh`**:
+    - Tests joining nodes incrementally to form a network.
+   ```bash
+      ./test_1_incremental_join.sh
+   ```
 
-Stop/Start RMI: `./scenario_03_stop_start_rmi.sh`
+2. **`test_2_full_leave_kill.sh`**:
+    - Simulates nodes leaving or being killed and verifies system consistency.
+   ```bash
+      ./test_2_full_leave_kill.sh
+   ```
 
-Check Leader: `./scenario_04_check_leader.sh`
+3. **`test_3_simultaneous_election.sh`**:
+    - Triggers multiple simultaneous elections to test Bully Algorithm robustness.
+   ```bash
+      ./test_3_simultaneous_election.sh
+   ```
 
-Kill and Revive Nodes: `./scenario_05_kill_and_revive.sh`
+4. **`test_4_send_messages.sh`**:
+    - Tests message sending between nodes.
+   ```bash
+      ./test_4_send_messages.sh
+   ```
 
-Leave Nodes: `./scenario_06_leave_nodes.sh`
+## Instructions
+
+### 1. Clone and Build the Project
+```bash
+    git clone https://github.com/mathewtroy/dsva.git
+   ```
+``` bash 
+    cd dsva
+```
+
+```
+mvn clean package
+```
+
+### Other useful commands
+
+``` bash 
+    ssh-keygen -t rsa -b 1024 -C "alex-debian"
+```
+
+``` bash 
+    sudo apt install gedit
+```
+
+``` bash 
+    sudo apt install nmap
+```
+
+``` bash 
+    sudo apt install sshpass
+```
