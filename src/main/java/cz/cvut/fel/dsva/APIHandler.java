@@ -29,22 +29,22 @@ public class APIHandler implements Runnable {
             path("/join", () -> {
                 get("/{other_node_ip}/{other_node_port}", ctx -> {
                     String ip = ctx.pathParam("other_node_ip");
-                    int port = Integer.parseInt(ctx.pathParam("other_node_port"));
-                    System.out.println("API: Joining node at " + ip + ":" + port);
-                    myNode.join(ip, port);
-                    ctx.result("Attempted to join node at " + ip + ":" + port + "\n");
+                    int portNumber = Integer.parseInt(ctx.pathParam("other_node_port"));
+                    log.info("API: Joining node at " + ip + ":" + portNumber);
+                    myNode.join(ip, portNumber);
+                    ctx.result("Attempted to join node at " + ip + ":" + portNumber + "\n");
                 });
             });
             path("/start_election", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Start Election request");
+                    log.info("API: Start Election request");
                     myNode.startElection();
                     ctx.result("Election started\n");
                 });
             });
             path("/check_leader", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Check Leader request");
+                    log.info("API: Check Leader request");
                     myNode.checkLeader();
                     ctx.result("Current leader: " + myNode.getNeighbours().getLeader() + "\n");
                 });
@@ -53,47 +53,54 @@ public class APIHandler implements Runnable {
                 post("", ctx -> {
                     String toNick = ctx.formParam("toNick");
                     String message = ctx.formParam("message");
-                    System.out.println("API: Send Message to " + toNick + ": " + message);
+                    log.info("API: Send Message to " + toNick + ": " + message);
                     myNode.sendMessage(toNick, message);
                     ctx.result("Message sent to " + toNick + "\n");
                 });
             });
             path("/leave", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Leave network request");
+                    log.info("API: Leave network request");
                     myNode.leaveNetwork();
                     ctx.result("Node has left the network\n");
                 });
             });
+            path("/kill", () -> {
+                get("", ctx -> {
+                    log.info("API: Kill node request");
+                    myNode.killNode();
+                    ctx.result("Node killed (unresponsive)\n");
+                });
+            });
             path("/revive", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Revive node request");
+                    log.info("API: Revive node request");
                     myNode.reviveNode();
                     ctx.result("Node has been revived\n");
                 });
             });
             path("/get_status", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Get Status request");
-                    ctx.result(myNode.getStatus() + "\n");
+                    log.info("API: Get Status request");
+                    ctx.result(myNode.getStatus());
                 });
             });
             path("/stop_rmi", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Stop RMI request");
+                    log.info("API: Stop RMI request");
                     myNode.stopRMI();
                     ctx.result("RMI stopped\n");
                 });
             });
             path("/start_rmi", () -> {
                 get("", ctx -> {
-                    System.out.println("API: Start RMI request");
+                    log.info("API: Start RMI request");
                     myNode.startRMI();
                     ctx.result("RMI started\n");
                 });
             });
         }).start(port);
-        System.out.println("API started on port " + port);
+        log.info("API started on port " + port);
     }
 
     @Override

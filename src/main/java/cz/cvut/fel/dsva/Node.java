@@ -21,12 +21,13 @@ public class Node implements Runnable {
     private boolean isActive = true;
     private boolean isKilled = false;
     private boolean isLeft = false;
-    @Setter
     private boolean electionInProgress = false;
 
     private String nickname = "Unknown";
     private String myIP = "127.0.0.1";
     private int myPort = 2010;
+    private int apiPort = 7000;
+
     private String otherNodeIP = "127.0.0.1";
     private int otherNodePort = 2010;
 
@@ -41,14 +42,17 @@ public class Node implements Runnable {
             nickname = args[0];
             myIP = otherNodeIP = args[1];
             myPort = otherNodePort = Integer.parseInt(args[2]);
+            apiPort = 5000 + myPort;
         } else if (args.length == 5) {
             nickname = args[0];
             myIP = args[1];
             myPort = Integer.parseInt(args[2]);
             otherNodeIP = args[3];
             otherNodePort = Integer.parseInt(args[4]);
+            apiPort = 5000 + myPort;
         } else {
             System.err.println("Wrong number of parameters - using defaults.");
+            apiPort = 5000 + myPort;
         }
     }
 
@@ -71,6 +75,10 @@ public class Node implements Runnable {
         return generateId(ip, port);
     }
 
+    public Address getAddress() {
+        return myAddress;
+    }
+
     @Override
     public void run() {
         nodeId = generateId(myIP, myPort);
@@ -84,21 +92,19 @@ public class Node implements Runnable {
         if (!(myIP.equals(otherNodeIP) && myPort == otherNodePort)) {
             join(otherNodeIP, otherNodePort);
         } else {
-            // If no other node, become leader
             neighbours.setLeader(myAddress);
             System.out.println("I am the first node. I become the leader: " + myAddress);
         }
 
-        // Start Console and API handlers in separate threads
         Thread consoleThread = new Thread(new ConsoleHandler(this));
         consoleThread.start();
 
-        Thread apiThread = new Thread(new APIHandler(this, 5000 + myPort));
+        Thread apiThread = new Thread(new APIHandler(this, apiPort));
         apiThread.start();
 
         while (isActive && !isKilled && !isLeft) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(8000);
             } catch (InterruptedException e) {
                 System.err.println("Main loop interrupted.");
             }
@@ -151,7 +157,7 @@ public class Node implements Runnable {
                 neighbours.addNode(a);
             }
             neighbours.setLeader(updated.getLeader());
-            System.out.println("Joined network. Neighbours: " + neighbours);
+            System.out.println("Joined network. Neighbors: " + neighbours);
             printStatus();
         } catch (RemoteException e) {
             System.err.println("join error: " + e.getMessage());
@@ -160,18 +166,47 @@ public class Node implements Runnable {
     }
 
     public String getStatus() {
-        return "Node:\n " + nickname + ",\n nodeId=" + nodeId + ",\n address=" + myAddress +
-                ",\n leader=" + neighbours.getLeader() +
-                ",\n knownNodes=" + neighbours.getKnownNodes() + "\n";
+        StringBuilder sb = new StringBuilder();
+        sb.append("Node status:\n");
+        sb.append(" Nickname: ").append(nickname).append("\n");
+        sb.append(" NodeId:   ").append(nodeId).append("\n");
+        sb.append(" Address:  ").append(myAddress).append("\n");
+        sb.append(" ApiPort:  ").append(apiPort).append("\n");
+        sb.append(" RMIPort:  ").append(myPort).append("\n");
+        sb.append(" Active:   ").append(isActive()).append("\n");
+        sb.append(" Killed:   ").append(isKilled).append("\n");
+        sb.append(" Left:     ").append(isLeft).append("\n");
+        sb.append(" Leader:   ").append(neighbours.getLeader()).append("\n");
+
+        sb.append(" Neighbors: ");
+        for (Address a : neighbours.getKnownNodes()) {
+            if (!a.equals(myAddress)) {
+                sb.append(a).append(" ");
+            }
+        }
+        sb.append("\n");
+        return sb.toString();
     }
 
     public void printStatus() {
         System.out.println(getStatus());
     }
 
+    @Override
+    public String toString() {
+        return "Node[" + nickname +
+                ", Active=" + isActive() +
+                ", Killed=" + isKilled +
+                ", Left=" + isLeft +
+                ", nodeId=" + nodeId +
+                ", address=" + myAddress +
+                ", leader=" + neighbours.getLeader() +
+                "]";
+    }
+
     public void startElection() {
-        if (isKilled || isLeft) {
-            System.out.println("Cannot start election: node not active.");
+        if (!isActive() || isKilled || isLeft) {
+            System.out.println("Cannot start election: node is not active.");
             return;
         }
         internalStartElection();
@@ -186,15 +221,13 @@ public class Node implements Runnable {
         System.out.println("Starting Bully election. My ID=" + nodeId);
         communicationHub.sendElectionToBiggerNodes();
 
-        // Wait for responses
         new Thread(() -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(2500);
             } catch (InterruptedException e) {
                 System.err.println("Election wait interrupted.");
             }
             if (electionInProgress) {
-                // No OK received
                 System.out.println("No higher node responded. I am the new leader.");
                 neighbours.setLeader(myAddress);
                 communicationHub.broadcastLeader();
@@ -209,6 +242,10 @@ public class Node implements Runnable {
     }
 
     public void sendMessage(String toNick, String message) {
+        if (isKilled || isLeft) {
+            System.out.println("Cannot send message: node is inactive.");
+            return;
+        }
         System.out.println("Send message: from " + nickname + " to " + toNick + " -> " + message);
         communicationHub.sendMessageTo(toNick, nickname, message);
     }
@@ -219,41 +256,39 @@ public class Node implements Runnable {
             return;
         }
         isLeft = true;
+        setActive(false);
         communicationHub.notifyLeave(myAddress);
         System.out.println("Node " + myAddress + " has left the network.");
     }
 
-    public void reviveNode() {
-        if (!isLeft) {
-            System.out.println("Node is not left. Cannot revive.");
+    public void killNode() {
+        if (isKilled) {
+            System.out.println("Node is already killed.");
             return;
         }
-        isLeft = false;
-        communicationHub.notifyRevive(myAddress);
-        System.out.println("Node " + myAddress + " has been revived.");
+        isKilled = true;
+        setActive(false);
+        communicationHub.notifyKill(myAddress);
+        System.out.println("Node " + myAddress + " is killed (unresponsive).");
     }
 
-    // Getters for necessary fields
-    public Address getAddress() {
-        return myAddress;
+    public void reviveNode() {
+        if (!isKilled) {
+            System.out.println("Node is not killed, cannot revive. Use 'leave' or 'join' if needed.");
+            return;
+        }
+        isKilled = false;
+        setActive(true);
+        communicationHub.notifyRevive(myAddress);
+        System.out.println("Node " + myAddress + " has been revived.");
     }
 
     public boolean isActive() {
         return isActive && !isKilled && !isLeft;
     }
 
-    @Override
-    public String toString() {
-        return "Node[" + nickname +
-                ", isActive=" + isActive +
-                ", isKilled=" + isKilled +
-                ", isLeft=" + isLeft +
-                ", nodeId=" + nodeId +
-                ", address=" + myAddress +
-                "]";
-    }
 
-    // Main method
+
     public static void main(String[] args) {
         Node node = new Node(args);
         node.run();

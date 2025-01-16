@@ -34,6 +34,21 @@ public class CommunicationHub {
         }
     }
 
+    public void broadcastNewNode(Address newAddr) {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            if (!a.equals(newAddr)) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.broadcastNewNode(newAddr);
+                    log.info("Broadcasted new node to " + a);
+                } catch (RemoteException e) {
+                    log.error("Error broadcasting new node to " + a, e);
+                }
+            }
+        }
+    }
+
     public void sendElectionToBiggerNodes() {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
@@ -85,7 +100,7 @@ public class CommunicationHub {
     public void notifyLeave(Address leavingNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
-            if (a.compareTo(leavingNode) != 0) {
+            if (!a.equals(leavingNode)) {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.leave(leavingNode);
@@ -97,10 +112,25 @@ public class CommunicationHub {
         }
     }
 
+    public void notifyKill(Address killedNode) {
+        DSNeighbours ds = node.getNeighbours();
+        for (Address a : ds.getKnownNodes()) {
+            if (!a.equals(killedNode)) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.killNode(killedNode);
+                    System.out.println("Notified " + a + " that node was killed " + killedNode);
+                } catch (RemoteException e) {
+                    System.err.println("Error notifying kill to " + a + " about " + killedNode + ": " + e.getMessage());
+                }
+            }
+        }
+    }
+
     public void notifyRevive(Address revivedNode) {
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
-            if (a.compareTo(revivedNode) != 0) {
+            if (!a.equals(revivedNode)) {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.revive(revivedNode);
@@ -113,8 +143,6 @@ public class CommunicationHub {
     }
 
     public void sendMessageTo(String toNick, String fromNick, String message) {
-        // Implement mapping from nickname to Address if needed
-        // For simplicity, send to all or implement as required
         DSNeighbours ds = node.getNeighbours();
         for (Address a : ds.getKnownNodes()) {
             try {

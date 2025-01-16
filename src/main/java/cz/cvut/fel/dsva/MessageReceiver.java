@@ -25,8 +25,16 @@ public class MessageReceiver implements NodeCommands {
             return node.getNeighbours();
         }
         node.getNeighbours().addNode(newNodeAddr);
+        node.printStatus();
+        node.getCommunicationHub().broadcastNewNode(newNodeAddr);
         System.out.println("Node joined: " + newNodeAddr);
         return node.getNeighbours();
+    }
+
+    @Override
+    public void broadcastNewNode(Address newAddr) throws RemoteException {
+        node.getNeighbours().addNode(newAddr);
+        node.printStatus();
     }
 
     @Override
@@ -36,7 +44,6 @@ public class MessageReceiver implements NodeCommands {
             node.getCommunicationHub().sendRespondOk(candidateId);
             node.internalStartElection();
         }
-        // If nodeId <= candidateId, do nothing
     }
 
     @Override
@@ -56,23 +63,44 @@ public class MessageReceiver implements NodeCommands {
     @Override
     public void sendMessage(String fromNick, String toNick, String message) throws RemoteException {
         System.out.println("Received message from " + fromNick + " to " + toNick + ": " + message);
-        // Implement chat message handling as needed
     }
 
     @Override
     public void leave(Address leavingNode) throws RemoteException {
         System.out.println("Received leave notification from " + leavingNode);
         node.getNeighbours().removeNode(leavingNode);
-        if (node.getNeighbours().getLeader().compareTo(leavingNode) == 0) {
+        if (node.getNeighbours().getLeader() != null &&
+                node.getNeighbours().getLeader().equals(leavingNode)) {
             System.out.println("Leader has left. Starting election.");
             node.startElection();
         }
+        node.printStatus();
+    }
+
+    @Override
+    public void killNode(Address killedNode) throws RemoteException {
+        System.out.println("Received kill notification for " + killedNode);
+        if (killedNode.equals(node.getAddress())) {
+            node.setKilled(true);
+            node.setActive(false);
+            System.out.println("Node " + killedNode + " is now killed/unresponsive.");
+        } else {
+            // Remove from known nodes (optional or keep it)
+            node.getNeighbours().removeNode(killedNode);
+        }
+        node.printStatus();
     }
 
     @Override
     public void revive(Address revivedNode) throws RemoteException {
         System.out.println("Received revive notification for " + revivedNode);
         node.getNeighbours().addNode(revivedNode);
+        if (revivedNode.equals(node.getAddress())) {
+            node.setKilled(false);
+            node.setActive(true);
+            System.out.println("Node " + revivedNode + " is revived.");
+        }
+        node.printStatus();
     }
 
     @Override

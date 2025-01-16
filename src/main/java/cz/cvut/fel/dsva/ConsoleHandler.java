@@ -33,9 +33,8 @@ public class ConsoleHandler implements Runnable {
                     System.out.println("Usage: join <ip> <port>");
                 } else {
                     String ip = parts[1];
-                    int port;
                     try {
-                        port = Integer.parseInt(parts[2]);
+                        int port = Integer.parseInt(parts[2]);
                         myNode.join(ip, port);
                         System.out.println("Join command executed: " + ip + ":" + port);
                     } catch (NumberFormatException e) {
@@ -66,6 +65,10 @@ public class ConsoleHandler implements Runnable {
             case "l":
                 myNode.leaveNetwork();
                 break;
+            case "kill":
+            case "k":
+                myNode.killNode();
+                break;
             case "revive":
             case "r":
                 myNode.reviveNode();
@@ -86,12 +89,13 @@ public class ConsoleHandler implements Runnable {
     private void printHelp() {
         System.out.println("Available commands:");
         System.out.println("join <ip> <port>            - Join another node");
-        System.out.println("startElection               - Start leader election");
-        System.out.println("checkLeader                 - Check current leader");
-        System.out.println("sendMessage <toNick> <msg>  - Send a message to a user");
-        System.out.println("leave                       - Leave the network gracefully");
-        System.out.println("revive                      - Revive a previously left node");
-        System.out.println("status                      - Show node status");
+        System.out.println("start_election (se)         - Start leader election");
+        System.out.println("check_leader (cl)           - Check current leader");
+        System.out.println("send_message (sm) <nick> <message> - Send a message to a user");
+        System.out.println("leave (l)                   - Leave the network gracefully");
+        System.out.println("kill (k)                    - Simulate a node crash (killed)");
+        System.out.println("revive (r)                  - Revive a previously killed node");
+        System.out.println("status (s)                  - Show node status");
         System.out.println("? / help                    - Show this help message");
     }
 
