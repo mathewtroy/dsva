@@ -2,7 +2,7 @@
 
 # Kill and then revive Node1.
 
-source 02_connect_nodes.sh
+source connect_nodes.sh
 SLEEP_TIME=1
 
 echo "=== SCENARIO 5: Kill & No-Arg Revive Node1 ==="

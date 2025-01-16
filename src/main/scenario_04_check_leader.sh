@@ -2,7 +2,7 @@
 
 # Checking the leader via API from Node1 and Node5.
 
-source 02_connect_nodes.sh
+source connect_nodes.sh
 SLEEP_TIME=1
 
 echo "=== SCENARIO 4: Checking leader from Node1 and Node5 ==="
