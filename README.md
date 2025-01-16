@@ -34,19 +34,19 @@ The project includes automated **Bash scripts** for deployment and testing acros
     - Starts all nodes on virtual machines.
     - Uses `bash_variables.sh` for node IP and port configurations.
     ```bash
-       ./01_start_nodes.sh
+       /src/main/01_start_nodes.sh
     ```
 
 2. **`02_control_nodes.sh`**:
     - Allows manual control of node states (e.g., start/stop RMI, join operations).
    ```bash
-      ./02_control_nodes.sh
+      /src/main/02_control_nodes.sh
    ```
 
 3. **`bash_variables.sh`**:
    - Stores dynamically detected IPs and ports of virtual machines.
    ```bash
-      ./bash_variables.sh
+      /src/main/bash_variables.sh
    ```
 
 4. **`info.txt`**:
@@ -57,19 +57,19 @@ The project includes automated **Bash scripts** for deployment and testing acros
 1. **`test_1_incremental_join.sh`**:
     - Tests joining nodes incrementally to form a network.
    ```bash
-      ./test_1_incremental_join.sh
+      /src/main/test_1_incremental_join.sh
    ```
 
 2. **`test_2_full_leave_kill.sh`**:
     - Simulates nodes leaving or being killed and verifies system consistency.
    ```bash
-      ./test_2_full_leave_kill.sh
+      /src/main/test_2_full_leave_kill.sh
    ```
 
 3. **`test_3_simultaneous_election.sh`**:
     - Triggers multiple simultaneous elections to test Bully Algorithm robustness.
    ```bash
-      ./test_3_simultaneous_election.sh
+      /src/main/test_3_simultaneous_election.sh
    ```
 
 4. **`test_4_send_messages.sh`**:
