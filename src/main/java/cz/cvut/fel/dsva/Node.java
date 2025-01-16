@@ -51,7 +51,7 @@ public class Node implements Runnable {
             otherNodePort = Integer.parseInt(args[4]);
             apiPort = 5000 + myPort;
         } else {
-            System.err.println("Wrong number of parameters - using defaults.");
+            log.warn("Wrong number of parameters - using defaults (myPort=2010).");
             apiPort = 5000 + myPort;
         }
     }
@@ -64,7 +64,7 @@ public class Node implements Runnable {
                 long num = Long.parseLong(part);
                 id = id * 1000 + num;
             } catch (NumberFormatException e) {
-                System.err.println("Error parsing IP part: " + part);
+                log.error("Error parsing IP part: {}", part);
             }
         }
         id += port * 1000000000000L;
@@ -85,6 +85,7 @@ public class Node implements Runnable {
         myAddress = new Address(myIP, myPort);
         neighbours = new DSNeighbours(myAddress);
 
+        log.info("Node {} is starting with ID={}", nickname, nodeId);
         printStatus();
         startRMI();
         communicationHub = new CommunicationHub(this);
@@ -93,7 +94,7 @@ public class Node implements Runnable {
             join(otherNodeIP, otherNodePort);
         } else {
             neighbours.setLeader(myAddress);
-            System.out.println("I am the first node. I become the leader: " + myAddress);
+            log.info("I am the first node. I become the leader: {}", myAddress);
         }
 
         Thread consoleThread = new Thread(new ConsoleHandler(this));
@@ -102,14 +103,14 @@ public class Node implements Runnable {
         Thread apiThread = new Thread(new APIHandler(this, apiPort));
         apiThread.start();
 
-        while (isActive && !isKilled && !isLeft) {
+        while (isActive() && !isKilled && !isLeft) {
             try {
                 Thread.sleep(8000);
             } catch (InterruptedException e) {
-                System.err.println("Main loop interrupted.");
+                log.error("Main loop interrupted.", e);
             }
         }
-        System.out.println("Node run() method finished.");
+        log.warn("Node run() method finished for {} (ID={}).", nickname, nodeId);
     }
 
     public void startRMI() {
@@ -124,14 +125,13 @@ public class Node implements Runnable {
                 registry = LocateRegistry.getRegistry(myPort);
                 registry.rebind(COMM_INTERFACE_NAME, stub);
             } catch (RemoteException e) {
-                System.out.println("No registry found, creating new one on port " + myPort);
+                log.info("No registry found on port {}. Creating a new one.", myPort);
                 registry = LocateRegistry.createRegistry(myPort);
                 registry.rebind(COMM_INTERFACE_NAME, stub);
             }
-            System.out.println("RMI started on port " + myPort);
+            log.info("RMI started on port {}", myPort);
         } catch (Exception e) {
-            System.err.println("startRMI error: " + e.getMessage());
-            e.printStackTrace();
+            log.error("startRMI error: ", e);
         }
     }
 
@@ -141,10 +141,9 @@ public class Node implements Runnable {
             registry.unbind(COMM_INTERFACE_NAME);
             UnicastRemoteObject.unexportObject(messageReceiver, false);
             messageReceiver = null;
-            System.out.println("RMI stopped on port " + myPort);
+            log.info("RMI stopped on port {}", myPort);
         } catch (Exception e) {
-            System.err.println("stopRMI error: " + e.getMessage());
-            e.printStackTrace();
+            log.error("stopRMI error: ", e);
         }
     }
 
@@ -157,12 +156,108 @@ public class Node implements Runnable {
                 neighbours.addNode(a);
             }
             neighbours.setLeader(updated.getLeader());
-            System.out.println("Joined network. Neighbors: " + neighbours);
+            log.info("Joined network with node at {}. Neighbors: {}", other, neighbours);
             printStatus();
         } catch (RemoteException e) {
-            System.err.println("join error: " + e.getMessage());
-            e.printStackTrace();
+            log.error("join error: ", e);
         }
+    }
+
+    public void startElection() {
+        if (!isActive() || isKilled || isLeft) {
+            log.info("Cannot start election: node is not active.");
+            return;
+        }
+        internalStartElection();
+    }
+
+    public void internalStartElection() {
+        if (electionInProgress) {
+            log.info("Election already in progress.");
+            return;
+        }
+        electionInProgress = true;
+        log.info("Starting Bully election. My ID={}", nodeId);
+        communicationHub.sendElectionToBiggerNodes();
+
+        new Thread(() -> {
+            try {
+                Thread.sleep(2500);
+            } catch (InterruptedException e) {
+                log.error("Election wait interrupted.", e);
+            }
+            if (electionInProgress) {
+                log.info("No higher node responded. I am the new leader.");
+                neighbours.setLeader(myAddress);
+                communicationHub.broadcastLeader();
+                electionInProgress = false;
+                printStatus();
+            }
+        }).start();
+    }
+
+    public void checkLeader() {
+        log.info("Current leader: {}", neighbours.getLeader());
+    }
+
+    public void sendMessage(String toNick, String message) {
+        if (isKilled || isLeft) {
+            log.warn("Cannot send message: node is inactive (killed or left).");
+            return;
+        }
+        log.info("Send message from {} to {} -> {}", nickname, toNick, message);
+        communicationHub.sendMessageTo(toNick, nickname, message);
+    }
+
+    public void leaveNetwork() {
+        if (isLeft) {
+            log.warn("Already left the network.");
+            return;
+        }
+        isLeft = true;
+        setActive(false);
+        communicationHub.notifyLeave(myAddress);
+        neighbours.getKnownNodes().clear();
+        neighbours.setLeader(null);
+        log.info("Node {} has left the network. Neighbors cleared, leader set to null.", myAddress);
+    }
+
+    public void killNode() {
+        if (isKilled) {
+            log.warn("Node {} is already killed.", myAddress);
+            return;
+        }
+        isKilled = true;
+        setActive(false);
+        stopRMI();
+        // We do not notify others ourselves, because the node "died" abruptly
+        // But let's still do it to simulate that the network sees it's killed
+        communicationHub.notifyKill(myAddress);
+
+        // Clear neighbors & leader in the local node
+        neighbours.getKnownNodes().clear();
+        neighbours.setLeader(null);
+        log.warn("Node {} is killed/unresponsive. Neighbors cleared, leader set to null.", myAddress);
+    }
+
+    public void reviveNode() {
+        if (!isKilled) {
+            log.warn("Node {} is not killed, cannot revive. Use 'leave' or 'join' if needed.", myAddress);
+            return;
+        }
+        isKilled = false;
+        setActive(true);
+        startRMI();
+        communicationHub.notifyRevive(myAddress);
+
+        // Also clear neighbors & leader for a fresh start
+        neighbours.getKnownNodes().clear();
+        neighbours.setLeader(null);
+        log.warn("Node {} has been revived. Neighbors cleared, leader set to null.", myAddress);
+    }
+
+    public boolean isActive() {
+        return isActive && !isKilled && !isLeft;
     }
 
     public String getStatus() {
@@ -177,7 +272,6 @@ public class Node implements Runnable {
         sb.append(" Killed:   ").append(isKilled).append("\n");
         sb.append(" Left:     ").append(isLeft).append("\n");
         sb.append(" Leader:   ").append(neighbours.getLeader()).append("\n");
-
         sb.append(" Neighbors: ");
         for (Address a : neighbours.getKnownNodes()) {
             if (!a.equals(myAddress)) {
@@ -189,7 +283,7 @@ public class Node implements Runnable {
     }
 
     public void printStatus() {
-        System.out.println(getStatus());
+        log.info("\n{}", getStatus());
     }
 
     @Override
@@ -204,93 +298,9 @@ public class Node implements Runnable {
                 "]";
     }
 
-    public void startElection() {
-        if (!isActive() || isKilled || isLeft) {
-            System.out.println("Cannot start election: node is not active.");
-            return;
-        }
-        internalStartElection();
-    }
-
-    public void internalStartElection() {
-        if (electionInProgress) {
-            System.out.println("Election already in progress.");
-            return;
-        }
-        electionInProgress = true;
-        System.out.println("Starting Bully election. My ID=" + nodeId);
-        communicationHub.sendElectionToBiggerNodes();
-
-        new Thread(() -> {
-            try {
-                Thread.sleep(2500);
-            } catch (InterruptedException e) {
-                System.err.println("Election wait interrupted.");
-            }
-            if (electionInProgress) {
-                System.out.println("No higher node responded. I am the new leader.");
-                neighbours.setLeader(myAddress);
-                communicationHub.broadcastLeader();
-                electionInProgress = false;
-                printStatus();
-            }
-        }).start();
-    }
-
-    public void checkLeader() {
-        System.out.println("Current leader: " + neighbours.getLeader());
-    }
-
-    public void sendMessage(String toNick, String message) {
-        if (isKilled || isLeft) {
-            System.out.println("Cannot send message: node is inactive.");
-            return;
-        }
-        System.out.println("Send message: from " + nickname + " to " + toNick + " -> " + message);
-        communicationHub.sendMessageTo(toNick, nickname, message);
-    }
-
-    public void leaveNetwork() {
-        if (isLeft) {
-            System.out.println("Already left the network.");
-            return;
-        }
-        isLeft = true;
-        setActive(false);
-        communicationHub.notifyLeave(myAddress);
-        System.out.println("Node " + myAddress + " has left the network.");
-    }
-
-    public void killNode() {
-        if (isKilled) {
-            System.out.println("Node is already killed.");
-            return;
-        }
-        isKilled = true;
-        setActive(false);
-        communicationHub.notifyKill(myAddress);
-        System.out.println("Node " + myAddress + " is killed (unresponsive).");
-    }
-
-    public void reviveNode() {
-        if (!isKilled) {
-            System.out.println("Node is not killed, cannot revive. Use 'leave' or 'join' if needed.");
-            return;
-        }
-        isKilled = false;
-        setActive(true);
-        communicationHub.notifyRevive(myAddress);
-        System.out.println("Node " + myAddress + " has been revived.");
-    }
-
-    public boolean isActive() {
-        return isActive && !isKilled && !isLeft;
-    }
-
-
-
     public static void main(String[] args) {
         Node node = new Node(args);
         node.run();
     }
 }
+

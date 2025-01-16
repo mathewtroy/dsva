@@ -30,7 +30,7 @@ public class APIHandler implements Runnable {
                 get("/{other_node_ip}/{other_node_port}", ctx -> {
                     String ip = ctx.pathParam("other_node_ip");
                     int portNumber = Integer.parseInt(ctx.pathParam("other_node_port"));
-                    log.info("API: Joining node at " + ip + ":" + portNumber);
+                    log.info("API: Joining node at {}:{}", ip, portNumber);
                     myNode.join(ip, portNumber);
                     ctx.result("Attempted to join node at " + ip + ":" + portNumber + "\n");
                 });
@@ -53,7 +53,7 @@ public class APIHandler implements Runnable {
                 post("", ctx -> {
                     String toNick = ctx.formParam("toNick");
                     String message = ctx.formParam("message");
-                    log.info("API: Send Message to " + toNick + ": " + message);
+                    log.info("API: Send Message to {}: {}", toNick, message);
                     myNode.sendMessage(toNick, message);
                     ctx.result("Message sent to " + toNick + "\n");
                 });
@@ -100,7 +100,7 @@ public class APIHandler implements Runnable {
                 });
             });
         }).start(port);
-        log.info("API started on port " + port);
+        log.info("API started on port {}", port);
     }
 
     @Override

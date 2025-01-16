@@ -30,22 +30,22 @@ public class ConsoleHandler implements Runnable {
         switch (command) {
             case "join":
                 if (parts.length != 3) {
-                    System.out.println("Usage: join <ip> <port>");
+                    log.info("Usage: join <ip> <port>");
                 } else {
                     String ip = parts[1];
                     try {
                         int port = Integer.parseInt(parts[2]);
                         myNode.join(ip, port);
-                        System.out.println("Join command executed: " + ip + ":" + port);
+                        log.info("Join command executed: {}:{}", ip, port);
                     } catch (NumberFormatException e) {
-                        System.out.println("Invalid port number: " + parts[2]);
+                        log.warn("Invalid port number: {}", parts[2]);
                     }
                 }
                 break;
             case "start_election":
             case "se":
                 myNode.startElection();
-                System.out.println("Start election command executed.");
+                log.info("Start election command executed.");
                 break;
             case "check_leader":
             case "cl":
@@ -54,7 +54,7 @@ public class ConsoleHandler implements Runnable {
             case "send_message":
             case "sm":
                 if (parts.length < 3) {
-                    System.out.println("Usage: sendMessage <toNick> <message>");
+                    log.info("Usage: send_message <toNick> <message>");
                 } else {
                     String toNick = parts[1];
                     String message = String.join(" ", java.util.Arrays.copyOfRange(parts, 2, parts.length));
@@ -82,26 +82,26 @@ public class ConsoleHandler implements Runnable {
                 printHelp();
                 break;
             default:
-                System.out.println("Unrecognized command. Type '?' or 'help' for assistance.");
+                log.info("Unrecognized command. Type '?' or 'help' for assistance.");
         }
     }
 
     private void printHelp() {
-        System.out.println("Available commands:");
-        System.out.println("join <ip> <port>            - Join another node");
-        System.out.println("start_election (se)         - Start leader election");
-        System.out.println("check_leader (cl)           - Check current leader");
-        System.out.println("send_message (sm) <nick> <message> - Send a message to a user");
-        System.out.println("leave (l)                   - Leave the network gracefully");
-        System.out.println("kill (k)                    - Simulate a node crash (killed)");
-        System.out.println("revive (r)                  - Revive a previously killed node");
-        System.out.println("status (s)                  - Show node status");
-        System.out.println("? / help                    - Show this help message");
+        log.info("Available commands:");
+        log.info("join <ip> <port>             - Join another node");
+        log.info("start_election (se)          - Start leader election");
+        log.info("check_leader (cl)            - Check current leader");
+        log.info("send_message (sm) <nick> <message> - Send a message to a user");
+        log.info("leave (l)                    - Leave the network gracefully");
+        log.info("kill (k)                     - Simulate a node crash (killed)");
+        log.info("revive (r)                   - Revive a previously killed node");
+        log.info("status (s)                   - Show node status");
+        log.info("? / help                     - Show this help message");
     }
 
     @Override
     public void run() {
-        System.out.println("ConsoleHandler started. Type '?' or 'help' for commands.");
+        log.info("ConsoleHandler started. Type '?' or 'help' for commands.");
         while (reading) {
             System.out.print("\ncmd > ");
             try {
@@ -112,11 +112,10 @@ public class ConsoleHandler implements Runnable {
                 }
                 parseCommand(commandline);
             } catch (IOException e) {
-                System.out.println("ConsoleHandler - error reading input.");
-                e.printStackTrace();
+                log.error("ConsoleHandler - error reading input.", e);
                 reading = false;
             }
         }
-        System.out.println("ConsoleHandler stopped.");
+        log.info("ConsoleHandler stopped.");
     }
 }

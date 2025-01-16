@@ -41,9 +41,9 @@ public class CommunicationHub {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.broadcastNewNode(newAddr);
-                    log.info("Broadcasted new node to " + a);
+                    log.info("Broadcasted new node {} to {}", newAddr, a);
                 } catch (RemoteException e) {
-                    log.error("Error broadcasting new node to " + a, e);
+                    log.error("Error broadcasting new node {} to {}", newAddr, a, e);
                 }
             }
         }
@@ -58,9 +58,9 @@ public class CommunicationHub {
                     try {
                         NodeCommands proxy = getProxy(a);
                         proxy.startElection(node.getNodeId());
-                        System.out.println("Sent startElection to " + a);
+                        log.info("Sent startElection to {}", a);
                     } catch (RemoteException e) {
-                        System.err.println("Error sending startElection to " + a + ": " + e.getMessage());
+                        log.error("Error sending startElection to {}: {}", a, e.getMessage());
                     }
                 }
             }
@@ -75,9 +75,9 @@ public class CommunicationHub {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.respondOk(node.getNodeId());
-                    System.out.println("Sent respondOk to " + a);
+                    log.info("Sent respondOk to {}", a);
                 } catch (RemoteException e) {
-                    System.err.println("Error sending respondOk to " + a + ": " + e.getMessage());
+                    log.error("Error sending respondOk to {}: {}", a, e.getMessage());
                 }
                 break;
             }
@@ -90,9 +90,9 @@ public class CommunicationHub {
             try {
                 NodeCommands proxy = getProxy(a);
                 proxy.announceLeader(node.getNodeId(), node.getAddress());
-                System.out.println("Announced leader to " + a);
+                log.info("Announced leader to {}", a);
             } catch (RemoteException e) {
-                System.err.println("Error announcing leader to " + a + ": " + e.getMessage());
+                log.error("Error announcing leader to {}: {}", a, e.getMessage());
             }
         }
     }
@@ -104,9 +104,9 @@ public class CommunicationHub {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.leave(leavingNode);
-                    System.out.println("Notified " + a + " about leaving node " + leavingNode);
+                    log.info("Notified {} about leaving node {}", a, leavingNode);
                 } catch (RemoteException e) {
-                    System.err.println("Error notifying " + a + " about leaving node " + leavingNode + ": " + e.getMessage());
+                    log.error("Error notifying {} about leaving node {}: {}", a, leavingNode, e.getMessage());
                 }
             }
         }
@@ -119,9 +119,9 @@ public class CommunicationHub {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.killNode(killedNode);
-                    System.out.println("Notified " + a + " that node was killed " + killedNode);
+                    log.info("Notified {} that node was killed {}", a, killedNode);
                 } catch (RemoteException e) {
-                    System.err.println("Error notifying kill to " + a + " about " + killedNode + ": " + e.getMessage());
+                    log.error("Error notifying kill to {} about {}: {}", a, killedNode, e.getMessage());
                 }
             }
         }
@@ -134,9 +134,9 @@ public class CommunicationHub {
                 try {
                     NodeCommands proxy = getProxy(a);
                     proxy.revive(revivedNode);
-                    System.out.println("Notified " + a + " about revived node " + revivedNode);
+                    log.info("Notified {} about revived node {}", a, revivedNode);
                 } catch (RemoteException e) {
-                    System.err.println("Error notifying " + a + " about revived node " + revivedNode + ": " + e.getMessage());
+                    log.error("Error notifying {} about revived node {}: {}", a, revivedNode, e.getMessage());
                 }
             }
         }
@@ -148,9 +148,9 @@ public class CommunicationHub {
             try {
                 NodeCommands proxy = getProxy(a);
                 proxy.sendMessage(fromNick, toNick, message);
-                System.out.println("Sent message to " + a);
+                log.info("Sent message from {} to {} via {}", fromNick, toNick, a);
             } catch (RemoteException e) {
-                System.err.println("Error sending message to " + a + ": " + e.getMessage());
+                log.error("Error sending message to {}: {}", a, e.getMessage());
             }
         }
     }
