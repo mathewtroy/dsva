@@ -11,6 +11,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Getter
@@ -143,15 +145,62 @@ public class CommunicationHub {
     }
 
     public void sendMessageTo(String toNick, String fromNick, String message) {
-        DSNeighbours ds = node.getNeighbours();
-        for (Address a : ds.getKnownNodes()) {
-            try {
-                NodeCommands proxy = getProxy(a);
-                proxy.sendMessage(fromNick, toNick, message);
-                log.info("Sent message from {} to {} via {}", fromNick, toNick, a);
-            } catch (RemoteException e) {
-                log.error("Error sending message to {}: {}", a, e.getMessage());
+        // Snapshot of current neighbors to avoid changes inside a loop
+        Set<Address> snapshot = new HashSet<>(node.getNeighbours().getKnownNodes());
+
+        for (Address a : snapshot) {
+            if (a.equals(node.getAddress())) {
+                // Process locally
+                continue;
+            }
+            int MAX_ATTEMPTS = 3;
+            boolean success = false;
+            for (int attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+                try {
+                    NodeCommands proxy = getProxy(a);
+                    proxy.sendMessage(fromNick, toNick, message);
+                    log.info("Sent message from {} to {} via {}", fromNick, toNick, a);
+                    success = true;
+                    break;
+                } catch (RemoteException e) {
+                    log.error("Attempt {}/{} to send message to {} failed: {}",
+                            attempt, MAX_ATTEMPTS, a, e.getMessage());
+                }
+            }
+            if (!success) {
+                log.warn("All attempts to contact {} failed. Assuming it's dead.", a);
+                handleDeadNode(a);
             }
         }
     }
+
+
+    private void handleDeadNode(Address deadAddr) {
+        // Removing from list
+        node.getNeighbours().removeNode(deadAddr);
+
+        // Notifying others
+        Set<Address> snapshot = new HashSet<>(node.getNeighbours().getKnownNodes());
+        for (Address other : snapshot) {
+            if (!other.equals(deadAddr)) {
+                try {
+                    NodeCommands proxy = getProxy(other);
+                    proxy.killNode(deadAddr);
+                    log.info("Notified {} that node was killed {}", other, deadAddr);
+                } catch (RemoteException e) {
+                    log.error("Error notifying {} about dead {}: {}",
+                            other, deadAddr, e.getMessage());
+                }
+            }
+        }
+
+        // If the dead person was a leader - elections
+        if (deadAddr.equals(node.getNeighbours().getLeader())) {
+            log.info("Dead node was our leader => starting election");
+            node.startElection();
+        }
+    }
+
+
+
 }
